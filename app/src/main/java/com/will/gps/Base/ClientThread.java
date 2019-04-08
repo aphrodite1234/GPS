@@ -4,6 +4,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 
+import com.will.gps.LoadActivity;
 import com.will.gps.MainActivity;
 
 import java.io.BufferedReader;
@@ -25,7 +26,7 @@ public class ClientThread implements Runnable{//客户端接收发送信息的�
     BufferedReader br;
     private OutputStream os;
     public static final int SEND=33;
-    //private PrintWriter writer;
+    private PrintWriter writer;
 
     public ClientThread(Handler handler)
     {
@@ -63,9 +64,11 @@ public class ClientThread implements Runnable{//客户端接收发送信息的�
                       try{
                           while((line=br.readLine())!=null){
                               Message msg=new Message();
-                              msg.what= MainActivity.SHOW;
-                              msg.obj=line;
-                              handler.sendMessage(msg);
+                              if(line.equals("true")){
+                                  msg.what= LoadActivity.DL;
+                                  msg.obj=line;
+                                  handler.sendMessage(msg);
+                              }
                           }
                       }catch (Exception e){
                           e.printStackTrace();
@@ -86,13 +89,9 @@ public class ClientThread implements Runnable{//客户端接收发送信息的�
                 switch(msg.what){
                     case SEND:
                         try{
-/*
-                            *//*os.write(content.getBytes("utf-8"));*//*
-                            writer=new PrintWriter(s.getOutputStream(),true);
-                            String content=msg.obj.toString()+"\r\n";
-                            writer.println(content);*/
                             String content = msg.obj.toString()+"\r\n";
-                            os.write(content.getBytes("utf-8"));
+                            writer.println(content);
+                            //os.write(content.getBytes("utf-8"));
                         }catch(Exception e){
                             e.printStackTrace();
                         }
