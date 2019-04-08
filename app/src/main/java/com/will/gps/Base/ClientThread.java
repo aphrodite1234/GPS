@@ -4,7 +4,6 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 
-import com.will.gps.LoadActivity;
 import com.will.gps.MainActivity;
 
 import java.io.BufferedReader;
@@ -19,21 +18,22 @@ import java.security.MessageDigest;
  * Created by MaiBenBen on 2019/3/26.
  */
 
-public class ClientThread implements Runnable {//客户端接收发送信息的线程类
+public class ClientThread implements Runnable{//客户端接收发送信息的线程类
     Handler handler;
     public Handler pushHandler;
     private Socket s;
     BufferedReader br;
     private OutputStream os;
-    public static final int SEND = 33;
+    public static final int SEND=33;
     //private PrintWriter writer;
 
-    public ClientThread(Handler handler) {
-        this.handler = handler;
+    public ClientThread(Handler handler)
+    {
+        this.handler=handler;
     }
 
-    private static final String SERVER_IP = "188.131.189.2";
-    private static final int PORT = 5678;
+    private static final String SERVER_IP="188.131.189.2";
+    private static final int PORT=5678;
 
     public static String getMD5String(String str) {
         try {
@@ -50,58 +50,54 @@ public class ClientThread implements Runnable {//客户端接收发送信息的�
             return null;
         }
     }
-
     @Override
-    public void run() {
-        try {
-            s = new Socket(SERVER_IP, PORT);//Socket地址端口
-            br = new BufferedReader(new InputStreamReader(s.getInputStream()));
-            os = s.getOutputStream();
+    public void run() {//
+        try{
+            s=new Socket(SERVER_IP,PORT);//Socket地址端口
+            br=new BufferedReader(new InputStreamReader(s.getInputStream()));
+            os=s.getOutputStream();
 
-            new Thread() {
-                public void run() {
-                    String line = null;
-                    try {
-                        while ((line = br.readLine()) != null) {
-                            Message msg = new Message();
-                            if(line.equals("true")){
-                                msg.what = LoadActivity.DL;
-                                msg.obj = line;
-                                handler.sendMessage(msg);
-                            }
-                        }
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
+            new Thread(){
+                  public void run(){
+                      String line=null;
+                      try{
+                          while((line=br.readLine())!=null){
+                              Message msg=new Message();
+                              msg.what= MainActivity.SHOW;
+                              msg.obj=line;
+                              handler.sendMessage(msg);
+                          }
+                      }catch (Exception e){
+                          e.printStackTrace();
+                      }
+                  }
             }.start();
             startpush();
-        } catch (Exception e) {
+        }catch (Exception e){
             e.printStackTrace();
         }
     }
 
-    private void startpush() {
+    private void startpush(){
         Looper.prepare();
-        pushHandler = new Handler() {
+        pushHandler=new Handler(){
             @Override
-            public void handleMessage(Message msg) {
-                switch (msg.what) {
+            public void handleMessage(Message msg){
+                switch(msg.what){
                     case SEND:
-                        try {
-                            /*
-                             *//*os.write(content.getBytes("utf-8"));*//*
+                        try{
+/*
+                            *//*os.write(content.getBytes("utf-8"));*//*
                             writer=new PrintWriter(s.getOutputStream(),true);
                             String content=msg.obj.toString()+"\r\n";
                             writer.println(content);*/
-                            String content = msg.obj.toString() + "\r\n";
+                            String content = msg.obj.toString()+"\r\n";
                             os.write(content.getBytes("utf-8"));
-                        } catch (Exception e) {
+                        }catch(Exception e){
                             e.printStackTrace();
                         }
                         break;
-                    default:
-                        break;
+                        default:break;
                 }
                 super.handleMessage(msg);
             }
