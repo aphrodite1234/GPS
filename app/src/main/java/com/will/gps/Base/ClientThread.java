@@ -4,6 +4,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 
+import com.will.gps.LoadActivity;
 import com.will.gps.MainActivity;
 
 import java.io.BufferedReader;
@@ -63,7 +64,7 @@ public class ClientThread implements Runnable{//客户端接收发送信息的�
                       try{
                           while((line=br.readLine())!=null){
                               Message msg=new Message();
-                              msg.what= MainActivity.SHOW;
+                              msg.what= LoadActivity.SHOW;
                               msg.obj=line;
                               handler.sendMessage(msg);
                           }

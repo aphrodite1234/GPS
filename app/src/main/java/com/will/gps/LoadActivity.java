@@ -70,7 +70,6 @@ public class LoadActivity extends Activity {
                 String message = mEditText01.getText().toString() + "/r/n";
                try
                {
-
                     //创建Socket
                     socket = new Socket("188.131.189.2",12345);
                     //socket = new Socket("10.14.114.127",54321); //IP：10.14.114.127，端口54321
@@ -114,11 +113,11 @@ public class LoadActivity extends Activity {
                 msg.obj=object.toString();
                 clientThread.pushHandler.sendMessage(msg);
 
-                /*mEditText01.setTag("");
-*/
+                /*mEditText01.setTag("");*/
                 /*Intent intent=new Intent(MainActivity.this,RegisterActivity.class);
                 startActivity(intent);*/
-
+                Intent intent=new Intent(com.will.gps.LoadActivity.this,MainActivity.class);
+                startActivity(intent);
             }
 
         });
