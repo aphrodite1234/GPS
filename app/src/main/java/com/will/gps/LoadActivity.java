@@ -30,7 +30,6 @@ public class LoadActivity extends Activity {
     ClientThread clientThread;
     private Handler handler;
     public static final int SHOW=1;
-    public static final int DL=2;
     private Button mButton01=null;
     private Button mButton02=null;
     private TextView mTextView=null;
@@ -48,8 +47,6 @@ public class LoadActivity extends Activity {
         mEditText01=(EditText)findViewById(R.id.EditText01);
         mEditText02=(EditText)findViewById(R.id.EditText02);
 
-        final Intent dl = new Intent(LoadActivity.this,RegisterActivity.class);
-
         handler=new Handler(){
             @Override
             public void handleMessage(Message msg){
@@ -57,8 +54,6 @@ public class LoadActivity extends Activity {
                     case SHOW:
                         mTextView.setText("\n"+msg.obj.toString());
                         break;
-                    case DL:
-                        startActivity(dl);
                     default:break;
                 }
                 super.handleMessage(msg);
@@ -71,22 +66,59 @@ public class LoadActivity extends Activity {
         mButton01.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                /*Socket socket=null;
+                String message = mEditText01.getText().toString() + "/r/n";
+               try
+               {
 
+                    //创建Socket
+                    socket = new Socket("188.131.189.2",12345);
+                    //socket = new Socket("10.14.114.127",54321); //IP：10.14.114.127，端口54321
+                    PrintWriter out = new PrintWriter( new BufferedWriter( new OutputStreamWriter(socket.getOutputStream())),true);
+                    out.println(message+"wmy");
+                    //接收来自服务器的消息
+                    BufferedReader br = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+                    String msg = br.readLine();
+                    if ( msg != null )
+                    {
+                    mTextView.setText(msg);
+                    }
+                    else
+                    {
+                    mTextView.setText("数据错误!");
+                    }
+                    //关闭流
+                    out.close();
+                    br.close();
+                    //关闭Socket
+                    socket.close();
+               } catch (Exception e)
+                {
+                // TODO: handle exception
+                Log.e(DEBUG_TAG, e.toString());
+                }*/
                 String username=mEditText01.getText().toString();
                 String password=getMD5String(mEditText02.getText().toString());
                 Message msg=new Message();
 
                 try{
-                    object.put("信号","登录");
+                    object.put("信号","注册");
                     object.put("用户名",username);
                     object.put("密码",password);
 
                 }catch (JSONException e){
                     e.printStackTrace();
                 }
+                //clientThread.send(content);
                 msg.what=ClientThread.SEND;
                 msg.obj=object.toString();
                 clientThread.pushHandler.sendMessage(msg);
+
+                /*mEditText01.setTag("");
+*/
+                /*Intent intent=new Intent(MainActivity.this,RegisterActivity.class);
+                startActivity(intent);*/
+
             }
 
         });

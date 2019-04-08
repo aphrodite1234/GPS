@@ -30,7 +30,7 @@
         android:orientation="horizontal"
         android:layout_alignParentBottom="true">
         <TextView
-            android:id="@+id/txt_deal"
+            android:id="@+id/txt_qun"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -42,7 +42,7 @@
             android:text="进群"/>
 
         <TextView
-            android:id="@+id/txt_poi"
+            android:id="@+id/txt_message"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
