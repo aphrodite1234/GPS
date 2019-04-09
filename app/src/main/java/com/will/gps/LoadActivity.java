@@ -11,6 +11,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.will.gps.Base.ClientThread;
+import com.will.gps.Password.PasswordActivity;
 import com.will.gps.R;
 import com.will.gps.RegisterActivity;
 
@@ -32,10 +33,12 @@ public class LoadActivity extends Activity {
     public static final int SHOW=1;
     private Button mButton01=null;
     private Button mButton02=null;
+    private Button mButton03=null;
     private TextView mTextView=null;
     private EditText mEditText01=null;
     private EditText mEditText02=null;
     JSONObject object=new JSONObject();
+    private boolean load=false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +46,7 @@ public class LoadActivity extends Activity {
         setContentView(R.layout.activity_load);
         mButton01=(Button)findViewById(R.id.Button01);
         mButton02=(Button)findViewById(R.id.Button02);
+        mButton03=(Button)findViewById(R.id.Button03);
         mTextView=(TextView)findViewById(R.id.TextView01);
         mEditText01=(EditText)findViewById(R.id.EditText01);
         mEditText02=(EditText)findViewById(R.id.EditText02);
@@ -51,8 +55,9 @@ public class LoadActivity extends Activity {
             @Override
             public void handleMessage(Message msg){
                 switch (msg.what){
-                    case SHOW:
+                    case 1:
                         mTextView.setText("\n"+msg.obj.toString());
+                        load=true;
                         break;
                     default:break;
                 }
@@ -87,8 +92,10 @@ public class LoadActivity extends Activity {
                 /*mEditText01.setTag("");*/
                 /*Intent intent=new Intent(MainActivity.this,RegisterActivity.class);
                 startActivity(intent);*/
-                Intent intent=new Intent(com.will.gps.LoadActivity.this,MainActivity.class);
-                startActivity(intent);
+                if(load=true) {
+                    Intent intent = new Intent(com.will.gps.LoadActivity.this, MainActivity.class);
+                    startActivity(intent);
+                }
             }
 
         });
@@ -98,6 +105,13 @@ public class LoadActivity extends Activity {
                 Intent intent=new Intent(com.will.gps.LoadActivity.this,RegisterActivity.class);
                 startActivity(intent);
                 //startActivity(new Intent("RegisterActivity"));
+            }
+        });
+
+        mButton03.setOnClickListener(new View.OnClickListener(){
+            public void onClick(View view){
+                Intent intent=new Intent(com.will.gps.LoadActivity.this, PasswordActivity.class);
+                startActivity(intent);
             }
         });
     }
