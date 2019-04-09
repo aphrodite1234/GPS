@@ -31,6 +31,7 @@ public class LoadActivity extends Activity {
     ClientThread clientThread;
     private Handler handler;
     public static final int SHOW=1;
+    public static final int DL=2;
     private Button mButton01=null;
     private Button mButton02=null;
     private Button mButton03=null;
@@ -51,14 +52,16 @@ public class LoadActivity extends Activity {
         mEditText01=(EditText)findViewById(R.id.EditText01);
         mEditText02=(EditText)findViewById(R.id.EditText02);
 
+        final Intent dl=new Intent(LoadActivity.this,MainActivity.class);
         handler=new Handler(){
             @Override
             public void handleMessage(Message msg){
                 switch (msg.what){
-                    case 1:
+                    case SHOW:
                         mTextView.setText("\n"+msg.obj.toString());
-                        load=true;
                         break;
+                    case DL:
+                        startActivity(dl);
                     default:break;
                 }
                 super.handleMessage(msg);
@@ -88,14 +91,6 @@ public class LoadActivity extends Activity {
                 msg.what=ClientThread.SEND;
                 msg.obj=object.toString();
                 clientThread.pushHandler.sendMessage(msg);
-
-                /*mEditText01.setTag("");*/
-                /*Intent intent=new Intent(MainActivity.this,RegisterActivity.class);
-                startActivity(intent);*/
-                if(load=true) {
-                    Intent intent = new Intent(com.will.gps.LoadActivity.this, MainActivity.class);
-                    startActivity(intent);
-                }
             }
 
         });

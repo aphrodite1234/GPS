@@ -64,8 +64,12 @@ public class ClientThread implements Runnable{//客户端接收发送信息的�
                       try{
                           while((line=br.readLine())!=null){
                               Message msg=new Message();
-                              msg.what= LoadActivity.SHOW;
-                              msg.obj=line;
+                              if(line.equals("true")){
+                                  handler.sendEmptyMessage(LoadActivity.DL);
+                              }else{
+                                  msg.what= LoadActivity.SHOW;
+                                  msg.obj=line;
+                              }
                               handler.sendMessage(msg);
                           }
                       }catch (Exception e){
