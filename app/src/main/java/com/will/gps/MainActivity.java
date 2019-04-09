@@ -2,22 +2,12 @@ package com.will.gps;
 
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
-import android.content.Intent;
-import android.graphics.drawable.Drawable;
-import android.os.Handler;
-import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.TextView;
-import org.json.*;
-
-import com.will.gps.Base.ClientThread;
-
-import static com.will.gps.Base.ClientThread.getMD5String;
+import com.will.gps.layout.FirstFragment;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener{
 

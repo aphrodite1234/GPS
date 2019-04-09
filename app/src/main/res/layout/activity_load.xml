@@ -59,7 +59,8 @@
             <TextView
                 android:id="@+id/TextView01"
                 android:layout_width="50dp"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:hint="1"/>
 
             <Button
                 android:id="@+id/Button03"
