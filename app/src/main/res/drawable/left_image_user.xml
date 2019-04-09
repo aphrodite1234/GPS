@@ -2,9 +2,9 @@
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android" >
 
     <item
-        android:drawable="@drawable/menu_qun"
-        android:width="18dp"
-        android:height="18dp"
+        android:drawable="@drawable/menu_user"
+        android:width="25dp"
+        android:height="25dp"
         />
 
 </layer-list >

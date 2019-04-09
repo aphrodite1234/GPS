@@ -36,11 +36,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        initView();
+        bindView();
 
     }
-    //初始化界面
-    private void initView(){
+    //UI组件初始化与事件绑定
+    private void bindView() {
         topBar = (TextView)this.findViewById(R.id.txt_top);
         tabQun = (TextView)this.findViewById(R.id.txt_qun);
         tabMessage = (TextView)this.findViewById(R.id.txt_message);
@@ -48,40 +48,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         tabMore = (TextView)this.findViewById(R.id.txt_more);
         ly_content = (FrameLayout) findViewById(R.id.fragment_container);
 
-   /*     Drawable drawable = getResources().getDrawable(R.drawable.menu_qun);
+        /*Drawable drawable = getResources().getDrawable(R.drawable.menu_qun);
         // 设置图片的大小
         drawable.setBounds(0, 0, 2, 2);
         // 设置图片的位置，左、上、右、下
-        tabQun.setCompoundDrawables(null, null, drawable, null);
+        tabQun.setCompoundDrawables(null, null, drawable, null);*/
 
-        drawable = getResources().getDrawable(R.drawable.menu_message);
-        tabMessage.setCompoundDrawables(null, null, drawable, null);
-        drawable = getResources().getDrawable(R.drawable.menu_user);
-        tabUser.setCompoundDrawables(null, null, drawable, null);
-        drawable = getResources().getDrawable(R.drawable.menu_more);
-        tabMore.setCompoundDrawables(null, null, drawable, null);*/
-
+        tabQun.setSelected(true);
         tabQun.setOnClickListener(this);
         tabMessage.setOnClickListener(this);
         tabMore.setOnClickListener(this);
         tabUser.setOnClickListener(this);
     }
-
- /*   //UI组件初始化与事件绑定
-    private void bindView() {
-        topBar = (TextView)this.findViewById(R.id.txt_top);
-        tabDeal = (TextView)this.findViewById(R.id.txt_deal);
-        tabPoi = (TextView)this.findViewById(R.id.txt_poi);
-        tabUser = (TextView)this.findViewById(R.id.txt_user);
-        tabMore = (TextView)this.findViewById(R.id.txt_more);
-        ly_content = (FrameLayout) findViewById(R.id.fragment_container);
-
-        tabDeal.setOnClickListener(this);
-        tabMore.setOnClickListener(this);
-        tabUser.setOnClickListener(this);
-        tabPoi.setOnClickListener(this);
-
-    }*/
 
     //重置所有文本的选中状态
     public void selected(){
@@ -115,6 +93,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.txt_qun:
                 selected();
                 tabQun.setSelected(true);
+                topBar.setText("进群");
                 if(f1==null){
                     f1 = new FirstFragment("第一个Fragment");
                     transaction.add(R.id.fragment_container,f1);
@@ -126,6 +105,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.txt_message:
                 selected();
                 tabMessage.setSelected(true);
+                topBar.setText("消息");
                 if(f2==null){
                     f2 = new FirstFragment("第二个Fragment");
                     transaction.add(R.id.fragment_container,f2);
@@ -137,6 +117,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.txt_user:
                 selected();
                 tabUser.setSelected(true);
+                topBar.setText("我的");
                 if(f3==null){
                     f3 = new FirstFragment("第三个Fragment");
                     transaction.add(R.id.fragment_container,f3);
@@ -148,6 +129,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.txt_more:
                 selected();
                 tabMore.setSelected(true);
+                topBar.setText("更多");
                 if(f4==null){
                     f4 = new FirstFragment("第四个Fragment");
                     transaction.add(R.id.fragment_container,f4);
@@ -158,6 +140,4 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
         transaction.commit();
     }
-
-
 }
