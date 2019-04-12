@@ -13,8 +13,8 @@ import java.util.Random;
 public class CodeUtils {
     private static final char[] CHARS = {
             '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
-            'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm',
-            'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
+            /*'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm',
+            'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',*/
             'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M',
             'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'
     };
@@ -24,8 +24,8 @@ public class CodeUtils {
     private Random mRandom = new Random();
     //Default Settings
     private static final int DEFAULT_CODE_LENGTH = 4;//验证码的长度  这里是6位
-    private static final int DEFAULT_FONT_SIZE = 60;//字体大小
-    private static final int DEFAULT_LINE_NUMBER = 3;//多少条干扰线
+    private static final int DEFAULT_FONT_SIZE = 80;//字体大小
+    private static final int DEFAULT_LINE_NUMBER = 0;//多少条干扰线
     private static final int BASE_PADDING_LEFT = 20; //左边距
     private static final int RANGE_PADDING_LEFT = 30;//左边距范围值
     private static final int BASE_PADDING_TOP = 70;//上边距

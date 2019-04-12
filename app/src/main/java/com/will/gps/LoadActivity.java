@@ -74,7 +74,6 @@ public class LoadActivity extends Activity {
         mButton01.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
                 String username=mEditText01.getText().toString();
                 String password=getMD5String(mEditText02.getText().toString());
                 Message msg=new Message();

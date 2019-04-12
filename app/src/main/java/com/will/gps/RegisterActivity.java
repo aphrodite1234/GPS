@@ -113,11 +113,12 @@ public class RegisterActivity extends Activity implements  View.OnClickListener 
                     toast("请先输入手机号");
                 }
                 break;
-                case R.id.btn_sure:                //获得用户输入的验证码
-                    String code = et_checkecode.getText().toString().replaceAll("/s","");
-                if (!TextUtils.isEmpty(code)) {//判断验证码是否为空                    //验证
-                    SMSSDK.submitVerificationCode( country,  phone,  code);
-                }else{//如果用户输入的内容为空，提醒用户
+            case R.id.btn_sure:                //获得用户输入的验证码
+                String code = et_checkecode.getText().toString().replaceAll("/s","");
+                if (!TextUtils.isEmpty(code)) {//判断验证码是否为空
+                    SMSSDK.submitVerificationCode( country,  phone,  code); //验证
+                }
+                else{//如果用户输入的内容为空，提醒用户
                     toast("请输入验证码后再提交");
                 }                break;
         }
@@ -148,7 +149,8 @@ public class RegisterActivity extends Activity implements  View.OnClickListener 
          builder.setNegativeButton("取消", new DialogInterface.OnClickListener() { //设置取消按钮
              // @Override
              public void onClick(DialogInterface dialog, int which) {
-                 dialog.dismiss();                Toast.makeText(RegisterActivity.this, "已取消" + which, Toast.LENGTH_SHORT).show();
+                 dialog.dismiss();
+                 Toast.makeText(RegisterActivity.this, "已取消" + which, Toast.LENGTH_SHORT).show();
              }
          });        //参数都设置完成了，创建并显示出来
          builder.create().show();
