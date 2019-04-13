@@ -36,7 +36,7 @@
             android:layout_weight="1"
             android:background="@drawable/menu_bg"
             android:drawablePadding="3dp"
-            android:drawableTop="@drawable/left_image_qun"
+            android:drawableTop="@drawable/menu_qun"
             android:gravity="center"
             android:textColor="@drawable/menu_text"
             android:text="进群"/>
@@ -48,7 +48,7 @@
             android:layout_weight="1"
             android:background="@drawable/menu_bg"
             android:drawablePadding="3dp"
-            android:drawableTop="@drawable/left_image_message"
+            android:drawableTop="@drawable/menu_message"
             android:gravity="center"
             android:textColor="@drawable/menu_text"
             android:text="消息"/>
@@ -60,7 +60,7 @@
             android:layout_weight="1"
             android:background="@drawable/menu_bg"
             android:drawablePadding="3dp"
-            android:drawableTop="@drawable/left_image_user"
+            android:drawableTop="@drawable/menu_user"
             android:gravity="center"
             android:textColor="@drawable/menu_text"
             android:text="我的"/>
@@ -72,7 +72,7 @@
             android:layout_weight="1"
             android:background="@drawable/menu_bg"
             android:drawablePadding="3dp"
-            android:drawableTop="@drawable/left_image_more"
+            android:drawableTop="@drawable/menu_new"
             android:gravity="center"
             android:textColor="@drawable/menu_text"
             android:text="更多"/>

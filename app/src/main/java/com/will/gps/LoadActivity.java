@@ -8,6 +8,7 @@ import android.os.Message;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.will.gps.Base.ClientThread;
@@ -38,6 +39,7 @@ public class LoadActivity extends Activity {
     private TextView mTextView=null;
     private EditText mEditText01=null;
     private EditText mEditText02=null;
+    private ImageView image=null;
     JSONObject object=new JSONObject();
     private boolean load=false;
 
@@ -51,6 +53,8 @@ public class LoadActivity extends Activity {
         mTextView=(TextView)findViewById(R.id.TextView01);
         mEditText01=(EditText)findViewById(R.id.EditText01);
         mEditText02=(EditText)findViewById(R.id.EditText02);
+        image=(ImageView)findViewById(R.id.load_image);
+        image.setImageResource(R.drawable.ic_gps);
 
         final Intent dl=new Intent(LoadActivity.this,MainActivity.class);
         handler=new Handler(){
@@ -91,7 +95,6 @@ public class LoadActivity extends Activity {
                 msg.obj=object.toString();
                 clientThread.pushHandler.sendMessage(msg);
             }
-
         });
 
         mButton02.setOnClickListener(new View.OnClickListener(){

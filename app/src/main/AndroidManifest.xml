@@ -32,6 +32,7 @@
         <activity android:name=".Password.PasswordActivity"/>
         <activity android:name=".Password.Password2Activity"/>
         <activity android:name=".Password.Password3Activity"/>
+        <activity android:name=".Password.Password4Activity"/>
     </application>
 
 </manifest>

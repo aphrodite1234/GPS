@@ -41,8 +41,7 @@ public class Password2Activity extends Activity{
             public void run() {
                 try {//不放在线程里出错android.os.NetworkOnMainThreadException不允许在主线程中进行网络访问
                     code = Integer.toString((int)((Math.random()*9+1)*100000));  //每次调用生成一位四位数的随机数
-                    //code=sendCode(phone);//发送验证码
-                    //SendSms(phone,code);
+                    SendSms(phone,code);//发送验证码
                     System.out.println("code="+code);
                     System.out.println("#######################");
                 } catch (Exception e) {
@@ -67,6 +66,7 @@ public class Password2Activity extends Activity{
             public void onClick(View view) {
                 if(verifyCodeView.getEditContent().equals(code)){
                     Intent intent=new Intent(Password2Activity.this,Password3Activity.class);
+                    intent.putExtra("type","重置密码");
                     intent.putExtra("phone",phone);
                     startActivity(intent);
                 }
