@@ -7,6 +7,8 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.TextView;
+
+import com.will.gps.Base.MySocket;
 import com.will.gps.layout.FirstFragment;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener{
@@ -27,7 +29,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         bindView();
-
+        ((MySocket)getApplication()).sendHeart();//发送心跳消息
     }
     //UI组件初始化与事件绑定
     private void bindView() {
