@@ -29,7 +29,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         bindView();
-        ((MySocket)getApplication()).sendHeart();//发送心跳消息
     }
     //UI组件初始化与事件绑定
     private void bindView() {

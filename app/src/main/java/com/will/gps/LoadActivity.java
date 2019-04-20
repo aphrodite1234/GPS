@@ -48,6 +48,7 @@ public class LoadActivity extends Activity {
         image=(ImageView)findViewById(R.id.load_image);
         image.setImageResource(R.drawable.ic_gps);
 
+        ((MySocket)getApplication()).sendHeart();//发送心跳消息
         final Intent dl=new Intent(LoadActivity.this,MainActivity.class);
         ((MySocket) getApplication()).setHandler(new Handler()
         {
@@ -69,7 +70,7 @@ public class LoadActivity extends Activity {
         mButton01.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {//登录
-                MySocket.user.setUserName(mEditText01.getText().toString());
+                MySocket.user.setPhonenum(mEditText01.getText().toString());
                 MySocket.user.setPassWord(mEditText02.getText().toString());
                 message.setSender("client");
                 message.setType("登录");
@@ -82,6 +83,7 @@ public class LoadActivity extends Activity {
             public void onClick(View view){//注册
                 Intent intent=new Intent(com.will.gps.LoadActivity.this,RegisterActivity.class);
                 startActivity(intent);
+                finish();
                 //startActivity(new Intent("RegisterActivity"));
             }
         });
@@ -90,6 +92,7 @@ public class LoadActivity extends Activity {
             public void onClick(View view){//找回密码
                 Intent intent=new Intent(com.will.gps.LoadActivity.this, PasswordActivity.class);
                 startActivity(intent);
+                finish();
             }
         });
     }

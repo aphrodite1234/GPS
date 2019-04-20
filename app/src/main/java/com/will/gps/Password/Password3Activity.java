@@ -3,6 +3,8 @@ package com.will.gps.Password;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -11,6 +13,10 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.google.gson.Gson;
+import com.will.gps.Base.MySocket;
+import com.will.gps.Base.RMessage;
 import com.will.gps.R;
 
 import java.util.regex.Matcher;
@@ -30,10 +36,30 @@ public class Password3Activity extends Activity implements View.OnClickListener 
     private String passCon=null;
     private TextView text;
     Intent i;
+    RMessage rMessage = new RMessage();
+    Gson gson = new Gson();
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_password3);
         initView();
+
+        final Intent intent=new Intent(Password3Activity.this,Password4Activity.class);
+        intent.putExtra("type",i.getStringExtra("type"));
+
+        ((MySocket)getApplication()).setHandler(new Handler(){
+            @Override
+            public void handleMessage(Message msg) {
+                super.handleMessage(msg);
+                rMessage = gson.fromJson(msg.obj.toString(),RMessage.class);
+                if(rMessage.getContent().equals("true")){
+                    startActivity(intent);
+                    finish();
+                }else{
+                    Toast.makeText(Password3Activity.this,"更改失败！",Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
     }
     private void initView(){
         edit1=(EditText)findViewById(R.id.pass3_phone);
@@ -79,9 +105,11 @@ public class Password3Activity extends Activity implements View.OnClickListener 
                     return;
                 }
 
-                Intent intent=new Intent(Password3Activity.this,Password4Activity.class);
-                intent.putExtra("type",i.getStringExtra("type"));
-                startActivity(intent);
+                MySocket.user.setPhonenum(edit1.getText().toString());
+                MySocket.user.setPassWord(passCon);
+                rMessage.setType(text.getText().toString());
+                rMessage.setContent(gson.toJson(MySocket.user));
+                ((MySocket)getApplication()).send(gson.toJson(rMessage));
                 break;
             default:
                 break;

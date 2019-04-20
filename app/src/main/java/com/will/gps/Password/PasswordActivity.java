@@ -97,6 +97,7 @@ public class PasswordActivity extends Activity implements OnClickListener {
                 Intent intent=new Intent(PasswordActivity.this,Password2Activity.class);
                 intent.putExtra("phone",phoneStr);
                 startActivity(intent);
+                finish();
             }
             else {
                 Toast.makeText(this, "验证码错误", Toast.LENGTH_SHORT).show();

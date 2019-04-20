@@ -128,9 +128,10 @@ public class RegisterActivity extends Activity implements  View.OnClickListener 
                     if(code.equals(codetxt))
                     {
                         Intent intent=new Intent(RegisterActivity.this, Password3Activity.class);
-                        intent.putExtra("type","注册账号");
+                        intent.putExtra("type","注册");
                         intent.putExtra("phone",phone);
                         startActivity(intent);
+                        finish();
                     }
                     else
                         Toast.makeText(RegisterActivity.this, "验证码错误", Toast.LENGTH_SHORT).show();
@@ -159,8 +160,8 @@ public class RegisterActivity extends Activity implements  View.OnClickListener 
                  } catch (Exception e) {
                      e.printStackTrace();
                  }
-                 System.out.println("code="+code);
-                 System.out.println("#######################");
+//                 System.out.println("code="+code);
+//                 System.out.println("#######################");
                  //SMSSDK.getVerificationCode(country, phone);//通过sdk发送短信验证（请求获取短信验证码，在监听（eh）中返回）
                  Toast.makeText(RegisterActivity.this, "已发送" + which, Toast.LENGTH_SHORT).show();
                  btn_check.setEnabled(false);

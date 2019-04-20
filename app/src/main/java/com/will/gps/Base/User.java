@@ -8,7 +8,7 @@ public class User {
     private String userName = "";
     private String passWord = "";
     private String realName = "";
-    private int phonenum = 0;
+    private String phonenum = "";
     public String getUserName() {
         return userName;
     }
@@ -27,10 +27,10 @@ public class User {
     public void setRealName(String realName) {
         this.realName = realName;
     }
-    public int getPhonenum() {
+    public String getPhonenum() {
         return phonenum;
     }
-    public void setPhonenum(int phonenum) {
+    public void setPhonenum(String phonenum) {
         this.phonenum = phonenum;
     }
     public static String getMD5String(String str) {

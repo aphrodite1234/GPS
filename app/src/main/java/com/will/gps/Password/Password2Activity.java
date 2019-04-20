@@ -69,6 +69,7 @@ public class Password2Activity extends Activity{
                     intent.putExtra("type","重置密码");
                     intent.putExtra("phone",phone);
                     startActivity(intent);
+                    finish();
                 }
                 else{
                     //toast后面没加show()方法调试半天不显示

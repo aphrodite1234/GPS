@@ -36,6 +36,7 @@ public class Password4Activity extends Activity {
             public void onClick(View view) {
                 Intent intent=new Intent(Password4Activity.this, LoadActivity.class);
                 startActivity(intent);
+                finish();
             }
         });
     }
