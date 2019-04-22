@@ -13,7 +13,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 import android.view.View.OnClickListener;
 
-import com.will.gps.Base.CodeUtils;
+import com.will.gps.base.CodeUtils;
 import com.will.gps.R;
 
 import java.util.regex.Matcher;

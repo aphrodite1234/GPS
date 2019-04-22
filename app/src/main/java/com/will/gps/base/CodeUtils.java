@@ -1,4 +1,4 @@
-package com.will.gps.Base;
+package com.will.gps.base;
 
 /**
  * Created by MaiBenBen on 2019/4/8.

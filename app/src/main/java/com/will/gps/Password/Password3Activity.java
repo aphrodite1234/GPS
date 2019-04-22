@@ -15,8 +15,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
-import com.will.gps.Base.MySocket;
-import com.will.gps.Base.RMessage;
+import com.will.gps.base.MySocket;
+import com.will.gps.base.RMessage;
 import com.will.gps.R;
 
 import java.util.regex.Matcher;

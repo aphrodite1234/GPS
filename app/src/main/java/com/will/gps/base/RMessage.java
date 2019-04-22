@@ -1,4 +1,4 @@
-package com.will.gps.Base;
+package com.will.gps.base;
 import java.sql.Timestamp;
 
 public class RMessage {

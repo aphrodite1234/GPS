@@ -1,4 +1,4 @@
-package com.will.gps.Base;
+package com.will.gps.base;
 import android.app.Application;
 import android.os.Handler;
 import android.os.Looper;

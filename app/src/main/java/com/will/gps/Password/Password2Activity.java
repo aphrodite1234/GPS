@@ -8,14 +8,10 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.aliyuncs.exceptions.ClientException;
 import com.will.gps.R;
 import com.will.gps.layout.VerifyCodeView;
 
-import org.w3c.dom.Text;
-
-import static com.will.gps.Base.MainALiSms.SendSms;
-import static com.will.gps.Base.SmsDemo.sendCode;
+import static com.will.gps.base.MainALiSms.SendSms;
 
 /**
  * Created by MaiBenBen on 2019/4/9.
