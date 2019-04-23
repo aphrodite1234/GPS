@@ -1,5 +1,7 @@
 package com.will.gps.base;
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
 
 public class RMessage {
     private String sender = null;
@@ -8,6 +10,7 @@ public class RMessage {
     private int state = 0;
     private Timestamp date = null;
     private String type = null;
+    private List<Group> group = new ArrayList<Group>();
 
     public String getSender() {
         return sender;
@@ -59,5 +62,13 @@ public class RMessage {
 
     public String toString() {
         return "sender: " + sender + "\n" + "receiver: " + receiver + "\n" + "content: " + content;
+    }
+
+    public List<Group> getGroup() {
+        return group;
+    }
+
+    public void setGroup(List<Group> group) {
+        this.group = group;
     }
 }

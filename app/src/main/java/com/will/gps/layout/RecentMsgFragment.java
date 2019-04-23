@@ -15,8 +15,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.will.gps.GroupChatActivity;
 import com.will.gps.R;
-import com.will.gps.activity.P2PChatActivity;
 import com.will.gps.base.Group;
 import com.will.gps.bean.RecentContactBean;
 import com.netease.nimlib.sdk.NIMClient;
@@ -24,12 +24,10 @@ import com.netease.nimlib.sdk.Observer;
 import com.netease.nimlib.sdk.RequestCallback;
 import com.netease.nimlib.sdk.RequestCallbackWrapper;
 import com.netease.nimlib.sdk.msg.MsgService;
-import com.netease.nimlib.sdk.msg.MsgServiceObserve;
 import com.netease.nimlib.sdk.msg.constant.SessionTypeEnum;
 import com.netease.nimlib.sdk.msg.model.RecentContact;
 import com.netease.nimlib.sdk.uinfo.UserService;
 import com.netease.nimlib.sdk.uinfo.model.NimUserInfo;
-import com.netease.nimlib.sdk.uinfo.model.UserInfo;
 import com.suntek.commonlibrary.adapter.OnItemClickListener;
 import com.suntek.commonlibrary.adapter.RViewHolder;
 import com.suntek.commonlibrary.adapter.RecycleViewAdapter;
@@ -111,10 +109,10 @@ public class RecentMsgFragment extends Fragment {
         mContactList = new ArrayList<>(3);
 
         //测试用数据
-        group1.setGroupName("一群");
-        group1.setGroupNum("123");
-        group2.setGroupName("二群");
-        group3.setGroupName("三群");
+        group1.setGroupname("一群");
+        group1.setGroupid(123);
+        group2.setGroupname("二群");
+        group3.setGroupname("三群");
         rcb1.setGroup(group1);
         rcb2.setGroup(group2);
         rcb3.setGroup(group3);
@@ -138,13 +136,12 @@ public class RecentMsgFragment extends Fragment {
                     //mContactList.get(position).setUserInfo(userInfo);
                     mContactList.get(position).setGroup(group);
                     holder.setImageByUrl(context,R.id.iv_head_picture,
-                            contactBean.getGroup().getGroupImg(),R.mipmap.group_chat);
-                    holder.setText(R.id.tv_recent_name,contactBean.getGroup().getGroupName());
+                            contactBean.getGroup().getGroupimg(),R.mipmap.group_chat);
+                    holder.setText(R.id.tv_recent_name,contactBean.getGroup().getGroupname());
                 }else {
                     holder.setImageResource(R.id.iv_head_picture,R.mipmap.app_logo_main);
-                    holder.setText(R.id.tv_recent_name,contactBean.getGroup().getGroupNum());
+                    holder.setText(R.id.tv_recent_name,Integer.toString(contactBean.getGroup().getGroupid()));
                 }
-                holder.setText(R.id.tv_recent_content,contactBean.getGroup().getGroupContent());
                 //String time = mDateFormat.format(new Date(contactBean.getRecentContact().getTime()));
                 String time=mDateFormat.format(new Date());
                 holder.setText(R.id.tv_recent_time,time);
@@ -157,7 +154,7 @@ public class RecentMsgFragment extends Fragment {
                 RecentContactBean contactBean = mContactList.get(position);
                 Intent intent;
                 if (contactBean.getRecentContact().getSessionType() == SessionTypeEnum.P2P){
-                    intent = new Intent(context, P2PChatActivity.class);
+                    intent = new Intent(context, GroupChatActivity.class);
                     intent.putExtra("NimUserInfo",contactBean.getUserInfo());
                     startActivity(intent);
                 }
