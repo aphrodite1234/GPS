@@ -42,14 +42,6 @@ android:orientation="vertical">
             android:src="@drawable/ic_group_white_24dp"
             android:layout_marginRight="12dp"/>
     </LinearLayout>
-    <!--<TextView
-         android:id="@+id/txt_top"
-         android:layout_width="match_parent"
-         android:layout_height="match_parent"
-         android:gravity="center"
-         android:textSize="25sp"
-         android:textColor="@color/smssdk_white"
-         android:text= "进群" />-->
 
     <View
         android:layout_width="match_parent"
@@ -69,18 +61,27 @@ android:orientation="vertical">
         android:layout_height="wrap_content">
 
         <EditText
-            android:id="@+id/input_text"
+            android:id="@+id/group_chat_input"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:hint="Type something here"
+            android:hint="输入消息"
             android:maxLines="2"/>
 
         <Button
-            android:id="@+id/send"
+            android:gravity="center"
+            android:layout_gravity="center_vertical"
+            android:id="@+id/group_chat_send"
+            android:paddingLeft="11.0dip"
+            android:paddingRight="11.0dip"
+            android:background="@drawable/radiusbutton"
+            android:text="发送"
+            android:textColor="@color/white"
+            android:textSize="25sp"
+            android:nextFocusLeft="@id/group_chat_input"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Send"/>
+            android:layout_height="50dp"
+            />
 
     </LinearLayout>
 </LinearLayout>

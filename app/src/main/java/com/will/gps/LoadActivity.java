@@ -75,7 +75,7 @@ public class LoadActivity extends Activity {
                 message.setType("登录");
                 message.setContent(gson.toJson(MySocket.user));
                 ((MySocket)getApplication()).send(gson.toJson(message));
-                startActivity(dl);
+                //startActivity(dl);
             }
         });
 

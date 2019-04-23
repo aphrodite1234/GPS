@@ -34,8 +34,7 @@ import java.util.List;
  * Created by wudeng on 2017/9/4.
  */
 
-public class P2PChatActivity extends BaseActivity
-         {
+public class P2PChatActivity  {
 
     private static final String TAG = P2PChatActivity.class.getSimpleName();
 

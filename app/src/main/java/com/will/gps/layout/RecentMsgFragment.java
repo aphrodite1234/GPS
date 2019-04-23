@@ -15,6 +15,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.will.gps.GroupChatActivity;
 import com.will.gps.R;
 import com.will.gps.activity.P2PChatActivity;
 import com.will.gps.base.Group;
@@ -156,11 +157,11 @@ public class RecentMsgFragment extends Fragment {
             public void onItemClick(RViewHolder holder, int position) {
                 RecentContactBean contactBean = mContactList.get(position);
                 Intent intent;
-                if (contactBean.getRecentContact().getSessionType() == SessionTypeEnum.P2P){
-                    intent = new Intent(context, P2PChatActivity.class);
+                //if (contactBean.getRecentContact().getSessionType() == SessionTypeEnum.P2P){
+                    intent = new Intent(context, GroupChatActivity.class);
                     intent.putExtra("NimUserInfo",contactBean.getUserInfo());
                     startActivity(intent);
-                }
+                //}
             }
         });
 
