@@ -9,4 +9,12 @@
     <color name="translucent_white">#61FFFFFF</color>
     <color name="smssdk_line_light_gray">#d3d3d3</color>
     <color name="smssdk_white">#ffffff</color>
+    <color name="white">#ffffffff</color>
+    <color name="interval_color">#e7e5e5</color>
+    <color name="white_color">#ffffff</color>
+    <color name="app_black_color">#616060</color>
+    <color name="app_red_color">#d81e06</color>
+    <color name="default_text_color">#bfbfbf</color>
+    <color name="gray_font">#818181</color>
+    <color name="hint_color">#bfbfbf</color>
 </resources>

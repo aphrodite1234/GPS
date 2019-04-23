@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -14,8 +13,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
-import com.will.gps.Base.MySocket;
-import com.will.gps.Base.RMessage;
+import com.will.gps.base.MySocket;
+import com.will.gps.base.RMessage;
 import com.will.gps.Password.PasswordActivity;
 
 /**
@@ -76,6 +75,7 @@ public class LoadActivity extends Activity {
                 message.setType("登录");
                 message.setContent(gson.toJson(MySocket.user));
                 ((MySocket)getApplication()).send(gson.toJson(message));
+                startActivity(dl);
             }
         });
 

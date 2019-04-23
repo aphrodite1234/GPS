@@ -3,7 +3,6 @@ package com.will.gps;
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.media.Image;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -12,7 +11,6 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.will.gps.Password.Password3Activity;
@@ -22,7 +20,7 @@ import java.util.TimerTask;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static com.will.gps.Base.MainALiSms.SendSms;
+import static com.will.gps.base.MainALiSms.SendSms;
 
 
 /**

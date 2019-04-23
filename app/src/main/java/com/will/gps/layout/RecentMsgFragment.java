@@ -138,7 +138,7 @@ public class RecentMsgFragment extends Fragment {
                     //mContactList.get(position).setUserInfo(userInfo);
                     mContactList.get(position).setGroup(group);
                     holder.setImageByUrl(context,R.id.iv_head_picture,
-                            contactBean.getGroup().getGroupImg(),R.mipmap.bg_img_defalut);
+                            contactBean.getGroup().getGroupImg(),R.mipmap.group_chat);
                     holder.setText(R.id.tv_recent_name,contactBean.getGroup().getGroupName());
                 }else {
                     holder.setImageResource(R.id.iv_head_picture,R.mipmap.app_logo_main);
