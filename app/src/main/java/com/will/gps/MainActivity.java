@@ -37,6 +37,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private RecentMsgFragment f1;
     private UserFragment f3;
     private ImageView imageView1,imageView2;
+    private Intent intent;
     //private FragmentManager fragmentManager;
 
     @Override
@@ -106,7 +107,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         hideAllFragment(transaction);
         switch(v.getId()){
             case R.id.btn_search:
-
+                intent=new Intent(MainActivity.this,SearchActivity.class);
+                startActivity(intent);
+                break;
+            case R.id.btn_add:
+                intent=new Intent(MainActivity.this,SearchActivity.class);
+                startActivity(intent);
+                break;
             case R.id.txt_qun:
                 selected();
                 tabQun.setSelected(true);

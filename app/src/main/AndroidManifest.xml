@@ -34,6 +34,11 @@
         <activity android:name=".Password.Password2Activity"/>
         <activity android:name=".Password.Password3Activity"/>
         <activity android:name=".Password.Password4Activity"/>
+
+        <activity android:name=".CreateGroupActivity"/>
+        <activity android:name=".GroupInfoActivity"/>
+        <activity android:name=".GroupChatActivity"/>
+        <activity android:name=".SearchActivity"/>
     </application>
 
 </manifest>
