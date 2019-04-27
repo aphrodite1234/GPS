@@ -11,7 +11,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
+import android.app.FragmentTransaction;
 import com.google.gson.Gson;
 import com.will.gps.base.MySocket;
 import com.will.gps.base.RMessage;
@@ -33,16 +33,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private TextView tabUser;
     private FrameLayout ly_content;
 
-    /*private FirstFragment f2,f4;
+    private FirstFragment f2,f4;
     private RecentMsgFragment f1;
-    private UserFragment f3;*/
+    private UserFragment f3;
     private ImageView imageView1,imageView2;
     private Intent intent;
     //private FragmentManager fragmentManager;
     private RMessage rMessage = new RMessage();
     private Gson gson = new Gson();
-    FragmentManager fm=getSupportFragmentManager();
-    FragmentTransaction ft=fm.beginTransaction();
+    /*FragmentManager fm=getSupportFragmentManager();
+    FragmentTransaction ft=fm.beginTransaction();*/
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,6 +92,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         tabMessage.setOnClickListener(this);
         tabMore.setOnClickListener(this);
         tabUser.setOnClickListener(this);
+
         tabQun.performClick();
 
     }
@@ -106,7 +107,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     //隐藏所有Fragment
     public void hideAllFragment(FragmentTransaction transaction){
-        /*if(f1!=null){
+        if(f1!=null){
             transaction.hide(f1);
         }
         if(f2!=null){
@@ -117,13 +118,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
         if(f4!=null){
             transaction.hide(f4);
-        }*/
+        }
     }
 
     @Override
     public void onClick(View v) {
-        /*FragmentTransaction transaction = getFragmentManager().beginTransaction();
-        hideAllFragment(transaction);*/
+        FragmentTransaction transaction = getFragmentManager().beginTransaction();
+        hideAllFragment(transaction);
         switch(v.getId()){
             case R.id.btn_search:
                 intent=new Intent(MainActivity.this,SearchActivity.class);
@@ -137,45 +138,45 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 selected();
                 tabQun.setSelected(true);
                 topBar.setText("进群");
-                GroupMsgFragment groupMsgFragment=new GroupMsgFragment();
+                /*GroupMsgFragment groupMsgFragment=new GroupMsgFragment();
                 ft.replace(R.id.fragment_container, groupMsgFragment,MainActivity.TAG);
-                ft.commit();
-                /*if(f1==null){
+                ft.commit();*/
+                if(f1==null){
                     f1 = new RecentMsgFragment();
                     transaction.add(R.id.fragment_container,f1);
                 }else{
                     transaction.show(f1);
-                }*/
+                }
                 break;
 
             case R.id.txt_message:
                 selected();
                 tabMessage.setSelected(true);
                 topBar.setText("消息");
-                RecentMsgFragment recentMsgFragment=new RecentMsgFragment();
+                /*RecentMsgFragment recentMsgFragment=new RecentMsgFragment();
                 ft.replace(R.id.fragment_container, recentMsgFragment,MainActivity.TAG);
-                ft.commit();
-                /*if(f2==null){
+                ft.commit();*/
+                if(f2==null){
                     f2 = new FirstFragment("第二个Fragment");
                     transaction.add(R.id.fragment_container,f2);
                 }else{
                     transaction.show(f2);
-                }*/
+                }
                 break;
 
             case R.id.txt_user:
                 selected();
                 tabUser.setSelected(true);
                 topBar.setText("我的");
-                UserFragment userFragment=new UserFragment();
+                /*UserFragment userFragment=new UserFragment();
                 ft.replace(R.id.fragment_container, userFragment,MainActivity.TAG);
-                ft.commit();
-                /*if(f3==null){
+                ft.commit();*/
+                if(f3==null){
                     f3 = new UserFragment();
                     transaction.add(R.id.fragment_container,f3);
                 }else{
                     transaction.show(f3);
-                }*/
+                }
                 break;
 
 
@@ -183,18 +184,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 selected();
                 tabMore.setSelected(true);
                 topBar.setText("更多");
-                FirstFragment firstFragment=new FirstFragment("界面待实现");
+                /*FirstFragment firstFragment=new FirstFragment("界面待实现");
                 ft.replace(R.id.fragment_container, firstFragment,MainActivity.TAG);
-                ft.commit();
-                /*if(f4==null){
+                ft.commit();*/
+                if(f4==null){
                     f4 = new FirstFragment("第四个Fragment");
                     transaction.add(R.id.fragment_container,f4);
                 }else{
                     transaction.show(f4);
-                }*/
+                }
                 break;
         }
-        //transaction.commit();
+        transaction.commit();
     }
 
     //为了在fragment中注册监听事件（fragment中没有提供OnTouchEvent）
