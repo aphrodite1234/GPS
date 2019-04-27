@@ -21,7 +21,7 @@ public class MySocket extends Application{
     private static final int PORT=5678;
     private static final long HEART_BEAT_RATE = 5 * 1000;//心跳间隔
     private long sendTime = 0L;
-    public static final User user = new User();
+    public static User user = new User();
     private RMessage rMessage=new RMessage();
     private Gson gson = new Gson();
 

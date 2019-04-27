@@ -14,9 +14,12 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
 import com.netease.nimlib.sdk.NIMClient;
 import com.suntek.commonlibrary.utils.ToastUtils;
 import com.will.gps.base.MySocket;
+import com.will.gps.base.RMessage;
+import com.will.gps.base.User;
 import com.will.gps.handler.NimFriendHandler;
 import com.will.gps.handler.NimOnlineStatusHandler;
 import com.will.gps.handler.NimSysMsgHandler;
@@ -42,6 +45,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private ImageView imageView1,imageView2;
     private Intent intent;
     //private FragmentManager fragmentManager;
+    private RMessage rMessage = new RMessage();
+    private Gson gson = new Gson();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,6 +63,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             @Override
             public void handleMessage(Message msg) {
                 super.handleMessage(msg);
+                rMessage=gson.fromJson(msg.obj.toString(),RMessage.class);
+                String type = rMessage.getType();
+                switch (type){
+                    case "更新信息":
+                        MySocket.user=gson.fromJson(rMessage.getContent(),User.class);
+                        break;
+                }
             }
         });
     }

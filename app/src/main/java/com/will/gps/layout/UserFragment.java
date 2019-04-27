@@ -53,7 +53,7 @@ public class UserFragment extends Fragment implements View.OnClickListener{
     RelativeLayout mLayoutHead;*/
     private CircleImageView mIvHead;
     private TextView mTvAccount;
-    private EditText mEtNick;
+    private EditText mEtNick,mEtRealName;
     private TextView mTvSex;
     private TextView mTvBirthDay;
     private TextView mTvLocation;
@@ -100,6 +100,8 @@ public class UserFragment extends Fragment implements View.OnClickListener{
         mIvHead=(CircleImageView)view.findViewById(R.id.iv_head_picture);
         mButton=(Button)view.findViewById(R.id.iv_menu_btn);
         uCommit= (Button)view.findViewById(R.id.iv_menu_com);
+        mEtRealName=(EditText)view.findViewById(R.id.et_account_rlnm);
+
         /*mEtNick.setOnTouchListener(this);
         mEtSignature.setOnTouchListener(this);*/
         //mGestureDetector = new GestureDetector(getActivity(), mGestureListener);
@@ -158,36 +160,45 @@ public class UserFragment extends Fragment implements View.OnClickListener{
 
     // 显示数据
     private void showData() {
+        mIvHead.setImageResource(R.mipmap.zu);
+        mTvAccount.setText(MySocket.user.getPhonenum());
+        mEtNick.setText(MySocket.user.getUserName());
+        mTvSex.setText(MySocket.user.getSex());
+        mTvBirthDay.setText(MySocket.user.getBirthday());
+        mTvLocation.setText(MySocket.user.getLocate());
+        mEtSignature.setText(MySocket.user.getSignature());
+        mEtRealName.setText(MySocket.user.getRealName());
+
         //mAccountBean = NimUserHandler.getInstance().getLocalAccount();
-        if (mAccountBean != null) {
-            /*ImageUtils.setImageByFile(this, mIvHead,
-                    mAccountBean.getHeadImgUrl(), R.mipmap.bg_img_defalut);*/
-            mIvHead.setImageResource(R.mipmap.zu);
-            //mTvAccount.setText(mAccountBean.getAccount());
-            mTvAccount.setText(MySocket.user.getPhonenum());
-            //mEtNick.setText(mAccountBean.getNick());
-            mEtNick.setText(MySocket.user.getUserName());
-            if (mAccountBean.getGenderEnum() == GenderEnum.FEMALE) {
-                mTvSex.setText("女");
-            } else if (mAccountBean.getGenderEnum() == GenderEnum.MALE) {
-                mTvSex.setText("男");
-            } else {
-                mTvSex.setText("保密");
-            }
-            mEtSignature.setText(mAccountBean.getSignature());
-            String birthday = mAccountBean.getBirthDay();
-            if (TextUtils.isEmpty(birthday)) {
-                mTvBirthDay.setText("未设置");
-            } else {
-                mTvBirthDay.setText(birthday);
-            }
-            String location = mAccountBean.getLocation();
-            if (TextUtils.isEmpty(location)) {
-                mTvLocation.setText("未设置");
-            } else {
-                mTvLocation.setText(location);
-            }
-        }
+//        if (mAccountBean != null) {
+//            /*ImageUtils.setImageByFile(this, mIvHead,
+//                    mAccountBean.getHeadImgUrl(), R.mipmap.bg_img_defalut);*/
+//            mIvHead.setImageResource(R.mipmap.zu);
+//            //mTvAccount.setText(mAccountBean.getAccount());
+//            mTvAccount.setText(MySocket.user.getPhonenum());
+//            //mEtNick.setText(mAccountBean.getNick());
+//            mEtNick.setText(MySocket.user.getUserName());
+//            if (mAccountBean.getGenderEnum() == GenderEnum.FEMALE) {
+//                mTvSex.setText("女");
+//            } else if (mAccountBean.getGenderEnum() == GenderEnum.MALE) {
+//                mTvSex.setText("男");
+//            } else {
+//                mTvSex.setText("保密");
+//            }
+//            mEtSignature.setText(mAccountBean.getSignature());
+//            String birthday = mAccountBean.getBirthDay();
+//            if (TextUtils.isEmpty(birthday)) {
+//                mTvBirthDay.setText("未设置");
+//            } else {
+//                mTvBirthDay.setText(birthday);
+//            }
+//            String location = mAccountBean.getLocation();
+//            if (TextUtils.isEmpty(location)) {
+//                mTvLocation.setText("未设置");
+//            } else {
+//                mTvLocation.setText(location);
+//            }
+//        }
     }
     private void init(){
         //mInputMethodManager = (InputMethodManager)getSystemService(context.INPUT_METHOD_SERVICE);
@@ -352,6 +363,7 @@ public class UserFragment extends Fragment implements View.OnClickListener{
         MySocket.user.setSignature(mEtSignature.getText().toString());
         MySocket.user.setBirthday(mTvBirthDay.getText().toString());
         rMessage.setSendername(mEtNick.getText().toString());
+        MySocket.user.setRealName(mEtRealName.getText().toString());
         rMessage.setSenderphone(MySocket.user.getPhonenum());
         rMessage.setType("更新");
         rMessage.setDate(new Date());
