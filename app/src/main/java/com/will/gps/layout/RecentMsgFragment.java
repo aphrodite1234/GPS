@@ -31,6 +31,7 @@ import java.util.List;
 /**
  * Created by MaiBenBen on 2019/4/20.
  */
+@SuppressLint("ValidFragment")
 public class RecentMsgFragment extends Fragment implements RemoveListener{
     private View view;
     private Context context;
@@ -39,10 +40,14 @@ public class RecentMsgFragment extends Fragment implements RemoveListener{
     private Handler handler;
     private int mPosition;
     private FriendMessageAdapter adapter;
-    private List<MessageTabEntity> mMessageEntityList=new ArrayList<MessageTabEntity>(3);;
+    private List<MessageTabEntity> mMessageEntityList;
     private MessageTabEntity chooseMessageEntity;
     private MessageTabEntity m1,m2,m3;//测试数据
 
+    @SuppressLint("ValidFragment")
+    public RecentMsgFragment(List<MessageTabEntity> List){
+        mMessageEntityList=List;
+    }
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -73,7 +78,7 @@ public class RecentMsgFragment extends Fragment implements RemoveListener{
         m3.setSenderId(123456789);
         m3.setSendTime("2023-05-07 00:00");
 
-        //mMessageEntityList=new ArrayList<MessageTabEntity>(3);
+        mMessageEntityList=new ArrayList<MessageTabEntity>(3);
         mMessageEntityList.add(0,m1);
         mMessageEntityList.add(1,m2);
         mMessageEntityList.add(2,m3);
@@ -94,7 +99,7 @@ public class RecentMsgFragment extends Fragment implements RemoveListener{
             }
         };
         ApplicationData.getInstance().setMessageHandler(handler);
-        mMessageEntityList = ApplicationData.getInstance().getMessageEntities();
+        //mMessageEntityList = ApplicationData.getInstance().getMessageEntities();
         mMessageListView.setSelection(mMessageEntityList.size());
         adapter = new FriendMessageAdapter(context, mMessageEntityList);
         mMessageListView.setAdapter(adapter);

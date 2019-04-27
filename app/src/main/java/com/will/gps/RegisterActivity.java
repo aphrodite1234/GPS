@@ -152,15 +152,21 @@ public class RegisterActivity extends Activity implements  View.OnClickListener 
              @Override
              public void onClick(DialogInterface dialog, int which) {
                  dialog.dismiss(); //关闭dialog
-                 code = Integer.toString((int)((Math.random()*9+1)*100000));  //每次调用生成一位四位数的随机数
-                 try {
-                     SendSms(phone,code);//发送验证码
-                 } catch (Exception e) {
-                     e.printStackTrace();
-                 }
-//                 System.out.println("code="+code);
-//                 System.out.println("#######################");
-                 //SMSSDK.getVerificationCode(country, phone);//通过sdk发送短信验证（请求获取短信验证码，在监听（eh）中返回）
+                 new Thread(){
+                     @Override
+                     public void run()
+                     {
+                         code = Integer.toString((int)((Math.random()*9+1)*100000));  //每次调用生成一位四位数的随机数
+                         try {
+                             SendSms(phone,code);//发送验证码
+                         } catch (Exception e) {
+                             e.printStackTrace();
+                         }//把网络访问的代码放在这里
+                         System.out.println("code="+code);
+                         System.out.println("#######################");
+                         //SMSSDK.getVerificationCode(country, phone);//通过sdk发送短信验证（请求获取短信验证码，在监听（eh）中返回）
+                     }
+                 }.start();
                  Toast.makeText(RegisterActivity.this, "已发送" + which, Toast.LENGTH_SHORT).show();
                  btn_check.setEnabled(false);
                  btn_sure.setEnabled(true);
