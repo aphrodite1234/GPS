@@ -58,7 +58,6 @@ public class MySocket extends Application{
                 while (true){
                     if (System.currentTimeMillis() - sendTime >= HEART_BEAT_RATE) {
                         rMessage.setType("心跳");
-                        rMessage.setSender("client");
                         boolean isSuccess = sendHeart1(gson.toJson(rMessage));
                         if (!isSuccess) {
                             msgToast("发送失败！");

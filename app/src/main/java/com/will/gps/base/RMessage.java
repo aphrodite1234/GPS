@@ -1,74 +1,84 @@
 package com.will.gps.base;
+
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class RMessage {
-    private String sender = null;
-    private String receiver = null;
-    private String content = null;
-    private int state = 0;
-    private Timestamp date = null;
-    private String type = null;
-    private List<Group> group = new ArrayList<Group>();
+	private String senderphone = null;
+	private String sendername = null;
+	private String receiverphone = null;
+	private String receivername = null;
+	private String content = null;
+	private String date = null;
+	private String type = null;
+	private List<String> group = new ArrayList<String>();
 
-    public String getSender() {
-        return sender;
-    }
+	public String getContent() {
+		return content;
+	}
+	public void setContent(String content) {
+		this.content = content;
+	}
+	public String getDate() {
+		return date;
+	}
+	public void setDate(Date date) {
+		SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		String sd = sdf.format(date);
+		this.date = sd;
+	}
 
-    public void setSender(String sender) {
-        this.sender = sender;
-    }
+	public String getType() {
+		return type;
+	}
 
-    public String getReceiver() {
-        return receiver;
-    }
+	public void setType(String type) {
+		this.type = type;
+	}
+	public String toString(){
+		return "sender: "+sendername+"\n"+"receiver: "+receivername+"\n"+"content: "+content;
+	}
 
-    public void setReceiver(String receiver) {
-        this.receiver = receiver;
-    }
+	public List<String> getGroup() {
+		return group;
+	}
 
-    public String getContent() {
-        return content;
-    }
+	public void setGroup(List<String> group) {
+		this.group = group;
+	}
 
-    public void setContent(String content) {
-        this.content = content;
-    }
+	public String getSenderphone() {
+		return senderphone;
+	}
 
-    public int getState() {
-        return state;
-    }
+	public void setSenderphone(String senderphone) {
+		this.senderphone = senderphone;
+	}
 
-    public void setState(int state) {
-        this.state = state;
-    }
+	public String getSendername() {
+		return sendername;
+	}
 
-    public Timestamp getDate() {
-        return date;
-    }
+	public void setSendername(String sendername) {
+		this.sendername = sendername;
+	}
 
-    public void setDate(Timestamp date) {
-        this.date = date;
-    }
+	public String getReceiverphone() {
+		return receiverphone;
+	}
 
-    public String getType() {
-        return type;
-    }
+	public void setReceiverphone(String receiverphone) {
+		this.receiverphone = receiverphone;
+	}
 
-    public void setType(String type) {
-        this.type = type;
-    }
+	public String getReceivername() {
+		return receivername;
+	}
 
-    public String toString() {
-        return "sender: " + sender + "\n" + "receiver: " + receiver + "\n" + "content: " + content;
-    }
-
-    public List<Group> getGroup() {
-        return group;
-    }
-
-    public void setGroup(List<Group> group) {
-        this.group = group;
-    }
+	public void setReceivername(String receivername) {
+		this.receivername = receivername;
+	}
 }

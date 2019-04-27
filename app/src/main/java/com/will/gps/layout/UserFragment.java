@@ -27,11 +27,17 @@ import android.widget.Toast;
 
 import com.ezreal.timeselectview.CityPickerView;
 import com.ezreal.timeselectview.TimePickerView;
+import com.google.gson.Gson;
 import com.will.gps.MainActivity;
 import com.will.gps.MainActivity.MyOnTouchListener;
 import com.will.gps.R;
 import com.netease.nimlib.sdk.uinfo.constant.GenderEnum;
+import com.will.gps.base.MySocket;
+import com.will.gps.base.RMessage;
 import com.will.gps.bean.LocalAccountBean;
+
+import java.sql.Timestamp;
+import java.util.Date;
 
 /**
  * Created by MaiBenBen on 2019/4/13.
@@ -39,6 +45,9 @@ import com.will.gps.bean.LocalAccountBean;
 
 @SuppressLint("ValidFragment")
 public class UserFragment extends Fragment implements View.OnClickListener{
+
+    private Gson gson = new Gson();
+    private RMessage rMessage = new RMessage();
     private View view;
     /*@BindView(R.id.layout_head)
     RelativeLayout mLayoutHead;*/
@@ -64,6 +73,7 @@ public class UserFragment extends Fragment implements View.OnClickListener{
     private InputMethodManager mInputMethodManager;
     private Context context;
     private Button mButton;
+    private Button uCommit;
 
     private GestureDetector mGestureDetector;
     //private SVCGestureListener mGestureListener = new SVCGestureListener();
@@ -89,6 +99,7 @@ public class UserFragment extends Fragment implements View.OnClickListener{
         //mTextView = (TextView)getActivity().findViewById(R.id.txt_content);
         mIvHead=(CircleImageView)view.findViewById(R.id.iv_head_picture);
         mButton=(Button)view.findViewById(R.id.iv_menu_btn);
+        uCommit= (Button)view.findViewById(R.id.iv_menu_com);
         /*mEtNick.setOnTouchListener(this);
         mEtSignature.setOnTouchListener(this);*/
         //mGestureDetector = new GestureDetector(getActivity(), mGestureListener);
@@ -153,9 +164,9 @@ public class UserFragment extends Fragment implements View.OnClickListener{
                     mAccountBean.getHeadImgUrl(), R.mipmap.bg_img_defalut);*/
             mIvHead.setImageResource(R.mipmap.zu);
             //mTvAccount.setText(mAccountBean.getAccount());
-            mTvAccount.setText("15837811860");
+            mTvAccount.setText(MySocket.user.getPhonenum());
             //mEtNick.setText(mAccountBean.getNick());
-            mEtNick.setText("李二狗");
+            mEtNick.setText(MySocket.user.getUserName());
             if (mAccountBean.getGenderEnum() == GenderEnum.FEMALE) {
                 mTvSex.setText("女");
             } else if (mAccountBean.getGenderEnum() == GenderEnum.MALE) {
@@ -197,6 +208,7 @@ public class UserFragment extends Fragment implements View.OnClickListener{
         //编辑按钮
         mButton.setOnClickListener(this);
         // 结束编辑，相当于初始化为非编辑状态
+        uCommit.setOnClickListener(this);
         finishEdit();
     }
 
@@ -254,6 +266,16 @@ public class UserFragment extends Fragment implements View.OnClickListener{
                     mButton.setText("完成");
                 }
                 break;
+
+            case R.id.iv_menu_com:
+                getData(new CallBack() {
+                    @Override
+                    public void getResult(String result) {
+                        ((MySocket)getActivity().getApplication()).send(result);
+                        Toast.makeText(getActivity(),"上传成功",Toast.LENGTH_SHORT).show();
+                    }
+                });
+                break;
         }
     }
     /**
@@ -300,6 +322,9 @@ public class UserFragment extends Fragment implements View.OnClickListener{
             haveAccountChange = false;
         }
 */
+
+
+
         //mIvMenu.setImageResource(R.mipmap.editor);
         // 不可点击
         //mLayoutHead.setClickable(false);
@@ -314,6 +339,28 @@ public class UserFragment extends Fragment implements View.OnClickListener{
 
         isEditor = false;
     }
+
+    /*接口*/
+    public interface CallBack{
+        public void getResult(String result);
+    }
+    /*接口回调*/
+    public void getData(CallBack callBack){
+        MySocket.user.setUserName(mEtNick.getText().toString());
+        MySocket.user.setSex(mTvSex.getText().toString());
+        MySocket.user.setLocate(mTvLocation.getText().toString());
+        MySocket.user.setSignature(mEtSignature.getText().toString());
+        MySocket.user.setBirthday(mTvBirthDay.getText().toString());
+        rMessage.setSendername(mEtNick.getText().toString());
+        rMessage.setSenderphone(MySocket.user.getPhonenum());
+        rMessage.setType("更新");
+        rMessage.setDate(new Date());
+        rMessage.setContent(gson.toJson(MySocket.user));
+        String msg = gson.toJson(rMessage);
+        callBack.getResult(msg);
+    }
+
+
    /* @Override//fragment中注册button点击事件
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);

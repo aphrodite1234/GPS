@@ -3,16 +3,20 @@ package com.will.gps;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Intent;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.netease.nimlib.sdk.NIMClient;
 import com.suntek.commonlibrary.utils.ToastUtils;
+import com.will.gps.base.MySocket;
 import com.will.gps.handler.NimFriendHandler;
 import com.will.gps.handler.NimOnlineStatusHandler;
 import com.will.gps.handler.NimSysMsgHandler;
@@ -30,7 +34,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private TextView tabMessage;
     private TextView tabMore;
     private TextView tabUser;
-
     private FrameLayout ly_content;
 
     private FirstFragment f2,f4;
@@ -45,10 +48,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         bindView();
+        tabQun.performLongClick();
         //initHandler();
 
         // 开启通知栏，有信息的时候通知通知
         //NIMClient.toggleNotification(true);
+
+        ((MySocket)getApplication()).setHandler(new Handler(){
+            @Override
+            public void handleMessage(Message msg) {
+                super.handleMessage(msg);
+            }
+        });
     }
     //UI组件初始化与事件绑定
     private void bindView() {
@@ -67,7 +78,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         // 设置图片的位置，左、上、右、下
         tabQun.setCompoundDrawables(null, null, drawable, null);*/
 
-        tabQun.setSelected(true);
+
         imageView1.setOnClickListener(this);
         imageView2.setOnClickListener(this);
         tabQun.setOnClickListener(this);
@@ -149,6 +160,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     transaction.show(f3);
                 }
                 break;
+
 
             case R.id.txt_more:
                 selected();

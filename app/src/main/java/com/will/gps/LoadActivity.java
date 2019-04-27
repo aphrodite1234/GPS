@@ -26,7 +26,6 @@ public class LoadActivity extends Activity {
     private Button mButton01=null;
     private Button mButton02=null;
     private Button mButton03=null;
-    private TextView mTextView=null;
     private EditText mEditText01=null;
     private EditText mEditText02=null;
     private ImageView image=null;
@@ -41,12 +40,12 @@ public class LoadActivity extends Activity {
         mButton01=(Button)findViewById(R.id.Button01);
         mButton02=(Button)findViewById(R.id.Button02);
         mButton03=(Button)findViewById(R.id.Button03);
-        mTextView=(TextView)findViewById(R.id.TextView01);
         mEditText01=(EditText)findViewById(R.id.EditText01);
         mEditText02=(EditText)findViewById(R.id.EditText02);
         image=(ImageView)findViewById(R.id.load_image);
         image.setImageResource(R.drawable.ic_gps);
 
+        ((MySocket)getApplication()).read();
         ((MySocket)getApplication()).sendHeart();//发送心跳消息
         final Intent dl=new Intent(LoadActivity.this,MainActivity.class);
         ((MySocket) getApplication()).setHandler(new Handler()
@@ -64,14 +63,12 @@ public class LoadActivity extends Activity {
                 }
             }
         });
-        ((MySocket)getApplication()).read();
 
         mButton01.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {//登录
                 MySocket.user.setPhonenum(mEditText01.getText().toString());
                 MySocket.user.setPassWord(mEditText02.getText().toString());
-                message.setSender("client");
                 message.setType("登录");
                 message.setContent(gson.toJson(MySocket.user));
                 ((MySocket)getApplication()).send(gson.toJson(message));
