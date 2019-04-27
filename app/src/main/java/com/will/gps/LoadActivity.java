@@ -56,6 +56,7 @@ public class LoadActivity extends Activity {
                 Toast.makeText(LoadActivity.this,"登录123",Toast.LENGTH_SHORT).show();
                 super.handleMessage(msg);
                 message = gson.fromJson(msg.obj.toString(),RMessage.class);
+                Toast.makeText(LoadActivity.this,"登录123"+message,Toast.LENGTH_SHORT).show();
                 if(message.getContent().equals("true")){
                     startActivity(dl);
                     finish();
@@ -73,6 +74,7 @@ public class LoadActivity extends Activity {
                 message.setType("登录");
                 message.setContent(gson.toJson(MySocket.user));
                 ((MySocket)getApplication()).send(gson.toJson(message));
+                Toast.makeText(LoadActivity.this,"点击登陆按钮成功",Toast.LENGTH_SHORT).show();
                //startActivity(dl);
             }
         });

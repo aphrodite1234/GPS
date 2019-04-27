@@ -15,6 +15,7 @@ import android.app.FragmentTransaction;
 import com.google.gson.Gson;
 import com.will.gps.base.MySocket;
 import com.will.gps.base.RMessage;
+import com.will.gps.bean.RecentContactBean;
 import com.will.gps.bean.User;
 import com.will.gps.layout.FirstFragment;
 import com.will.gps.layout.GroupMsgFragment;
@@ -22,6 +23,7 @@ import com.will.gps.layout.RecentMsgFragment;
 import com.will.gps.layout.UserFragment;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener{
 
@@ -33,8 +35,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private TextView tabUser;
     private FrameLayout ly_content;
 
-    private FirstFragment f2,f4;
-    private RecentMsgFragment f1;
+    private FirstFragment f4;
+    private GroupMsgFragment f1;
+    private RecentMsgFragment f2;
     private UserFragment f3;
     private ImageView imageView1,imageView2;
     private Intent intent;
@@ -43,6 +46,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private Gson gson = new Gson();
     /*FragmentManager fm=getSupportFragmentManager();
     FragmentTransaction ft=fm.beginTransaction();*/
+    private List<RecentContactBean> List;//传到GroupMsgFragment
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -142,7 +146,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 ft.replace(R.id.fragment_container, groupMsgFragment,MainActivity.TAG);
                 ft.commit();*/
                 if(f1==null){
-                    f1 = new RecentMsgFragment();
+                    f1 = new GroupMsgFragment(List);
                     transaction.add(R.id.fragment_container,f1);
                 }else{
                     transaction.show(f1);
@@ -157,7 +161,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 ft.replace(R.id.fragment_container, recentMsgFragment,MainActivity.TAG);
                 ft.commit();*/
                 if(f2==null){
-                    f2 = new FirstFragment("第二个Fragment");
+                    f2 = new RecentMsgFragment();
                     transaction.add(R.id.fragment_container,f2);
                 }else{
                     transaction.show(f2);

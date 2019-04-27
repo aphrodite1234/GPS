@@ -4,7 +4,7 @@ package com.will.gps.layout;
  * Created by MaiBenBen on 2019/4/21.
  */
 import android.annotation.SuppressLint;
-import android.support.v4.app.Fragment;
+import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -40,6 +40,7 @@ import java.util.List;
 /**
  * Created by wudeng on 2017/8/28.
  */
+@SuppressLint("ValidFragment")
 public class GroupMsgFragment extends Fragment {
 
     private static final String TAG = GroupMsgFragment.class.getSimpleName();
@@ -59,6 +60,10 @@ public class GroupMsgFragment extends Fragment {
     private RecentContactBean rcb2=new RecentContactBean();
     private RecentContactBean rcb3=new RecentContactBean();
 
+    @SuppressLint("ValidFragment")
+    public GroupMsgFragment(List<RecentContactBean> List){
+        mContactList=List;
+    }
     @SuppressLint("SimpleDateFormat")
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState) {

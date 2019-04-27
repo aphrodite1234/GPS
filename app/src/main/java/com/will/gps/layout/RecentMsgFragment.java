@@ -24,6 +24,8 @@ import com.will.gps.view.SlideCutListView.RemoveDirection;
 import com.will.gps.R;
 import com.will.gps.view.SlideCutListView;
 import com.will.gps.view.SlideCutListView.RemoveListener;
+
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -37,8 +39,9 @@ public class RecentMsgFragment extends Fragment implements RemoveListener{
     private Handler handler;
     private int mPosition;
     private FriendMessageAdapter adapter;
-    private List<MessageTabEntity> mMessageEntityList;
+    private List<MessageTabEntity> mMessageEntityList=new ArrayList<MessageTabEntity>(3);;
     private MessageTabEntity chooseMessageEntity;
+    private MessageTabEntity m1,m2,m3;//测试数据
 
     @Nullable
     @Override
@@ -46,8 +49,34 @@ public class RecentMsgFragment extends Fragment implements RemoveListener{
         context=getActivity();
         view = inflater.inflate(R.layout.activity_fragment_message,container,false);
         mMessageListView = (SlideCutListView) view.findViewById(R.id.message_list_listview);
+        initData();
         init();
         return view;
+    }
+    private void initData(){//初始化测试数据
+        m1=new MessageTabEntity();
+        m2=new MessageTabEntity();
+        m3=new MessageTabEntity();
+
+        m1.setName("张三");
+        m1.setContent("你好！");
+        m1.setSenderId(123);
+        m1.setSendTime("2003-05-07 18:00");
+
+        m2.setName("李四");
+        m2.setContent("你好！1");
+        m2.setSenderId(123456);
+        m2.setSendTime("2019-04-27 8:00");
+
+        m3.setName("王五");
+        m3.setContent("你好！2");
+        m3.setSenderId(123456789);
+        m3.setSendTime("2023-05-07 00:00");
+
+        //mMessageEntityList=new ArrayList<MessageTabEntity>(3);
+        mMessageEntityList.add(0,m1);
+        mMessageEntityList.add(1,m2);
+        mMessageEntityList.add(2,m3);
     }
     private void init() {
         mMessageListView.setRemoveListener(this);
