@@ -53,6 +53,7 @@ public class LoadActivity extends Activity {
             @Override
             public void handleMessage(Message msg)
             {
+                Toast.makeText(LoadActivity.this,"登录123",Toast.LENGTH_SHORT).show();
                 super.handleMessage(msg);
                 message = gson.fromJson(msg.obj.toString(),RMessage.class);
                 if(message.getContent().equals("true")){
@@ -72,7 +73,7 @@ public class LoadActivity extends Activity {
                 message.setType("登录");
                 message.setContent(gson.toJson(MySocket.user));
                 ((MySocket)getApplication()).send(gson.toJson(message));
-               // startActivity(dl);
+               //startActivity(dl);
             }
         });
 

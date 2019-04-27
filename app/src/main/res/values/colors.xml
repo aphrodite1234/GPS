@@ -17,4 +17,8 @@
     <color name="default_text_color">#bfbfbf</color>
     <color name="gray_font">#818181</color>
     <color name="hint_color">#bfbfbf</color>
+    <color name="font_value">#ff888271</color>
+    <color name="timestampline">#ffe5e1de</color>
+    <color name="text_color">#ff434343</color>
+    <color name="blue">#499BF7</color>
 </resources>

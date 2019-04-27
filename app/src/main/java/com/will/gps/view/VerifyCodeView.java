@@ -1,4 +1,4 @@
-package com.will.gps.layout;
+package com.will.gps.view;
 
 import android.content.Context;
 import android.text.Editable;

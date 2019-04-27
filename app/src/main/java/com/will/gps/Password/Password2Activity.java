@@ -9,7 +9,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.will.gps.R;
-import com.will.gps.layout.VerifyCodeView;
+import com.will.gps.view.VerifyCodeView;
 
 import static com.will.gps.base.MainALiSms.SendSms;
 

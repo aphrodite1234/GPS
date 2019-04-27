@@ -1,4 +1,4 @@
-package com.will.gps.base;
+package com.will.gps.bean;
 
 public class Group {
 

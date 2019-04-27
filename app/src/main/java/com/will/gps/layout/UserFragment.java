@@ -1,13 +1,10 @@
 package com.will.gps.layout;
 
-import android.annotation.SuppressLint;
 import android.app.Fragment;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
@@ -20,8 +17,6 @@ import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -35,6 +30,7 @@ import com.netease.nimlib.sdk.uinfo.constant.GenderEnum;
 import com.will.gps.base.MySocket;
 import com.will.gps.base.RMessage;
 import com.will.gps.bean.LocalAccountBean;
+import com.will.gps.view.CircleImageView;
 
 import java.sql.Timestamp;
 import java.util.Date;
@@ -43,7 +39,6 @@ import java.util.Date;
  * Created by MaiBenBen on 2019/4/13.
  */
 
-@SuppressLint("ValidFragment")
 public class UserFragment extends Fragment implements View.OnClickListener{
 
     private Gson gson = new Gson();
@@ -78,14 +73,11 @@ public class UserFragment extends Fragment implements View.OnClickListener{
     private GestureDetector mGestureDetector;
     //private SVCGestureListener mGestureListener = new SVCGestureListener();
     MyOnTouchListener myOnTouchListener;
-    @SuppressLint("ValidFragment")
-    public UserFragment(Context context){
-        this.context = context;
-    }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        context=getActivity();
         view = inflater.inflate(R.layout.activity_fragment_user,container,false);
 
         mIvHead=(CircleImageView)view.findViewById(R.id.iv_head_picture);
@@ -283,7 +275,7 @@ public class UserFragment extends Fragment implements View.OnClickListener{
                     @Override
                     public void getResult(String result) {
                         ((MySocket)getActivity().getApplication()).send(result);
-                        Toast.makeText(getActivity(),"上传成功",Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getActivity(),"上传成功", Toast.LENGTH_SHORT).show();
                     }
                 });
                 break;

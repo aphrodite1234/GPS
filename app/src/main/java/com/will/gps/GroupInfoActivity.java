@@ -1,20 +1,16 @@
 package com.will.gps;
 
 import android.app.Activity;
-import android.app.FragmentTransaction;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.will.gps.layout.CircleImageView;
-
-import org.w3c.dom.Text;
+import com.will.gps.view.CircleImageView;
 
 /**
  * Created by MaiBenBen on 2019/4/23.

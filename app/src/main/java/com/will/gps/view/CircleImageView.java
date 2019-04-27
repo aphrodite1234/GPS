@@ -1,4 +1,4 @@
-package com.will.gps.layout;
+package com.will.gps.view;
 
 /**
  * Created by MaiBenBen on 2019/4/13.

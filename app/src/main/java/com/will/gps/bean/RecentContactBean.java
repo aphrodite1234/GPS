@@ -2,8 +2,6 @@ package com.will.gps.bean;
 
 import com.netease.nimlib.sdk.msg.model.RecentContact;
 import com.netease.nimlib.sdk.uinfo.model.UserInfo;
-import com.will.gps.base.Group;
-import com.will.gps.base.User;
 
 /**
  * Created by wudeng on 2017/9/11.

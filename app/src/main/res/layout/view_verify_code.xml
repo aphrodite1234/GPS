@@ -134,7 +134,7 @@
 
     </LinearLayout>
 
-    <com.will.gps.layout.MyEditText
+    <com.will.gps.view.MyEditText
         android:id="@+id/edit_text_view"
         android:layout_width="match_parent"
         android:layout_height="48dp"

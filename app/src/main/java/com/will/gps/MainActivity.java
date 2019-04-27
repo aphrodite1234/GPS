@@ -9,21 +9,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
-import com.netease.nimlib.sdk.NIMClient;
-import com.suntek.commonlibrary.utils.ToastUtils;
 import com.will.gps.base.MySocket;
 import com.will.gps.base.RMessage;
-import com.will.gps.base.User;
-import com.will.gps.handler.NimFriendHandler;
-import com.will.gps.handler.NimOnlineStatusHandler;
-import com.will.gps.handler.NimSysMsgHandler;
-import com.will.gps.handler.NimUserHandler;
+import com.will.gps.bean.User;
 import com.will.gps.layout.FirstFragment;
 import com.will.gps.layout.RecentMsgFragment;
 import com.will.gps.layout.UserFragment;
@@ -142,7 +135,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 tabQun.setSelected(true);
                 topBar.setText("进群");
                 if(f1==null){
-                    f1 = new RecentMsgFragment(this);
+                    f1 = new RecentMsgFragment();
                     transaction.add(R.id.fragment_container,f1);
                 }else{
                     transaction.show(f1);
@@ -166,7 +159,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 tabUser.setSelected(true);
                 topBar.setText("我的");
                 if(f3==null){
-                    f3 = new UserFragment(this);
+                    f3 = new UserFragment();
                     transaction.add(R.id.fragment_container,f3);
                 }else{
                     transaction.show(f3);
@@ -189,26 +182,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         transaction.commit();
     }
 
-    private void initHandler() {
-        NimOnlineStatusHandler.getInstance().init();
-        NimOnlineStatusHandler.getInstance().setStatusChangeListener(
-                new NimOnlineStatusHandler.OnStatusChangeListener() {
-                    @Override
-                    public void requestReLogin(String message) {
-                        ToastUtils.showMessage(MainActivity.this,"自动登陆失败或被踢出，请手动登陆~");
-                        startActivity(new Intent(MainActivity.this,LoadActivity.class));
-                    }
-
-                    @Override
-                    public void networkBroken() {
-
-                    }
-                });
-
-        NimSysMsgHandler.getInstance().init();
-        NimFriendHandler.getInstance().init();
-        NimUserHandler.getInstance().init();
-    }
     //为了在fragment中注册监听事件（fragment中没有提供OnTouchEvent）
     //过程：定义接口，接口列表，activity的分发事件绑定给fragment，注册和注销
     //1.触摸事件接口

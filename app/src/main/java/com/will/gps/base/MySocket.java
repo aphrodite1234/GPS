@@ -5,6 +5,8 @@ import android.os.Looper;
 import android.os.Message;
 import android.widget.Toast;
 import com.google.gson.Gson;
+import com.will.gps.bean.User;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;

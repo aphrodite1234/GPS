@@ -1,4 +1,4 @@
-package com.will.gps.base;
+package com.will.gps.bean;
 
 import java.io.File;
 import java.io.FileInputStream;
