@@ -406,6 +406,8 @@ public class UserFragment extends Fragment implements View.OnClickListener{
                             }
                             haveAccountChange = true;
                         }
+                        else
+                            mTvSex.setText("男");
                         dialog.dismiss();
                     }
                 }).create().show();
