@@ -15,6 +15,7 @@ import android.app.FragmentTransaction;
 import com.google.gson.Gson;
 import com.will.gps.base.MySocket;
 import com.will.gps.base.RMessage;
+import com.will.gps.bean.MessageTabEntity;
 import com.will.gps.bean.RecentContactBean;
 import com.will.gps.bean.User;
 import com.will.gps.layout.FirstFragment;
@@ -48,6 +49,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     /*FragmentManager fm=getSupportFragmentManager();
     FragmentTransaction ft=fm.beginTransaction();*/
     private List<RecentContactBean> List;//传到GroupMsgFragment
+    private List<MessageTabEntity> List2;//传到RecentMsgFragment
     FragmentTransaction transaction = getFragmentManager().beginTransaction();
 
     @Override
@@ -182,7 +184,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 ft.replace(R.id.fragment_container, recentMsgFragment,MainActivity.TAG);
                 ft.commit();*/
                 if(f2==null){
-                    f2 = new RecentMsgFragment();
+                    f2 = new RecentMsgFragment(List2);
                     transaction.add(R.id.fragment_container,f2);
                 }else{
                     hideAllFragment(transaction);

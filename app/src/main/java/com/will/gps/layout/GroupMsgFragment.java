@@ -15,6 +15,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.gson.Gson;
+import com.will.gps.GroupChatActivity;
 import com.will.gps.GroupChatActivity;
 import com.will.gps.R;
 import com.will.gps.bean.Group;
@@ -52,6 +54,7 @@ public class GroupMsgFragment extends Fragment {
     private Context context;
     private RMessage rmessage;
     private View view;
+    private Gson gson = new Gson();
 
     private Group group1=new Group();
     private Group group2=new Group();
