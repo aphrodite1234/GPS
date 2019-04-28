@@ -66,10 +66,10 @@ public class ChatMessageAdapter extends BaseAdapter{
         } else if (chatEntity.getMessageType() == ChatEntity.RECEIVE) {// 本身作为接收方
             leftLayout.setVisibility(View.VISIBLE);
             rightLayout.setVisibility(View.GONE);
-            Bitmap photo = ApplicationData.getInstance().getFriendPhotoMap()
-                    .get(chatEntity.getSenderId());
-            if (photo != null)
-                leftPhotoView.setImageBitmap(photo);
+            /*Bitmap photo = ApplicationData.getInstance().getFriendPhotoMap()
+                    .get(chatEntity.getSenderId());*/
+            /*if (photo != null)
+                leftPhotoView.setImageBitmap(photo);*/
             leftMessageView.setText(chatEntity.getContent());
 
         }

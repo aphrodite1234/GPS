@@ -163,7 +163,8 @@ public class GroupMsgFragment extends Fragment {
                 Intent intent;
                 //if (contactBean.getRecentContact().getSessionType() == SessionTypeEnum.P2P){
                     intent = new Intent(context, GroupChatActivity.class);
-                    intent.putExtra("NimUserInfo",contactBean.getUserInfo());
+                    intent.putExtra("groupName",contactBean.getGroup().getGroupname());
+                    intent.putExtra("groupId",contactBean.getGroup().getGroupid());
                     startActivity(intent);
                 //}
             }

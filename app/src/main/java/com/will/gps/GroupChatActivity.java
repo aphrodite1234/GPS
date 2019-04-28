@@ -5,12 +5,14 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -19,8 +21,12 @@ import com.will.gps.base.ApplicationData;
 import com.will.gps.bean.ChatEntity;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 
 /**
  * Created by MaiBenBen on 2019/4/27.
@@ -33,7 +39,8 @@ public class GroupChatActivity extends Activity implements View.OnClickListener{
     private ListView chatMeessageListView;
     private ChatMessageAdapter chatMessageAdapter;
     private Button sendButton;
-    private ImageButton emotionButton;
+    private LinearLayout linearLayout;
+    //private ImageButton emotionButton;
     private EditText inputEdit;
     private List<ChatEntity> chatList;
     private Handler handler;
@@ -47,22 +54,33 @@ public class GroupChatActivity extends Activity implements View.OnClickListener{
         Intent intent = getIntent();
         groupName = intent.getStringExtra("groupName");
         groupId = intent.getIntExtra("groupId", 0);
+        initData();
         initViews();
         initEvents();
     }
 
+    private void initData(){
+        ChatEntity chatEntity=new ChatEntity();
+        chatEntity.setContent("大家好");
+        chatEntity.setSenderId(1583781);
+        chatEntity.setSendTime("04-28 17:12");
+        chatList=new ArrayList<>(1);
+        chatList.add(chatEntity);
+    }
+
     protected void initViews() {
         // TODO Auto-generated method stub
+        btn_back=(ImageView)findViewById(R.id.group_chat_back);
+        btn_more=(ImageView)findViewById(R.id.group_chat_more);
         mTitle = (TextView) findViewById(R.id.group_chat_txt);
         //mTitleBarView.setCommonTitle(View.GONE, View.VISIBLE, View.GONE);
         mTitle.setText(groupName);
-        chatMeessageListView = (ListView) findViewById(R.id.chat_Listview);
+       chatMeessageListView = (ListView) findViewById(R.id.chat_Listview);
         sendButton = (Button) findViewById(R.id.chat_btn_send);
-        emotionButton = (ImageButton) findViewById(R.id.chat_btn_emote);
+        linearLayout=(LinearLayout)findViewById(R.id.cb0ChatLayoutMsg);
+        linearLayout.setBackgroundResource(R.drawable.bg_chatbar_textmode);
+        //emotionButton = (ImageButton) findViewById(R.id.chat_btn_emote);
         inputEdit = (EditText) findViewById(R.id.chat_edit_input);
-        btn_back=(ImageView)findViewById(R.id.group_chat_back);
-        btn_more=(ImageView)findViewById(R.id.group_chat_more);
-
 
         btn_back.setOnClickListener(this);
     }
@@ -80,13 +98,13 @@ public class GroupChatActivity extends Activity implements View.OnClickListener{
                 }
             }
         };
-        ApplicationData.getInstance().setChatHandler(handler);
+        /*ApplicationData.getInstance().setChatHandler(handler);
         chatList = ApplicationData.getInstance().getChatMessagesMap()
                 .get(groupId);
         if(chatList == null){
             //chatList = ImDB.getInstance(GroupChatActivity.this).getChatMessage(friendId);
             ApplicationData.getInstance().getChatMessagesMap().put(groupId, chatList);
-        }
+        }*/
         chatMessageAdapter = new ChatMessageAdapter(GroupChatActivity.this,chatList);
         chatMeessageListView.setAdapter(chatMessageAdapter);
         sendButton.setOnClickListener(new View.OnClickListener() {
@@ -113,10 +131,16 @@ public class GroupChatActivity extends Activity implements View.OnClickListener{
         });
     }
 
-    @Override
+   @Override
     public void onClick(View v) {
         switch(v.getId()){
-
+            case R.id.group_chat_back:
+            finish();
+            break;
+            case R.id.group_chat_more:
+                Intent i=new Intent(GroupChatActivity.this,GroupInfoActivity.class);
+                startActivity(i);
+                break;
         }
     }
 }
