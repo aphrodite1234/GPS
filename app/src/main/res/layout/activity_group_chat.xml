@@ -58,22 +58,19 @@ android:orientation="vertical">
         android:divider="@null"
         android:soundEffectsEnabled="true" >
     </ListView>
-
     <LinearLayout
         android:id="@+id/cb0ChatLayoutMsg"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/bg_chatbar_textmode"
         android:orientation="horizontal" >
 
-        <ImageButton
+        <!--<ImageButton
             android:id="@+id/chat_btn_emote"
             android:layout_width="0dp"
             android:layout_height="46dip"
             android:layout_marginLeft="4dip"
             android:layout_weight="1"
-            android:background="@drawable/btn_chatbtn2"
-            android:src="@mipmap/ic_chat_emote_normal" />
+            android:src="@mipmap/ic_chat_emote_normal" />-->
 
         <EditText
             android:id="@+id/chat_edit_input"
@@ -81,7 +78,6 @@ android:orientation="vertical">
             android:layout_height="wrap_content"
             android:layout_marginLeft="4dip"
             android:layout_weight="5"
-            android:background="@drawable/edittext_sendmsg"
             android:gravity="center_vertical"
             android:imeOptions="flagNoExtractUi"
             android:maxHeight="120dip"
@@ -95,9 +91,8 @@ android:orientation="vertical">
             android:layout_height="46dip"
             android:layout_marginLeft="4dip"
             android:layout_weight="1.5"
-            android:background="@drawable/btn_chatbtn2"
             android:minWidth="50dip"
             android:text="发送"
-            android:textColor="@color/white" />
+            android:textColor="@color/colorPrimary" />
     </LinearLayout>
 </LinearLayout>

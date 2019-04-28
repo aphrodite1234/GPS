@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.will.gps.GroupChatActivity;
@@ -93,22 +94,6 @@ public class GroupMsgFragment extends Fragment {
         //loadRecentList();
         return view;
     }
-    //@Override
-   /* public int setLayoutID() {
-        return R.layout.activity_fragment_message;
-    }*/
-/*
-    @SuppressLint("SimpleDateFormat")
-    //@Override
-    public void initView(View rootView) {
-        mRecyclerView = rootView.findViewById(R.id.rcv_message_list);
-        mDateFormat = new SimpleDateFormat("HH:mm");
-        initRecyclerView();
-        initListener();
-        loadRecentList();
-    }
-*/
-
 
     public void initRecyclerView(List<String> groups){//初始化RecyclerView组件
         LinearLayoutManager layoutManager = new LinearLayoutManager(context);
@@ -187,51 +172,6 @@ public class GroupMsgFragment extends Fragment {
         mRecyclerView.setAdapter(mViewAdapter);
     }
 
-    private void initListener(){//查看有没有新数据，若有则记录在recentContacts里
-        mObserver = new Observer<List<RecentContact>>() {
-            @Override
-            public void onEvent(List<RecentContact> recentContacts) {
-                Log.e(TAG,"Observer RecentContact size = " + recentContacts.size());
-                if (mContactList.isEmpty()){
-                    List<RecentContactBean> contactBeans = createContactBeans(recentContacts);
-                    mContactList.addAll(contactBeans);
-                    mViewAdapter.notifyDataSetChanged();
-                    return;
-                }
-                for (RecentContact contact : recentContacts){
-                    refreshRecentList(contact);
-                }
-            }
-        };
-    }
-
-    private void refreshRecentList(RecentContact contact){//将recentContacts的数据与mContactList的数据对比，如果有新数据则更新
-        for (int i=0;i<mContactList.size();i++){
-            RecentContactBean bean = mContactList.get(i);
-            if (bean.getRecentContact().getContactId().equals(contact.getContactId())){
-                bean.setRecentContact(contact);
-                mViewAdapter.notifyItemChanged(i);
-                break;
-            }
-            if (i == mContactList.size()-1){
-                // 否则为新的最近会话
-                RecentContactBean newBean = new RecentContactBean();
-                newBean.setRecentContact(contact);
-                NimUserInfo userInfo = getUserInfoByAccount(contact.getContactId());
-                if (userInfo != null){
-                    newBean.setUserInfo(userInfo);
-                }else {
-                    List<String> a = new ArrayList<>();
-                    a.add(contact.getContactId());
-                    getUserInfoRemote(a);
-                }
-                mContactList.add(0,newBean);
-                mViewAdapter.notifyItemInserted(0);
-                break;
-            }
-        }
-    }
-
     @Override
     public void onResume() {
         super.onResume();
@@ -243,89 +183,6 @@ public class GroupMsgFragment extends Fragment {
     public void onPause() {
         super.onPause();
         Log.e(TAG,"onPause");
-    }
-
-    private void loadRecentList(){
-        NIMClient.getService(MsgService.class).queryRecentContacts()
-                .setCallback(new RequestCallbackWrapper<List<RecentContact>>() {
-                    @Override
-                    public void onResult(int code, List<RecentContact> result, Throwable exception) {
-                        if (exception != null){
-                            Log.e(TAG,"loadRecentList exception = " + exception.getMessage());
-                            return;
-                        }
-                        if (code != 200){
-                            Log.e(TAG,"loadRecentList error code = " + code);
-                            return;
-                        }
-                        Log.e(TAG,"loadRecentList size = " + result.size());
-                        List<RecentContactBean> contactBeans = createContactBeans(result);
-                        mContactList.clear();
-                        mContactList.addAll(contactBeans);
-                        mViewAdapter.notifyDataSetChanged();
-                    }
-                });
-    }
-
-    private List<RecentContactBean> createContactBeans(List<RecentContact> recentContacts){
-        List<String> accounts = new ArrayList<>();
-        List<RecentContactBean> beanList = new ArrayList<>();
-        RecentContactBean bean;
-        for (RecentContact contact : recentContacts){
-            bean = new RecentContactBean();
-            bean.setRecentContact(contact);
-            NimUserInfo userInfo = getUserInfoByAccount(contact.getContactId());
-            if (userInfo != null){
-                bean.setUserInfo(userInfo);
-            }else {
-                accounts.add(contact.getContactId());
-            }
-            beanList.add(bean);
-        }
-        if (!accounts.isEmpty()){
-            getUserInfoRemote(accounts);
-        }
-        return beanList;
-    }
-
-    private NimUserInfo getUserInfoByAccount(String account){
-        return NIMClient.getService(UserService.class).getUserInfo(account);
-    }
-
-
-    private void getUserInfoRemote(List<String> accounts){
-        NIMClient.getService(UserService.class).fetchUserInfo(accounts)
-                .setCallback(new RequestCallback<List<NimUserInfo>>() {
-                    @Override
-                    public void onSuccess(List<NimUserInfo> param) {
-                        updateView(param);
-                    }
-
-                    @Override
-                    public void onFailed(int code) {
-
-                    }
-
-                    @Override
-                    public void onException(Throwable exception) {
-
-                    }
-                });
-    }
-
-    private void updateView(List<NimUserInfo> param){
-        boolean isUpdate = false;
-        for (NimUserInfo userInfo : param){
-            for (RecentContactBean bean : mContactList){
-                if (userInfo.getAccount().equals(bean.getRecentContact().getContactId())){
-                    bean.setUserInfo(userInfo);
-                    isUpdate = true;
-                }
-            }
-        }
-        if (isUpdate && mViewAdapter != null){
-            mViewAdapter.notifyDataSetChanged();
-        }
     }
 }
 
