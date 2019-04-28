@@ -150,17 +150,9 @@ public class UserFragment extends Fragment implements View.OnClickListener{
         ((MainActivity) getActivity()).registerMyOnTouchListener(myOnTouchListener)*/;
     }
 
-    @Override
-    public void onHiddenChanged(boolean hidden) {
-        super.onHiddenChanged(hidden);
-        if(hidden){
-            Bundle bundle=getArguments();
-            showData();
-        }
-    }
 
     // 显示数据
-    private void showData() {
+    public void showData() {
         mIvHead.setImageResource(R.mipmap.zu);
         mTvAccount.setText(MySocket.user.getPhonenum());
         mEtNick.setText(MySocket.user.getUserName());
@@ -305,6 +297,7 @@ public class UserFragment extends Fragment implements View.OnClickListener{
         mEtNick.setFocusableInTouchMode(true);
         mEtSignature.setFocusable(true);
         mEtSignature.setFocusableInTouchMode(true);
+        mEtRealName.setFocusableInTouchMode(true);
 
         isEditor = true;
     }
@@ -348,6 +341,7 @@ public class UserFragment extends Fragment implements View.OnClickListener{
         mEtNick.setFocusableInTouchMode(false);
         mEtSignature.setFocusable(false);
         mEtSignature.setFocusableInTouchMode(false);
+        mEtRealName.setFocusableInTouchMode(false);
 
         isEditor = false;
     }
@@ -414,7 +408,8 @@ public class UserFragment extends Fragment implements View.OnClickListener{
                                 mTvSex.setText("保密");
                             }
                             haveAccountChange = true;
-                        }
+                        }else
+                            mTvSex.setText("男");
                         dialog.dismiss();
                     }
                 }).create().show();

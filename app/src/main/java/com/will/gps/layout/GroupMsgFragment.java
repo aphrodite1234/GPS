@@ -48,6 +48,7 @@ public class GroupMsgFragment extends Fragment {
     private static final String TAG = GroupMsgFragment.class.getSimpleName();
     private RecyclerView mRecyclerView;
     private List<RecentContactBean> mContactList;
+    private List<String> groupList = new ArrayList<>();
     private RecycleViewAdapter<RecentContactBean> mViewAdapter;
     private Observer<List<RecentContact>> mObserver;
     private SimpleDateFormat mDateFormat;
@@ -64,8 +65,9 @@ public class GroupMsgFragment extends Fragment {
     private RecentContactBean rcb3=new RecentContactBean();
 
     @SuppressLint("ValidFragment")
-    public GroupMsgFragment(List<RecentContactBean> List){
+    public GroupMsgFragment(List<RecentContactBean> List,List<String> list){
         mContactList=List;
+        groupList=list;
     }
     @SuppressLint("SimpleDateFormat")
     @Override
@@ -80,7 +82,7 @@ public class GroupMsgFragment extends Fragment {
         }
         mRecyclerView = view.findViewById(R.id.rcv_group_list);
         mDateFormat = new SimpleDateFormat("HH:mm");
-        initRecyclerView();
+        initRecyclerView(groupList);
         //initListener();//更新最近联系人列表
         for (int i=0;i<mContactList.size();i++) {
             //RecentContactBean bean = mContactList.get(i);
@@ -108,21 +110,38 @@ public class GroupMsgFragment extends Fragment {
 */
 
 
-    private void initRecyclerView(){//初始化RecyclerView组件
+    public void initRecyclerView(List<String> groups){//初始化RecyclerView组件
         LinearLayoutManager layoutManager = new LinearLayoutManager(context);
         mContactList = new ArrayList<>(3);
 
+        if(!groups.isEmpty()){
+            int i=0;
+            for (String group:groups){
+                group1=gson.fromJson(group,Group.class);
+                rcb1.setGroup(group1);
+                mContactList.add(i++,rcb1);
+            }
+        }else {
+            group1.setGroupname("暂未加入任何群");
+            rcb1.setGroup(group1);
+            mContactList.add(rcb1);
+        }
+
+//        group1.setGroupname("暂未加入任何群");
+//        rcb1.setGroup(group1);
+//        mContactList.add(rcb1);
+
         //测试用数据
-        group1.setGroupname("一群");
-        group1.setGroupid(123);
-        group2.setGroupname("二群");
-        group3.setGroupname("三群");
-        rcb1.setGroup(group1);
-        rcb2.setGroup(group2);
-        rcb3.setGroup(group3);
-        mContactList.add(0,rcb1);
-        mContactList.add(1,rcb2);
-        mContactList.add(2,rcb3);
+//        group1.setGroupname("一群");
+//        group1.setGroupid(123);
+//        group2.setGroupname("二群");
+//        group3.setGroupname("三群");
+//        rcb1.setGroup(group1);
+//        rcb2.setGroup(group2);
+//        rcb3.setGroup(group3);
+//        mContactList.add(0,rcb1);
+//        mContactList.add(1,rcb2);
+//        mContactList.add(2,rcb3);
 
         mRecyclerView.setLayoutManager(layoutManager);
         mViewAdapter = new RecycleViewAdapter<RecentContactBean>(context,mContactList) {

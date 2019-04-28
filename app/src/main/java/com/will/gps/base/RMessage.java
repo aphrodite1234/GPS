@@ -16,7 +16,7 @@ public class RMessage {
 	private String content = null;
 	private String date = null;
 	private String type = null;
-	private List<String> group = new ArrayList<String>();
+	private List<String> group = new ArrayList<>();
 
 	public String getContent() {
 		return content;

@@ -15,6 +15,7 @@ import android.app.FragmentTransaction;
 import com.google.gson.Gson;
 import com.will.gps.base.MySocket;
 import com.will.gps.base.RMessage;
+import com.will.gps.bean.Group;
 import com.will.gps.bean.MessageTabEntity;
 import com.will.gps.bean.RecentContactBean;
 import com.will.gps.bean.User;
@@ -50,7 +51,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     FragmentTransaction ft=fm.beginTransaction();*/
     private List<RecentContactBean> List;//传到GroupMsgFragment
     private List<MessageTabEntity> List2;//传到RecentMsgFragment
-    FragmentTransaction transaction = getFragmentManager().beginTransaction();
+    private List<String> groupList = new ArrayList<>();
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,20 +71,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             @Override
             public void handleMessage(Message msg) {
                 super.handleMessage(msg);
+                System.out.println(msg.obj.toString());
                 rMessage=gson.fromJson(msg.obj.toString(),RMessage.class);
                 String type = rMessage.getType();
                 switch (type){
                     case "更新信息":
-//                        MySocket.user=gson.fromJson(rMessage.getContent(),User.class);
-//                        Bundle bundleU = new Bundle();
-//                        bundleU.putString("userinfo",msg.obj.toString());
-//                        f3.setArguments(bundleU);
-                        MySocket.user = gson.fromJson(rMessage.getContent(),User.class);
+                        MySocket.user=gson.fromJson(rMessage.getContent(),User.class);
+                        f3.showData();
                         break;
                     case "搜索群":
-                        Bundle bundleG = new Bundle();
-                        bundleG.putString("group",msg.obj.toString());
-                        f1.setArguments(bundleG);
+                        f1.initRecyclerView(rMessage.getGroup());
                         break;
                 }
             }
@@ -89,6 +88,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
     //UI组件初始化与事件绑定
     private void bindView() {
+        FragmentTransaction transaction1 = getFragmentManager().beginTransaction();
+
         topBar = (TextView)this.findViewById(R.id.txt_top);
         imageView1=(ImageView)findViewById(R.id.btn_search);
         imageView2=(ImageView)findViewById(R.id.btn_add);
@@ -103,22 +104,23 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         // 设置图片的位置，左、上、右、下
         tabQun.setCompoundDrawables(null, null, drawable, null);*/
 
-//        f1 = new GroupMsgFragment(List);
-//        transaction.add(R.id.fragment_container,f1);
-//        f2 = new RecentMsgFragment();
-//        transaction.add(R.id.fragment_container,f2);
-//        f3 = new UserFragment();
-//        transaction.add(R.id.fragment_container,f3);
-//        f4 = new FirstFragment("第四个Fragment");
-//        transaction.add(R.id.fragment_container,f4);
-//        hideAllFragment(transaction);
-
         imageView1.setOnClickListener(this);
         imageView2.setOnClickListener(this);
         tabQun.setOnClickListener(this);
         tabMessage.setOnClickListener(this);
         tabMore.setOnClickListener(this);
         tabUser.setOnClickListener(this);
+
+        f1 = new GroupMsgFragment(List,groupList);
+        transaction1.add(R.id.fragment_container,f1);
+        f2 = new RecentMsgFragment(List2);
+        transaction1.add(R.id.fragment_container,f2);
+        f3 = new UserFragment();
+        transaction1.add(R.id.fragment_container,f3);
+        f4 = new FirstFragment("第四个Fragment");
+        transaction1.add(R.id.fragment_container,f4);
+        hideAllFragment(transaction1);
+        transaction1.commit();
 
         tabQun.performClick();
     }
@@ -149,6 +151,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onClick(View v) {
+        FragmentTransaction transaction = getFragmentManager().beginTransaction();
+        hideAllFragment(transaction);
         switch(v.getId()){
             case R.id.btn_search:
                 intent=new Intent(MainActivity.this,SearchActivity.class);
@@ -168,10 +172,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 ft.replace(R.id.fragment_container, groupMsgFragment,MainActivity.TAG);
                 ft.commit();*/
                 if(f1==null){
-                    f1 = new GroupMsgFragment(List);
+                    f1 = new GroupMsgFragment(List,groupList);
                     transaction.add(R.id.fragment_container,f1);
                 }else{
-                    hideAllFragment(transaction);
                     transaction.show(f1);
                 }
                 break;
@@ -187,7 +190,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     f2 = new RecentMsgFragment(List2);
                     transaction.add(R.id.fragment_container,f2);
                 }else{
-                    hideAllFragment(transaction);
                     transaction.show(f2);
                 }
                 break;
@@ -203,11 +205,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     f3 = new UserFragment();
                     transaction.add(R.id.fragment_container,f3);
                 }else{
-                    hideAllFragment(transaction);
                     transaction.show(f3);
                 }
                 break;
-
 
             case R.id.txt_more:
                 selected();
@@ -220,7 +220,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     f4 = new FirstFragment("第四个Fragment");
                     transaction.add(R.id.fragment_container,f4);
                 }else{
-                    hideAllFragment(transaction);
                     transaction.show(f4);
                 }
                 break;
