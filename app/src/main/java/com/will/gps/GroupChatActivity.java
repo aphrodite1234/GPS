@@ -14,6 +14,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.will.gps.adapter.ChatMessageAdapter;
@@ -45,6 +46,11 @@ public class GroupChatActivity extends Activity implements View.OnClickListener{
     private List<ChatEntity> chatList;
     private Handler handler;
     private ImageView btn_back,btn_more;
+    private TextView signtime,signlocation;
+    private Button signbutton;
+    private RelativeLayout sign_title;//签到提示框
+    boolean sign=false;//判断是否有签到活动,决定是否显示签到提示框
+    boolean signed=false;//判断是否已经签到
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,7 +88,25 @@ public class GroupChatActivity extends Activity implements View.OnClickListener{
         //emotionButton = (ImageButton) findViewById(R.id.chat_btn_emote);
         inputEdit = (EditText) findViewById(R.id.chat_edit_input);
 
+        if(sign){//有签到活动则显示
+            signtime=(TextView)findViewById(R.id.group_chat_signtime);//设置活动时间（可先不用）
+            signlocation=(TextView)findViewById(R.id.group_chat_signlocation);//设置活动地点（可先不用）
+            signbutton=(Button)findViewById(R.id.group_chat_signbutton);
+            if(!signed){//没有签到
+                signbutton.setOnClickListener(this);
+            }
+            else{
+                signbutton.setText("已签到");
+                signbutton.setClickable(false);
+            }
+        }
+        else{//没有则隐藏
+            sign_title=(RelativeLayout)findViewById(R.id.group_chat_title);
+            sign_title.setVisibility(View.GONE);
+        }
+
         btn_back.setOnClickListener(this);
+        btn_more.setOnClickListener(this);
     }
 
     protected void initEvents() {
@@ -140,6 +164,9 @@ public class GroupChatActivity extends Activity implements View.OnClickListener{
             case R.id.group_chat_more:
                 Intent i=new Intent(GroupChatActivity.this,GroupInfoActivity.class);
                 startActivity(i);
+                break;
+            case R.id.group_chat_signbutton:
+                //签到操作
                 break;
         }
     }
