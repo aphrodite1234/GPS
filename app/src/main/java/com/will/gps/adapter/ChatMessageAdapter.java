@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -20,7 +21,7 @@ import java.util.List;
  * Created by MaiBenBen on 2019/4/27.
  */
 
-public class ChatMessageAdapter {
+public class ChatMessageAdapter extends BaseAdapter{
     private List<ChatEntity> chatEntities;
     private LayoutInflater mInflater;
     private Context mContext0;
@@ -73,6 +74,23 @@ public class ChatMessageAdapter {
 
         }
         return view;
+    }
+    @Override
+    public int getCount() {
+        // TODO Auto-generated method stub
+        return chatEntities.size();
+    }
+
+    @Override
+    public Object getItem(int position) {
+        // TODO Auto-generated method stub
+        return chatEntities.get(position);
+    }
+
+    @Override
+    public long getItemId(int position) {
+        // TODO Auto-generated method stub
+        return position;
     }
 
 }

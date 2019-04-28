@@ -2,7 +2,6 @@ package com.will.gps.layout;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -15,7 +14,7 @@ import android.app.Fragment;
 import android.widget.AdapterView;
 import android.widget.Toast;
 
-import com.will.gps.ChatActivity;
+import com.will.gps.GroupChatActivity;
 import com.will.gps.adapter.FriendMessageAdapter;
 import com.will.gps.base.ApplicationData;
 import com.will.gps.base.BaseDialog;
@@ -119,7 +118,7 @@ public class RecentMsgFragment extends Fragment implements RemoveListener{
                         else if (chooseMessageEntity.getMessageType() == MessageTabEntity.MAKE_FRIEND_RESPONSE_ACCEPT) {
 
                         }else {
-                            Intent intent = new Intent(context,ChatActivity.class);
+                            Intent intent = new Intent(context,GroupChatActivity.class);
                             intent.putExtra("friendName", chooseMessageEntity.getName());
                             intent.putExtra("friendId", chooseMessageEntity.getSenderId());
                             startActivity(intent);

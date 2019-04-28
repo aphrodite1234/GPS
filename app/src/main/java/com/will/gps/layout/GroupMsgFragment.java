@@ -15,8 +15,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.google.gson.Gson;
-import com.will.gps.ChatActivity;
+import com.will.gps.GroupChatActivity;
 import com.will.gps.R;
 import com.will.gps.bean.Group;
 import com.will.gps.base.RMessage;
@@ -53,7 +52,6 @@ public class GroupMsgFragment extends Fragment {
     private Context context;
     private RMessage rmessage;
     private View view;
-    private Gson gson = new Gson();
 
     private Group group1=new Group();
     private Group group2=new Group();
@@ -107,36 +105,9 @@ public class GroupMsgFragment extends Fragment {
 */
 
 
-//    @Override
-//    public void onHiddenChanged(boolean hidden) {
-//        super.onHiddenChanged(hidden);
-//        if(hidden){
-//            return;
-//        }else {
-//            Bundle bundle=getArguments();
-//            rmessage = gson.fromJson(bundle.getString("group"),RMessage.class);
-//            if(!rmessage.getGroup().isEmpty()){
-//                initRecyclerView(rmessage.getGroup());
-//                for (int i=0;i<mContactList.size();i++) {
-//                    //RecentContactBean bean = mContactList.get(i);
-//                    //if (bean.getRecentContact().getContactId().equals(contact.getContactId())){
-//                    //bean.setRecentContact(contact);
-//                    mViewAdapter.notifyItemChanged(i);
-//                }
-//            }
-//        }
-//    }
-
-    private void initRecyclerView(){//初始化RecyclerView组件List<String> groupList
+    private void initRecyclerView(){//初始化RecyclerView组件
         LinearLayoutManager layoutManager = new LinearLayoutManager(context);
-        mContactList = new ArrayList<>();
-        //List<String> groups = groupList;
-
-//        for(String str:groups){
-//            group1=gson.fromJson(str,Group.class);
-//            rcb1.setGroup(group1);
-//            mContactList.add(rcb1);
-//        }
+        mContactList = new ArrayList<>(3);
 
         //测试用数据
         group1.setGroupname("一群");
@@ -184,7 +155,7 @@ public class GroupMsgFragment extends Fragment {
                 RecentContactBean contactBean = mContactList.get(position);
                 Intent intent;
                 //if (contactBean.getRecentContact().getSessionType() == SessionTypeEnum.P2P){
-                    intent = new Intent(context, ChatActivity.class);
+                    intent = new Intent(context, GroupChatActivity.class);
                     intent.putExtra("NimUserInfo",contactBean.getUserInfo());
                     startActivity(intent);
                 //}

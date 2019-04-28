@@ -45,8 +45,8 @@ public class GroupInfoActivity extends Activity implements View.OnClickListener{
         textnum=(TextView)findViewById(R.id.group_info_txtnum);
         btn=(Button)findViewById(R.id.group_info_btn);
         mynameview=(RelativeLayout)findViewById(R.id.group_info_layout_myname);
-        img_back=(ImageView)findViewById(R.id.group_chat_back);
-        img_more=(ImageView)findViewById(R.id.group_chat_more);
+        img_back=(ImageView)findViewById(R.id.group_info_back);
+        img_more=(ImageView)findViewById(R.id.group_info_more);
         img_back.setOnClickListener(this);
         img_more.setOnClickListener(this);
         btn.setOnClickListener(this);

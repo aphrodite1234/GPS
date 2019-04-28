@@ -33,6 +33,14 @@ public class ApplicationData {
     private List<MessageTabEntity> mMessageEntities;// messageFragment显示的列表
     private Map<Integer, List<ChatEntity>> mChatMessagesMap;
 
+    public Map<Integer, List<ChatEntity>> getChatMessagesMap() {
+        return mChatMessagesMap;
+    }
+
+    public void setChatMessagesMap(
+            Map<Integer, List<ChatEntity>> mChatMessagesMap) {
+        this.mChatMessagesMap = mChatMessagesMap;
+    }
     public Map<Integer, Bitmap> getFriendPhotoMap() {
         return mFriendPhotoMap;
     }
@@ -54,5 +62,8 @@ public class ApplicationData {
             mInitData = new ApplicationData();
         }
         return mInitData;
+    }
+    public void setChatHandler(Handler handler) {
+        this.chatMessageHandler = handler;
     }
 }
