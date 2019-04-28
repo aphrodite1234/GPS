@@ -150,6 +150,15 @@ public class UserFragment extends Fragment implements View.OnClickListener{
         ((MainActivity) getActivity()).registerMyOnTouchListener(myOnTouchListener)*/;
     }
 
+    @Override
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
+        if(hidden){
+            Bundle bundle=getArguments();
+            showData();
+        }
+    }
+
     // 显示数据
     private void showData() {
         mIvHead.setImageResource(R.mipmap.zu);

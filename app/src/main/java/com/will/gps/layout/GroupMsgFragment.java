@@ -15,6 +15,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.gson.Gson;
 import com.will.gps.ChatActivity;
 import com.will.gps.R;
 import com.will.gps.bean.Group;
@@ -52,6 +53,7 @@ public class GroupMsgFragment extends Fragment {
     private Context context;
     private RMessage rmessage;
     private View view;
+    private Gson gson = new Gson();
 
     private Group group1=new Group();
     private Group group2=new Group();
@@ -105,9 +107,36 @@ public class GroupMsgFragment extends Fragment {
 */
 
 
-    private void initRecyclerView(){//初始化RecyclerView组件
+//    @Override
+//    public void onHiddenChanged(boolean hidden) {
+//        super.onHiddenChanged(hidden);
+//        if(hidden){
+//            return;
+//        }else {
+//            Bundle bundle=getArguments();
+//            rmessage = gson.fromJson(bundle.getString("group"),RMessage.class);
+//            if(!rmessage.getGroup().isEmpty()){
+//                initRecyclerView(rmessage.getGroup());
+//                for (int i=0;i<mContactList.size();i++) {
+//                    //RecentContactBean bean = mContactList.get(i);
+//                    //if (bean.getRecentContact().getContactId().equals(contact.getContactId())){
+//                    //bean.setRecentContact(contact);
+//                    mViewAdapter.notifyItemChanged(i);
+//                }
+//            }
+//        }
+//    }
+
+    private void initRecyclerView(){//初始化RecyclerView组件List<String> groupList
         LinearLayoutManager layoutManager = new LinearLayoutManager(context);
-        mContactList = new ArrayList<>(3);
+        mContactList = new ArrayList<>();
+        //List<String> groups = groupList;
+
+//        for(String str:groups){
+//            group1=gson.fromJson(str,Group.class);
+//            rcb1.setGroup(group1);
+//            mContactList.add(rcb1);
+//        }
 
         //测试用数据
         group1.setGroupname("一群");
