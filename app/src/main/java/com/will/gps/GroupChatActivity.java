@@ -40,10 +40,9 @@ public class GroupChatActivity extends Activity implements View.OnClickListener{
     private ListView chatMeessageListView;
     private ChatMessageAdapter chatMessageAdapter;
     private Button sendButton;
-    private LinearLayout linearLayout;
     //private ImageButton emotionButton;
     private EditText inputEdit;
-    private List<ChatEntity> chatList;
+    private List<ChatEntity> chatList=new ArrayList<>();
     private Handler handler;
     private ImageView btn_back,btn_more;
     private TextView signtime,signlocation;
@@ -55,12 +54,11 @@ public class GroupChatActivity extends Activity implements View.OnClickListener{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //this.requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_group_chat);
         Intent intent = getIntent();
         groupName = intent.getStringExtra("groupName");
         groupId = intent.getIntExtra("groupId", 0);
-        initData();
+        //initData();
         initViews();
         initEvents();
     }
@@ -70,7 +68,6 @@ public class GroupChatActivity extends Activity implements View.OnClickListener{
         chatEntity.setContent("大家好");
         chatEntity.setSenderId(1583781);
         chatEntity.setSendTime("04-28 17:12");
-        chatList=new ArrayList<>(1);
         chatList.add(chatEntity);
     }
 
@@ -83,8 +80,6 @@ public class GroupChatActivity extends Activity implements View.OnClickListener{
         mTitle.setText(groupName);
        chatMeessageListView = (ListView) findViewById(R.id.chat_Listview);
         sendButton = (Button) findViewById(R.id.chat_btn_send);
-        linearLayout=(LinearLayout)findViewById(R.id.cb0ChatLayoutMsg);
-        linearLayout.setBackgroundResource(R.drawable.bg_chatbar_textmode);
         //emotionButton = (ImageButton) findViewById(R.id.chat_btn_emote);
         inputEdit = (EditText) findViewById(R.id.chat_edit_input);
 
@@ -101,7 +96,7 @@ public class GroupChatActivity extends Activity implements View.OnClickListener{
             }
         }
         else{//没有则隐藏
-            sign_title=(RelativeLayout)findViewById(R.id.group_chat_title);
+            sign_title=(RelativeLayout)findViewById(R.id.group_chat_signtitle);
             sign_title.setVisibility(View.GONE);
         }
 
@@ -129,8 +124,10 @@ public class GroupChatActivity extends Activity implements View.OnClickListener{
             //chatList = ImDB.getInstance(GroupChatActivity.this).getChatMessage(friendId);
             ApplicationData.getInstance().getChatMessagesMap().put(groupId, chatList);
         }*/
-        chatMessageAdapter = new ChatMessageAdapter(GroupChatActivity.this,chatList);
-        chatMeessageListView.setAdapter(chatMessageAdapter);
+        if(chatList.size()>0){
+            chatMessageAdapter = new ChatMessageAdapter(GroupChatActivity.this,chatList);
+            chatMeessageListView.setAdapter(chatMessageAdapter);
+        }
         sendButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 String content = inputEdit.getText().toString();
@@ -146,6 +143,10 @@ public class GroupChatActivity extends Activity implements View.OnClickListener{
                 String sendTime = sdf.format(date);
                 chatMessage.setSendTime(sendTime);
                 chatList.add(chatMessage);
+                if(chatList.size()==1){
+                    chatMessageAdapter = new ChatMessageAdapter(GroupChatActivity.this,chatList);
+                    chatMeessageListView.setAdapter(chatMessageAdapter);
+                }
                 chatMessageAdapter.notifyDataSetChanged();
                 chatMeessageListView.setSelection(chatList.size());
                 //UserAction.sendMessage(chatMessage);

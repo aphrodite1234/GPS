@@ -159,7 +159,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 startActivity(intent);
                 break;
             case R.id.btn_add:
-                intent=new Intent(MainActivity.this,SearchActivity.class);
+                intent=new Intent(MainActivity.this,CreateGroupActivity.class);
                 startActivity(intent);
                 break;
             case R.id.txt_qun:

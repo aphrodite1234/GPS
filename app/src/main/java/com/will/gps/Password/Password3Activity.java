@@ -32,6 +32,7 @@ public class Password3Activity extends Activity implements View.OnClickListener 
     private EditText edit3;
     private Button btn;
     private ImageView discover;
+    boolean visible=false;
     private String passStr=null;
     private String passCon=null;
     private TextView text;
@@ -78,6 +79,13 @@ public class Password3Activity extends Activity implements View.OnClickListener 
     public void onClick(View v){
         switch (v.getId()) {
             case R.id.pass3_image:
+                if(!visible){
+                    visible=true;
+                    edit2.setInputType(128);//设置为显示密码
+                }else{
+                    visible=false;
+                    edit2.setInputType(129);//设置为隐藏密码
+                }
                 break;
             case R.id.pass3_nextstep:
                 passStr = edit2.getText().toString().trim();
