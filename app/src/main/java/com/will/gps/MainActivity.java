@@ -71,7 +71,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             @Override
             public void handleMessage(Message msg) {
                 super.handleMessage(msg);
-                System.out.println(msg.obj.toString());
                 rMessage=gson.fromJson(msg.obj.toString(),RMessage.class);
                 String type = rMessage.getType();
                 switch (type){
@@ -163,6 +162,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 startActivity(intent);
                 break;
             case R.id.txt_qun:
+                rMessage.setContent(null);
                 rMessage.setType("搜索群");
                 ((MySocket)getApplication()).send(gson.toJson(rMessage));
                 selected();

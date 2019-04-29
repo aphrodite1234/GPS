@@ -95,6 +95,7 @@ public class MySocket extends Application{
     private boolean sendHeart1(String msg){//发送心跳消息
         if(socket != null&&!socket.isClosed()&&!socket.isOutputShutdown()){
             writer.println(msg);
+            System.out.println(msg);
             sendTime=System.currentTimeMillis();
             return true;
         }else{
@@ -109,6 +110,7 @@ public class MySocket extends Application{
                 try {
                     String line=null;
                     while((line=reader.readLine())!=null){
+                        System.out.println(line);
                         Message msg = Message.obtain();
                         msg.what=1;
                         msg.obj=line;

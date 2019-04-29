@@ -9,6 +9,7 @@ import java.util.Date;
 import java.util.List;
 
 public class RMessage {
+	private int groupid;
 	private String senderphone = null;
 	private String sendername = null;
 	private String receiverphone = null;
@@ -82,5 +83,13 @@ public class RMessage {
 
 	public void setReceivername(String receivername) {
 		this.receivername = receivername;
+	}
+
+	public int getGroupid() {
+		return groupid;
+	}
+
+	public void setGroupid(int groupid) {
+		this.groupid = groupid;
 	}
 }

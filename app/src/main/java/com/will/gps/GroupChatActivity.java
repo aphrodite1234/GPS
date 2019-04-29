@@ -16,8 +16,11 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
 import com.will.gps.adapter.ChatMessageAdapter;
 import com.will.gps.base.ApplicationData;
+import com.will.gps.base.MySocket;
+import com.will.gps.base.RMessage;
 import com.will.gps.bean.ChatEntity;
 
 import java.text.SimpleDateFormat;
@@ -27,6 +30,8 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
+
+import javax.crypto.spec.GCMParameterSpec;
 
 /**
  * Created by MaiBenBen on 2019/4/27.
@@ -45,6 +50,8 @@ public class GroupChatActivity extends Activity implements View.OnClickListener{
     private List<ChatEntity> chatList;
     private Handler handler;
     private ImageView btn_back,btn_more;
+    private Gson gson = new Gson();
+    RMessage rMessage = new RMessage();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,16 +61,28 @@ public class GroupChatActivity extends Activity implements View.OnClickListener{
         Intent intent = getIntent();
         groupName = intent.getStringExtra("groupName");
         groupId = intent.getIntExtra("groupId", 0);
-        initData();
+//        initData(rMessage);
         initViews();
         initEvents();
+
+        ((MySocket)getApplication()).setHandler(new Handler(){
+            @Override
+            public void handleMessage(Message msg) {
+                super.handleMessage(msg);
+                rMessage = gson.fromJson(msg.obj.toString(),RMessage.class);
+                if(rMessage.getType().equals("群消息")&&rMessage.getGroupid()==groupId){
+                    initData(rMessage);
+                }
+
+            }
+        });
     }
 
-    private void initData(){
+    private void initData(RMessage rMessage){
         ChatEntity chatEntity=new ChatEntity();
-        chatEntity.setContent("大家好");
-        chatEntity.setSenderId(1583781);
-        chatEntity.setSendTime("04-28 17:12");
+        chatEntity.setContent(rMessage.getContent());
+        chatEntity.setSenderId(Integer.parseInt(rMessage.getSenderphone()));
+        chatEntity.setSendTime(rMessage.getDate());
         chatList=new ArrayList<>(1);
         chatList.add(chatEntity);
     }
@@ -111,6 +130,12 @@ public class GroupChatActivity extends Activity implements View.OnClickListener{
             public void onClick(View v) {
                 String content = inputEdit.getText().toString();
                 inputEdit.setText("");
+                RMessage rMessage = new RMessage();
+                rMessage.setContent(content);
+                rMessage.setSenderphone(MySocket.user.getPhonenum());
+                rMessage.setSendername(MySocket.user.getUserName());
+                rMessage.setGroupid(groupId);
+                rMessage.setType("群消息");
                 ChatEntity chatMessage = new ChatEntity();
                 chatMessage.setContent(content);
                 /*chatMessage.setSenderId(ApplicationData.getInstance()
@@ -121,6 +146,8 @@ public class GroupChatActivity extends Activity implements View.OnClickListener{
                 SimpleDateFormat sdf = new SimpleDateFormat("MM-dd hh:mm:ss");
                 String sendTime = sdf.format(date);
                 chatMessage.setSendTime(sendTime);
+                rMessage.setDate(date);
+                ((MySocket)getApplication()).send(gson.toJson(rMessage));
                 chatList.add(chatMessage);
                 chatMessageAdapter.notifyDataSetChanged();
                 chatMeessageListView.setSelection(chatList.size());
@@ -135,7 +162,6 @@ public class GroupChatActivity extends Activity implements View.OnClickListener{
     public void onClick(View v) {
         switch(v.getId()){
             case R.id.group_chat_back:
-            finish();
             break;
             case R.id.group_chat_more:
                 Intent i=new Intent(GroupChatActivity.this,GroupInfoActivity.class);

@@ -57,7 +57,7 @@ public class RecentMsgFragment extends Fragment implements RemoveListener{
         init();
         return view;
     }
-    private void initData(){//初始化测试数据
+    public void initData(){//初始化测试数据
         m1=new MessageTabEntity();
         m2=new MessageTabEntity();
         m3=new MessageTabEntity();

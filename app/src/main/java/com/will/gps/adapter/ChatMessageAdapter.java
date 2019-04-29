@@ -78,13 +78,21 @@ public class ChatMessageAdapter extends BaseAdapter{
     @Override
     public int getCount() {
         // TODO Auto-generated method stub
-        return chatEntities.size();
+        if(chatEntities!=null){
+            return chatEntities.size();
+        }else {
+            return 0;
+        }
     }
 
     @Override
     public Object getItem(int position) {
         // TODO Auto-generated method stub
-        return chatEntities.get(position);
+        if(chatEntities!=null){
+            return chatEntities.get(position);
+        }else {
+            return null;
+        }
     }
 
     @Override
@@ -93,4 +101,11 @@ public class ChatMessageAdapter extends BaseAdapter{
         return position;
     }
 
+    public List<ChatEntity> getChatEntities() {
+        return chatEntities;
+    }
+
+    public void setChatEntities(List<ChatEntity> chatEntities) {
+        this.chatEntities = chatEntities;
+    }
 }

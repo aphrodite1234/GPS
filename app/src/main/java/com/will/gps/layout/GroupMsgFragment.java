@@ -101,10 +101,17 @@ public class GroupMsgFragment extends Fragment {
 
         if(!groups.isEmpty()){
             int i=0;
+            System.out.println(groups);
             for (String group:groups){
-                group1=gson.fromJson(group,Group.class);
-                rcb1.setGroup(group1);
-                mContactList.add(i++,rcb1);
+                Group group4=gson.fromJson(group,Group.class);
+                RecentContactBean recentContactBean = new RecentContactBean();
+                recentContactBean.setGroup(group4);
+                mContactList.add(i++,recentContactBean);
+                System.out.println(i+gson.toJson(mContactList.get(i-1)));
+            }
+            System.out.println(gson.toJson(mContactList));
+            for(int j=0;j<mContactList.size();j++){
+                System.out.println(j+gson.toJson(mContactList.get(j)));
             }
         }else {
             group1.setGroupname("暂未加入任何群");
