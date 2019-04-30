@@ -6,7 +6,7 @@
     android:orientation="vertical">
 
     <RelativeLayout
-        android:id="@+id/group_chat_title"
+        android:id="@+id/group_info_title"
         android:layout_width="match_parent"
         android:layout_height="48dp"
         android:background="@color/colorPrimary">
@@ -21,7 +21,7 @@
                 android:layout_height="26dp"
                 android:layout_gravity="center_vertical"
                 android:src="@drawable/bt_back_selector"
-                android:layout_marginLeft="12dp" />
+                android:layout_marginStart="12dp" />
 
             <TextView
                 android:id="@+id/group_info_txt"
@@ -40,7 +40,7 @@
                 android:layout_height="26dp"
                 android:layout_gravity="center_vertical"
                 android:src="@drawable/ic_format_list_24dp"
-                android:layout_marginRight="12dp"/>
+                android:layout_marginEnd="12dp"/>
         </LinearLayout>
 
         <View
@@ -52,6 +52,8 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
         android:orientation="vertical">
 
         <ImageView
@@ -74,7 +76,7 @@
                 android:layout_height="40dp"
                 android:layout_marginTop="10dp"
                 android:layout_marginBottom="10dp"
-                android:layout_marginLeft="20dp"
+                android:layout_marginStart="20dp"
                 android:scaleType="fitXY"
                 android:src="@mipmap/qunliao"
                 android:layout_gravity="center"/>
@@ -86,7 +88,8 @@
                 android:text="群名称"
                 android:gravity="center|start"
                 android:layout_alignParentTop="true"
-                android:layout_toRightOf="@+id/group_info_img2"/>
+                android:layout_toEndOf="@+id/group_info_img2"
+                android:layout_marginStart="25dp"/>
             <TextView
                 android:id="@+id/group_info_txtnum"
                 android:layout_width="match_parent"
@@ -94,110 +97,109 @@
                 android:text="群号码"
                 android:gravity="center_vertical"
                 android:layout_alignParentBottom="true"
-                android:layout_toRightOf="@+id/group_info_img2"/>
+                android:layout_toEndOf="@+id/group_info_img2"
+                android:layout_marginStart="25dp"/>
+        </RelativeLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.8dp"
+            android:background="@color/smssdk_line_light_gray"/>
+        <RelativeLayout
+            android:id="@+id/group_info_layout_myname"
+            android:layout_width="match_parent"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:layout_marginStart="15dp"
+            android:layout_marginEnd="15dp"
+            android:layout_height="40dp">
+
+            <TextView
+                android:id="@+id/grou_info_myname"
+                android:text="我的群名片"
+                android:gravity="center_vertical"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:textSize="16sp"
+                android:textColor="@color/app_black_color"/>
+
+            <TextView
+                android:layout_toRightOf="@+id/grou_info_myname"
+                android:layout_marginStart="10dp"
+                android:textSize="16sp"
+                android:textColor="@color/default_text_color"
+                android:id="@+id/group_info_myname1"
+                android:gravity="center_vertical|right"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+        </RelativeLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.8dp"
+            android:background="@color/smssdk_line_light_gray"/>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:layout_marginStart="15dp"
+            android:layout_marginEnd="15dp"
+            android:layout_height="40dp">
+
+            <TextView
+                android:id="@+id/group_info_member"
+                android:text="群成员"
+                android:gravity="center_vertical"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:textSize="16sp"
+                android:textColor="@color/app_black_color"/>
+
+            <TextView
+                android:layout_toEndOf="@+id/group_info_member"
+                android:layout_marginStart="10dp"
+                android:textSize="16sp"
+                android:textColor="@color/default_text_color"
+                android:id="@+id/group_info_member1"
+                android:gravity="center_vertical|right"
+                android:text="2人"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+        </RelativeLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.8dp"
+            android:background="@color/smssdk_line_light_gray"/>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:layout_marginStart="15dp"
+            android:layout_marginEnd="15dp"
+            android:layout_height="40dp">
+
+            <TextView
+                android:id="@+id/group_info_share"
+                android:text="分享群"
+                android:gravity="center_vertical"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:textSize="16sp"
+                android:textColor="@color/app_black_color"/>
+            <!--
+            <TextView
+                android:layout_toRightOf="@+id/group_info_share"
+                android:layout_marginLeft="10dp"
+                android:textSize="16sp"
+                android:textColor="@color/default_text_color"
+                android:id="@+id/tv_account"
+                android:gravity="center_vertical|right"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>-->
         </RelativeLayout>
     </LinearLayout>
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="0.8dp"
-        android:background="@color/smssdk_line_light_gray"/>
-    <RelativeLayout
-        android:id="@+id/group_info_layout_myname"
-        android:background="@color/white_color"
-        android:layout_width="match_parent"
-        android:paddingLeft="10dp"
-        android:paddingRight="10dp"
-        android:layout_marginStart="15dp"
-        android:layout_marginEnd="15dp"
-        android:layout_height="40dp">
-
-        <TextView
-            android:id="@+id/grou_info_myname"
-            android:text="我的群名片"
-            android:gravity="center_vertical"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:textSize="16sp"
-            android:textColor="@color/app_black_color"/>
-
-        <TextView
-            android:layout_toRightOf="@+id/grou_info_myname"
-            android:layout_marginLeft="10dp"
-            android:textSize="16sp"
-            android:textColor="@color/default_text_color"
-            android:id="@+id/group_info_myname1"
-            android:gravity="center_vertical|right"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
-    </RelativeLayout>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="0.8dp"
-        android:background="@color/smssdk_line_light_gray"/>
-    <RelativeLayout
-        android:background="@color/white_color"
-        android:layout_width="match_parent"
-        android:paddingLeft="10dp"
-        android:paddingRight="10dp"
-        android:layout_marginStart="15dp"
-        android:layout_marginEnd="15dp"
-        android:layout_height="40dp">
-
-        <TextView
-            android:id="@+id/group_info_member"
-            android:text="群成员"
-            android:gravity="center_vertical"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:textSize="16sp"
-            android:textColor="@color/app_black_color"/>
-
-        <TextView
-            android:layout_toRightOf="@+id/group_info_member"
-            android:layout_marginLeft="10dp"
-            android:textSize="16sp"
-            android:textColor="@color/default_text_color"
-            android:id="@+id/group_info_member1"
-            android:gravity="center_vertical|right"
-            android:text="2人"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
-    </RelativeLayout>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="0.8dp"
-        android:background="@color/smssdk_line_light_gray"/>
-    <RelativeLayout
-        android:background="@color/white_color"
-        android:layout_width="match_parent"
-        android:paddingLeft="10dp"
-        android:paddingRight="10dp"
-        android:layout_marginStart="15dp"
-        android:layout_marginEnd="15dp"
-        android:layout_height="40dp">
-
-        <TextView
-            android:id="@+id/group_info_share"
-            android:text="分享群"
-            android:gravity="center_vertical"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:textSize="16sp"
-            android:textColor="@color/app_black_color"/>
-<!--
-        <TextView
-            android:layout_toRightOf="@+id/group_info_share"
-            android:layout_marginLeft="10dp"
-            android:textSize="16sp"
-            android:textColor="@color/default_text_color"
-            android:id="@+id/tv_account"
-            android:gravity="center_vertical|right"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"/>-->
-    </RelativeLayout>
     <Button
         android:id="@+id/group_info_btn"
         android:layout_width="match_parent"
