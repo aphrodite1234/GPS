@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -11,6 +13,10 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+import com.will.gps.base.MySocket;
+import com.will.gps.base.RMessage;
+import com.will.gps.bean.GroupMember;
 import com.will.gps.view.CircleImageView;
 
 /**
@@ -22,16 +28,35 @@ public class GroupInfoActivity extends Activity implements View.OnClickListener{
     private CircleImageView img2;
     private TextView textname,textnum,myname,member;
     private Button btn;
-    private boolean isMember=false;
+    public String isMember;
     public boolean isOwner=false;
     private RelativeLayout mynameview;
     private Intent i;
+    RMessage rMessage = new RMessage();
+    Gson gson = new Gson();
+    GroupMember groupMember = new GroupMember();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_group_info);
         bindView();
+        ((MySocket)getApplication()).setHandler(new Handler(){
+            @Override
+            public void handleMessage(Message msg) {
+                super.handleMessage(msg);
+                rMessage=gson.fromJson(msg.obj.toString(),RMessage.class);
+                String type = rMessage.getType();
+                if(type.equals("加入群")||type.equals("解散群")||type.equals("退出群")){
+                    if (rMessage.getContent().equals("true")){
+                        Intent intent = new Intent(GroupInfoActivity.this,MainActivity.class);
+                        startActivity(intent);
+                    }else {
+                        Toast.makeText(GroupInfoActivity.this, "操作失败", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            }
+        });
     }
 
     private void bindView(){
@@ -49,33 +74,38 @@ public class GroupInfoActivity extends Activity implements View.OnClickListener{
         img_more.setOnClickListener(this);
 
         i=getIntent();
-        try{//判断是否是创建群
-            if(i.getStringExtra("type").equals("create")){
-                isOwner=true;
-                Toast.makeText(GroupInfoActivity.this,"欢迎群主",Toast.LENGTH_SHORT).show();
-                textname.setText(i.getStringExtra("groupname"));
-                textnum.setText(i.getStringExtra("groupid"));
-                myname.setText("群主");
-                member.setText("1人");
-            }else{
-                System.out.println("type为空");
-            }
-        }catch (Exception e){
-            System.out.println(e);
-        }
+        textname.setText(i.getStringExtra("groupname"));
+        textnum.setText(i.getStringExtra("groupid"));
+        myname.setText(i.getStringExtra("groupowner"));
+        member.setText(String.valueOf(i.getIntExtra("membernum",0))+"人");
+        isMember=i.getStringExtra("ismember");
 
-        if(!isOwner){//判读不是群主
+//        try{//判断是否是创建群
+//            if(i.getStringExtra("type").equals("create")){
+//                isOwner=true;
+//                Toast.makeText(GroupInfoActivity.this,"欢迎群主",Toast.LENGTH_SHORT).show();
+//            }else{
+//                System.out.println("type为空");
+//            }
+//        }catch (Exception e){
+//            System.out.println(e);
+//        }
+
+        if(!myname.getText().toString().equals(MySocket.user.getPhonenum())){//判读不是群主
             btn.setOnClickListener(this);
-            if(!isMember) {
-                btn.setText("申请加群");
+            if(isMember.equals("false")) {
+                btn.setText("加群");
                 btn.setTextColor(Color.BLUE);
-                mynameview.setVisibility(View.GONE);
+                //mynameview.setVisibility(View.GONE);
             }else {
                 btn.setText("退群");
                 btn.setTextColor(Color.RED);
             }
         }else{
-            btn.setVisibility(View.GONE);
+            btn.setOnClickListener(this);
+            btn.setText("解散群");
+            btn.setTextColor(Color.RED);
+            //btn.setVisibility(View.GONE);
         }
     }
 
@@ -83,12 +113,27 @@ public class GroupInfoActivity extends Activity implements View.OnClickListener{
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.group_info_btn:
-                if (!isMember)//不是群成员
+                String bu=btn.getText().toString();
+                if (bu.equals("加群"))//不是群成员
                 {
-                    Toast.makeText(GroupInfoActivity.this, "申请发送成功！", Toast.LENGTH_SHORT).show();
-                } else//已经是群成员
-                {
-
+                    groupMember.setGroupid(Integer.parseInt(textnum.getText().toString()));
+                    groupMember.setGroupname(textname.getText().toString());
+                    groupMember.setUsername(MySocket.user.getUserName());
+                    groupMember.setUserphone(MySocket.user.getPhonenum());
+                    rMessage.setContent(gson.toJson(groupMember));
+                    rMessage.setGroupid(Integer.parseInt(textnum.getText().toString()));
+                    rMessage.setType("加入群");
+                    ((MySocket)getApplication()).send(gson.toJson(rMessage));
+                } else if(bu.equals("退群")){
+                    rMessage.setGroupid(Integer.parseInt(textnum.getText().toString()));
+                    rMessage.setSenderphone(MySocket.user.getPhonenum());
+                    rMessage.setType("退出群");
+                    ((MySocket)getApplication()).send(gson.toJson(rMessage));
+                }else if(bu.equals("解散群")){
+                    rMessage.setGroupid(Integer.parseInt(textnum.getText().toString()));
+                    rMessage.setSenderphone(MySocket.user.getPhonenum());
+                    rMessage.setType("解散群");
+                    ((MySocket)getApplication()).send(gson.toJson(rMessage));
                 }
                 break;
             case R.id.group_info_back:

@@ -61,6 +61,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_main);
         bindView();
         rMessage.setType("登录成功");
+        rMessage.setSenderphone(MySocket.user.getPhonenum());
         ((MySocket)getApplication()).send(gson.toJson(rMessage));
         //initHandler();
 
@@ -78,7 +79,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         MySocket.user=gson.fromJson(rMessage.getContent(),User.class);
                         f3.showData();
                         break;
-                    case "搜索群":
+                    case "我的群":
                         f1.initRecyclerView(rMessage.getGroup());
                         break;
                 }
@@ -163,11 +164,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             case R.id.txt_qun:
                 rMessage.setContent(null);
-                rMessage.setType("搜索群");
+                rMessage.setType("我的群");
+                rMessage.setSenderphone(MySocket.user.getPhonenum());
                 ((MySocket)getApplication()).send(gson.toJson(rMessage));
                 selected();
                 tabQun.setSelected(true);
-                topBar.setText("进群");
+                topBar.setText("我的群");
                 /*GroupMsgFragment groupMsgFragment=new GroupMsgFragment();
                 ft.replace(R.id.fragment_container, groupMsgFragment,MainActivity.TAG);
                 ft.commit();*/
@@ -225,6 +227,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
         }
         transaction.commit();
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        tabQun.performClick();
     }
 
     //为了在fragment中注册监听事件（fragment中没有提供OnTouchEvent）

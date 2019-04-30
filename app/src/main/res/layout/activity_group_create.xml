@@ -65,17 +65,17 @@
             android:layout_height="0dp"
             android:hint="3-16位字符串"/>
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="群ID"/>
-        <EditText
-            android:inputType="number"
-            android:id="@+id/group_create_id"
-            android:layout_weight="1"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:hint="3-10位数字"/>
+        <!--<TextView-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:text="群ID"/>-->
+        <!--<EditText-->
+            <!--android:inputType="number"-->
+            <!--android:id="@+id/group_create_id"-->
+            <!--android:layout_weight="1"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="0dp"-->
+            <!--android:hint="3-10位数字"/>-->
 
         <Button
             android:id="@+id/group_create_btn"

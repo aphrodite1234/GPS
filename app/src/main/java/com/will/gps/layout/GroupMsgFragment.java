@@ -3,6 +3,7 @@ package com.will.gps.layout;
 /**
  * Created by MaiBenBen on 2019/4/21.
  */
+
 import android.annotation.SuppressLint;
 import android.app.Fragment;
 import android.content.Context;
@@ -34,6 +35,7 @@ import com.netease.nimlib.sdk.uinfo.model.NimUserInfo;
 import com.suntek.commonlibrary.adapter.OnItemClickListener;
 import com.suntek.commonlibrary.adapter.RViewHolder;
 import com.suntek.commonlibrary.adapter.RecycleViewAdapter;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -58,23 +60,24 @@ public class GroupMsgFragment extends Fragment {
     private View view;
     private Gson gson = new Gson();
 
-    private Group group1=new Group();
-    private Group group2=new Group();
-    private Group group3=new Group();//测试用
-    private RecentContactBean rcb1=new RecentContactBean();
-    private RecentContactBean rcb2=new RecentContactBean();
-    private RecentContactBean rcb3=new RecentContactBean();
+    private Group group1 = new Group();
+    private Group group2 = new Group();
+    private Group group3 = new Group();//测试用
+    private RecentContactBean rcb1 = new RecentContactBean();
+    private RecentContactBean rcb2 = new RecentContactBean();
+    private RecentContactBean rcb3 = new RecentContactBean();
 
     @SuppressLint("ValidFragment")
-    public GroupMsgFragment(List<RecentContactBean> List,List<String> list){
-        mContactList=List;
-        groupList=list;
+    public GroupMsgFragment(List<RecentContactBean> List, List<String> list) {
+        mContactList = List;
+        groupList = list;
     }
+
     @SuppressLint("SimpleDateFormat")
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         context = getActivity();
-        view = inflater.inflate(R.layout.activity_fragment_group,container,false);
+        view = inflater.inflate(R.layout.activity_fragment_group, container, false);
         //缓存的rootView需要判断是否已经被加过parent
         //如果有parent需要从parent删除，要不然会发生这个rootView已经有parent的错误。
         ViewGroup parent = (ViewGroup) view.getParent();
@@ -85,7 +88,7 @@ public class GroupMsgFragment extends Fragment {
         mDateFormat = new SimpleDateFormat("HH:mm");
         initRecyclerView(groupList);
         //initListener();//更新最近联系人列表
-        for (int i=0;i<mContactList.size();i++) {
+        for (int i = 0; i < mContactList.size(); i++) {
             //RecentContactBean bean = mContactList.get(i);
             //if (bean.getRecentContact().getContactId().equals(contact.getContactId())){
             //bean.setRecentContact(contact);
@@ -95,25 +98,25 @@ public class GroupMsgFragment extends Fragment {
         return view;
     }
 
-    public void initRecyclerView(List<String> groups){//初始化RecyclerView组件
+    public void initRecyclerView(List<String> groups) {//初始化RecyclerView组件
         LinearLayoutManager layoutManager = new LinearLayoutManager(context);
         mContactList = new ArrayList<>(3);
 
-        if(!groups.isEmpty()){
-            int i=0;
+        if (!groups.isEmpty()) {
+            int i = 0;
             System.out.println(groups);
-            for (String group:groups){
-                Group group4=gson.fromJson(group,Group.class);
+            for (String group : groups) {
+                Group group4 = gson.fromJson(group, Group.class);
                 RecentContactBean recentContactBean = new RecentContactBean();
                 recentContactBean.setGroup(group4);
-                mContactList.add(i++,recentContactBean);
-                System.out.println(i+gson.toJson(mContactList.get(i-1)));
+                mContactList.add(i++, recentContactBean);
+                System.out.println(i + gson.toJson(mContactList.get(i - 1)));
             }
             System.out.println(gson.toJson(mContactList));
-            for(int j=0;j<mContactList.size();j++){
-                System.out.println(j+gson.toJson(mContactList.get(j)));
+            for (int j = 0; j < mContactList.size(); j++) {
+                System.out.println(j + gson.toJson(mContactList.get(j)));
             }
-        }else {
+        } else {
             group1.setGroupname("暂未加入任何群");
             rcb1.setGroup(group1);
             mContactList.add(rcb1);
@@ -136,7 +139,7 @@ public class GroupMsgFragment extends Fragment {
 //        mContactList.add(2,rcb3);
 
         mRecyclerView.setLayoutManager(layoutManager);
-        mViewAdapter = new RecycleViewAdapter<RecentContactBean>(context,mContactList) {
+        mViewAdapter = new RecycleViewAdapter<RecentContactBean>(context, mContactList) {
             @Override
             public int setItemLayoutId(int position) {
                 return R.layout.item_recent_msg;
@@ -144,22 +147,22 @@ public class GroupMsgFragment extends Fragment {
 
             @Override
             public void bindView(RViewHolder holder, int position) {
-                RecentContactBean contactBean= mContactList.get(position);
+                RecentContactBean contactBean = mContactList.get(position);
                 //UserInfo userInfo = contactBean.getUserInfo();
-                Group group =contactBean.getGroup();
-                if (group != null){
+                Group group = contactBean.getGroup();
+                if (group != null) {
                     //mContactList.get(position).setUserInfo(userInfo);
                     mContactList.get(position).setGroup(group);
-                    holder.setImageByUrl(context,R.id.iv_head_picture,
-                            contactBean.getGroup().getGroupimg(),R.mipmap.group_chat);
-                    holder.setText(R.id.tv_recent_name,contactBean.getGroup().getGroupname());
-                }else {
-                    holder.setImageResource(R.id.iv_head_picture,R.mipmap.app_logo_main);
-                    holder.setText(R.id.tv_recent_name,Integer.toString(contactBean.getGroup().getGroupid()));
+                    holder.setImageByUrl(context, R.id.iv_head_picture,
+                            contactBean.getGroup().getGroupimg(), R.mipmap.group_chat);
+                    holder.setText(R.id.tv_recent_name, contactBean.getGroup().getGroupname());
+                } else {
+                    holder.setImageResource(R.id.iv_head_picture, R.mipmap.app_logo_main);
+                    holder.setText(R.id.tv_recent_name, Integer.toString(contactBean.getGroup().getGroupid()));
                 }
                 //String time = mDateFormat.format(new Date(contactBean.getRecentContact().getTime()));
-                String time=mDateFormat.format(new Date());
-                holder.setText(R.id.tv_recent_time,time);
+                String time = mDateFormat.format(new Date());
+                holder.setText(R.id.tv_recent_time, time);
             }
         };
 
@@ -169,10 +172,13 @@ public class GroupMsgFragment extends Fragment {
                 RecentContactBean contactBean = mContactList.get(position);
                 Intent intent;
                 //if (contactBean.getRecentContact().getSessionType() == SessionTypeEnum.P2P){
-                    intent = new Intent(context, GroupChatActivity.class);
-                    intent.putExtra("groupName",contactBean.getGroup().getGroupname());
-                    intent.putExtra("groupId",contactBean.getGroup().getGroupid());
-                    startActivity(intent);
+                intent = new Intent(context, GroupChatActivity.class);
+                intent.putExtra("groupname", contactBean.getGroup().getGroupname());
+                intent.putExtra("groupid", String.valueOf(contactBean.getGroup().getGroupid()));
+                intent.putExtra("groupowner", contactBean.getGroup().getGroupowner());
+                intent.putExtra("membernum", contactBean.getGroup().getMembernum());
+                intent.putExtra("ismember","true");
+                startActivity(intent);
                 //}
             }
         });
@@ -183,14 +189,14 @@ public class GroupMsgFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        Log.e(TAG,"onResume");
+        Log.e(TAG, "onResume");
         //NIMClient.getService(MsgServiceObserve.class).observeRecentContact(mObserver,true);
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        Log.e(TAG,"onPause");
+        Log.e(TAG, "onPause");
     }
 }
 

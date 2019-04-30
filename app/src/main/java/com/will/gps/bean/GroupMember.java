@@ -1,4 +1,4 @@
-package jdbc;
+package com.will.gps.bean;
 
 public class GroupMember {
 

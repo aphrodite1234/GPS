@@ -3,6 +3,7 @@ package com.will.gps.bean;
 public class Group {
 
 	private int groupid;
+	private int membernum;
 	private String groupname;
 	private String groupowner;
 	private String ownername;
@@ -39,5 +40,13 @@ public class Group {
 
 	public void setGroupimg(String groupimg) {
 		this.groupimg = groupimg;
+	}
+
+	public int getMembernum() {
+		return membernum;
+	}
+
+	public void setMembernum(int membernum) {
+		this.membernum = membernum;
 	}
 }

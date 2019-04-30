@@ -35,8 +35,8 @@ import java.util.ListIterator;
 
 public class GroupChatActivity extends Activity implements View.OnClickListener{
     private TextView mTitle;
-    private int groupId;
-    private String groupName;
+    private int groupId,membernum;
+    private String groupName,groupowner;
     private ListView chatMeessageListView;
     private ChatMessageAdapter chatMessageAdapter;
     private Button sendButton;
@@ -50,14 +50,18 @@ public class GroupChatActivity extends Activity implements View.OnClickListener{
     private RelativeLayout sign_title;//签到提示框
     boolean sign=false;//判断是否有签到活动,决定是否显示签到提示框
     boolean signed=false;//判断是否已经签到
+    String ismember;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_group_chat);
         Intent intent = getIntent();
-        groupName = intent.getStringExtra("groupName");
-        groupId = intent.getIntExtra("groupId", 0);
+        groupName = intent.getStringExtra("groupname");
+        groupId = Integer.parseInt(intent.getStringExtra("groupid"));
+        groupowner=intent.getStringExtra("groupowner");
+        membernum=intent.getIntExtra("membernum",0);
+        ismember=intent.getStringExtra("ismember");
         //initData();
         initViews();
         initEvents();
@@ -164,6 +168,11 @@ public class GroupChatActivity extends Activity implements View.OnClickListener{
             break;
             case R.id.group_chat_more:
                 Intent i=new Intent(GroupChatActivity.this,GroupInfoActivity.class);
+                i.putExtra("groupname",groupName);
+                i.putExtra("groupid",String.valueOf(groupId));
+                i.putExtra("groupowner",groupowner);
+                i.putExtra("membernum",membernum);
+                i.putExtra("ismember",ismember);
                 startActivity(i);
                 break;
             case R.id.group_chat_signbutton:
