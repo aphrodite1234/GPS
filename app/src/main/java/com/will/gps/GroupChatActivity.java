@@ -17,8 +17,11 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
 import com.will.gps.adapter.ChatMessageAdapter;
 import com.will.gps.base.ApplicationData;
+import com.will.gps.base.MySocket;
+import com.will.gps.base.RMessage;
 import com.will.gps.bean.ChatEntity;
 
 import java.text.SimpleDateFormat;
@@ -51,6 +54,9 @@ public class GroupChatActivity extends Activity implements View.OnClickListener{
     boolean sign=false;//判断是否有签到活动,决定是否显示签到提示框
     boolean signed=false;//判断是否已经签到
     String ismember;
+    RMessage rMessage = new RMessage();
+    Gson gson = new Gson();
+    ChatEntity chatMessage = new ChatEntity();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,13 +71,30 @@ public class GroupChatActivity extends Activity implements View.OnClickListener{
         //initData();
         initViews();
         initEvents();
+        ((MySocket)getApplication()).setHandler(new Handler(){
+            @Override
+            public void handleMessage(Message msg) {
+                super.handleMessage(msg);
+                rMessage=gson.fromJson(msg.obj.toString(),RMessage.class);
+                String type = rMessage.getType();
+                if(type.equals("群消息")){
+                    chatMessage.setContent(rMessage.getContent());
+                    chatMessage.setSenderId(rMessage.getSenderphone());
+                    chatMessage.setSendTime(rMessage.getDate());
+                    chatMessage.setMessageType(ChatEntity.RECEIVE);
+                    chatList.add(chatMessage);
+                    chatMessageAdapter.notifyDataSetChanged();
+                    chatMeessageListView.setSelection(chatList.size());
+                }
+            }
+        });
     }
 
     private void initData(){
         ChatEntity chatEntity=new ChatEntity();
         chatEntity.setContent("大家好");
-        chatEntity.setSenderId(1583781);
-        chatEntity.setSendTime("04-28 17:12");
+        chatEntity.setSenderId("1583781");
+        chatEntity.setSendTime("2019-04-28 17:12");
         chatList.add(chatEntity);
     }
 
@@ -109,18 +132,18 @@ public class GroupChatActivity extends Activity implements View.OnClickListener{
     }
 
     protected void initEvents() {
-        handler = new Handler() {
-            public void handleMessage(Message msg) {
-                switch (msg.what) {
-                    case 1:
-                        chatMessageAdapter.notifyDataSetChanged();
-                        chatMeessageListView.setSelection(chatList.size());
-                        break;
-                    default:
-                        break;
-                }
-            }
-        };
+//        handler = new Handler() {
+//            public void handleMessage(Message msg) {
+//                switch (msg.what) {
+//                    case 1:
+//                        chatMessageAdapter.notifyDataSetChanged();
+//                        chatMeessageListView.setSelection(chatList.size());
+//                        break;
+//                    default:
+//                        break;
+//                }
+//            }
+//        };
         /*ApplicationData.getInstance().setChatHandler(handler);
         chatList = ApplicationData.getInstance().getChatMessagesMap()
                 .get(groupId);
@@ -128,34 +151,35 @@ public class GroupChatActivity extends Activity implements View.OnClickListener{
             //chatList = ImDB.getInstance(GroupChatActivity.this).getChatMessage(friendId);
             ApplicationData.getInstance().getChatMessagesMap().put(groupId, chatList);
         }*/
-        if(chatList.size()>0){
-            chatMessageAdapter = new ChatMessageAdapter(GroupChatActivity.this,chatList);
-            chatMeessageListView.setAdapter(chatMessageAdapter);
-        }
+        chatMessageAdapter = new ChatMessageAdapter(GroupChatActivity.this,chatList);
+        chatMeessageListView.setAdapter(chatMessageAdapter);
         sendButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 String content = inputEdit.getText().toString();
-                inputEdit.setText("");
-                ChatEntity chatMessage = new ChatEntity();
                 chatMessage.setContent(content);
-                /*chatMessage.setSenderId(ApplicationData.getInstance()
-                        .getUserInfo().getId());*/
-                chatMessage.setReceiverId(groupId);
+                chatMessage.setSenderId(MySocket.user.getPhonenum());
+                chatMessage.setReceiverId(String.valueOf(groupId));
                 chatMessage.setMessageType(ChatEntity.SEND);
                 Date date = new Date();
-                SimpleDateFormat sdf = new SimpleDateFormat("MM-dd hh:mm:ss");
+                SimpleDateFormat sdf = new SimpleDateFormat("yy-MM-dd hh:mm:ss");
                 String sendTime = sdf.format(date);
                 chatMessage.setSendTime(sendTime);
+
                 chatList.add(chatMessage);
-                if(chatList.size()==1){
-                    chatMessageAdapter = new ChatMessageAdapter(GroupChatActivity.this,chatList);
-                    chatMeessageListView.setAdapter(chatMessageAdapter);
-                }
                 chatMessageAdapter.notifyDataSetChanged();
                 chatMeessageListView.setSelection(chatList.size());
                 //UserAction.sendMessage(chatMessage);
                 /*ImDB.getInstance(GroupChatActivity.this)
                         .saveChatMessage(chatMessage);*/
+
+                rMessage.setSenderphone(MySocket.user.getPhonenum());
+                rMessage.setSendername(MySocket.user.getUserName());
+                rMessage.setGroupid(groupId);
+                rMessage.setContent(inputEdit.getText().toString());
+                rMessage.setDate(date);
+                rMessage.setType("群消息");
+                ((MySocket)getApplication()).send(gson.toJson(rMessage));
+                inputEdit.setText("");
             }
         });
     }

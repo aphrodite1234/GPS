@@ -41,12 +41,7 @@ public class CreateGroupActivity extends Activity {
                 if(rMessage.getType().equals("创建群")){
                     if(rMessage.getContent().equals("true")){
                         idStr=String.valueOf(rMessage.getGroupid());
-                        Toast.makeText(CreateGroupActivity.this,"创建成功",Toast.LENGTH_SHORT).show();
-                        Intent intent=new Intent(CreateGroupActivity.this,GroupInfoActivity.class);
-                        intent.putExtra("groupname",nameStr);
-                        intent.putExtra("groupid",idStr);
-                        intent.putExtra("type","create");
-                        intent.putExtra("ismember","true");
+                        Intent intent=new Intent(CreateGroupActivity.this,MainActivity.class);
                         startActivity(intent);
                         finish();
                     }else {

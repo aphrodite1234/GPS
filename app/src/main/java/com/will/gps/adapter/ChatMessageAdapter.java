@@ -15,6 +15,7 @@ import com.will.gps.base.ApplicationData;
 import com.will.gps.bean.ChatEntity;
 import com.will.gps.bean.User;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -22,12 +23,12 @@ import java.util.List;
  */
 
 public class ChatMessageAdapter extends BaseAdapter{
-    private List<ChatEntity> chatEntities;
+    private List<ChatEntity> chatEntitiesList = new ArrayList<>();
     private LayoutInflater mInflater;
     private Context mContext0;
 
     public ChatMessageAdapter(Context context, List<ChatEntity> vector) {
-        this.chatEntities = vector;
+        this.chatEntitiesList = vector;
         mInflater = LayoutInflater.from(context);
         mContext0 = context;
     }
@@ -41,7 +42,7 @@ public class ChatMessageAdapter extends BaseAdapter{
         ImageView leftPhotoView;
         ImageView rightPhotoView;
         view = mInflater.inflate(R.layout.chat_message_item, null);
-        ChatEntity chatEntity = chatEntities.get(position);
+        ChatEntity chatEntity = chatEntitiesList.get(position);
         leftLayout = (LinearLayout) view
                 .findViewById(R.id.chat_friend_left_layout);
         rightLayout = (LinearLayout) view
@@ -78,8 +79,8 @@ public class ChatMessageAdapter extends BaseAdapter{
     @Override
     public int getCount() {
         // TODO Auto-generated method stub
-        if(chatEntities!=null){
-            return chatEntities.size();
+        if(chatEntitiesList!=null){
+            return chatEntitiesList.size();
         }else {
             return 0;
         }
@@ -88,8 +89,8 @@ public class ChatMessageAdapter extends BaseAdapter{
     @Override
     public Object getItem(int position) {
         // TODO Auto-generated method stub
-        if(chatEntities!=null){
-            return chatEntities.get(position);
+        if(chatEntitiesList!=null){
+            return chatEntitiesList.get(position);
         }else {
             return null;
         }
@@ -99,13 +100,5 @@ public class ChatMessageAdapter extends BaseAdapter{
     public long getItemId(int position) {
         // TODO Auto-generated method stub
         return position;
-    }
-
-    public List<ChatEntity> getChatEntities() {
-        return chatEntities;
-    }
-
-    public void setChatEntities(List<ChatEntity> chatEntities) {
-        this.chatEntities = chatEntities;
     }
 }
