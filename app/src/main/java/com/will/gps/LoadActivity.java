@@ -1,7 +1,9 @@
 package com.will.gps;
 
 import android.app.Activity;
+import android.content.ContentValues;
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -33,6 +35,7 @@ public class LoadActivity extends Activity {
     RMessage message = new RMessage();
     Gson gson = new Gson();
     DBOpenHelper dbOpenHelper=new DBOpenHelper(LoadActivity.this);
+    SQLiteDatabase sqLiteDatabase = dbOpenHelper.getWritableDatabase();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +63,10 @@ public class LoadActivity extends Activity {
                 message = gson.fromJson(msg.obj.toString(),RMessage.class);
                 Toast.makeText(LoadActivity.this,"登录123"+message,Toast.LENGTH_SHORT).show();
                 if(message.getContent().equals("true")){
+                    ContentValues contentValues = new ContentValues();
+                    contentValues.put("phonenum",MySocket.user.getPhonenum());
+                    contentValues.put("username",MySocket.user.getUserName());
+                    sqLiteDatabase.insert("user",null,contentValues);
                     startActivity(dl);
                     finish();
                 }else {
