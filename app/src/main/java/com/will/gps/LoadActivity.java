@@ -13,6 +13,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
+import com.will.gps.base.DBOpenHelper;
 import com.will.gps.base.MySocket;
 import com.will.gps.base.RMessage;
 import com.will.gps.Password.PasswordActivity;
@@ -31,6 +32,7 @@ public class LoadActivity extends Activity {
     private ImageView image=null;
     RMessage message = new RMessage();
     Gson gson = new Gson();
+    DBOpenHelper dbOpenHelper=new DBOpenHelper(LoadActivity.this);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

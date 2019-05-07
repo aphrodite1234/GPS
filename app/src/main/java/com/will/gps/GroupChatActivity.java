@@ -56,7 +56,6 @@ public class GroupChatActivity extends Activity implements View.OnClickListener{
     String ismember;
     RMessage rMessage = new RMessage();
     Gson gson = new Gson();
-    ChatEntity chatMessage = new ChatEntity();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,6 +77,7 @@ public class GroupChatActivity extends Activity implements View.OnClickListener{
                 rMessage=gson.fromJson(msg.obj.toString(),RMessage.class);
                 String type = rMessage.getType();
                 if(type.equals("群消息")){
+                    ChatEntity chatMessage = new ChatEntity();
                     chatMessage.setContent(rMessage.getContent());
                     chatMessage.setSenderId(rMessage.getSenderphone());
                     chatMessage.setSendTime(rMessage.getDate());
@@ -156,6 +156,7 @@ public class GroupChatActivity extends Activity implements View.OnClickListener{
         sendButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 String content = inputEdit.getText().toString();
+                ChatEntity chatMessage = new ChatEntity();
                 chatMessage.setContent(content);
                 chatMessage.setSenderId(MySocket.user.getPhonenum());
                 chatMessage.setReceiverId(String.valueOf(groupId));
