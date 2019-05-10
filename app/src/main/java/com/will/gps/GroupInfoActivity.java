@@ -6,9 +6,13 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.PopupMenu;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -29,12 +33,14 @@ public class GroupInfoActivity extends Activity implements View.OnClickListener{
     private TextView textname,textnum,myname,member;
     private Button btn;
     public String isMember;
-    public boolean isOwner=false;
     private RelativeLayout mynameview;
     private Intent i;
+    private PopupMenu popupMenu;
+    private Menu menu;
     RMessage rMessage = new RMessage();
     Gson gson = new Gson();
     GroupMember groupMember = new GroupMember();
+    private boolean havesign;//从服务器查找有没有未结束的签到活动，判断有没有签到活动
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,6 +76,16 @@ public class GroupInfoActivity extends Activity implements View.OnClickListener{
         mynameview=(RelativeLayout)findViewById(R.id.group_info_layout_myname);
         img_back=(ImageView)findViewById(R.id.group_info_back);
         img_more=(ImageView)findViewById(R.id.group_info_more);
+
+        popupMenu=new PopupMenu(this,findViewById(R.id.group_info_more));
+        menu = popupMenu.getMenu();
+        // 通过代码添加菜单项
+        /*menu.add(Menu.NONE, Menu.FIRST + 0, 0, "复制");
+        menu.add(Menu.NONE, Menu.FIRST + 1, 1, "粘贴");*/
+        //通过XML文件添加菜单项
+        MenuInflater menuInflater = getMenuInflater();
+        menuInflater.inflate(R.menu.menu_group_info, menu);
+
         img_back.setOnClickListener(this);
         img_more.setOnClickListener(this);
 
@@ -80,18 +96,10 @@ public class GroupInfoActivity extends Activity implements View.OnClickListener{
         member.setText(String.valueOf(i.getIntExtra("membernum",0))+"人");
         isMember=i.getStringExtra("ismember");
 
-//        try{//判断是否是创建群
-//            if(i.getStringExtra("type").equals("create")){
-//                isOwner=true;
-//                Toast.makeText(GroupInfoActivity.this,"欢迎群主",Toast.LENGTH_SHORT).show();
-//            }else{
-//                System.out.println("type为空");
-//            }
-//        }catch (Exception e){
-//            System.out.println(e);
-//        }
-
         if(!myname.getText().toString().equals(MySocket.user.getPhonenum())){//判读不是群主
+            popupMenu.getMenu().findItem(R.id.menu_groupinfo_startsign).setVisible(false);
+            popupMenu.getMenu().findItem(R.id.menu_groupinfo_endsign).setVisible(false);
+            if(!havesign) popupMenu.getMenu().findItem(R.id.menu_groupinfo_signlist).setVisible(false);
             btn.setOnClickListener(this);
             if(isMember.equals("false")) {
                 btn.setText("加群");
@@ -101,7 +109,48 @@ public class GroupInfoActivity extends Activity implements View.OnClickListener{
                 btn.setText("退群");
                 btn.setTextColor(Color.RED);
             }
+
+            popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                @Override
+                public boolean onMenuItemClick(MenuItem item) {
+                    switch (item.getItemId()) {
+                        case R.id.menu_groupinfo_signlist:
+                            Toast.makeText(GroupInfoActivity.this,"点击签到列表！",Toast.LENGTH_SHORT).show();
+                        default:
+                            break;
+                    }
+                    return false;
+                }
+            });
         }else{
+            if(!havesign){//判断有没有签到活动
+                popupMenu.getMenu().findItem(R.id.menu_groupinfo_endsign).setVisible(false);
+                popupMenu.getMenu().findItem(R.id.menu_groupinfo_signlist).setVisible(false);
+            }else{
+                popupMenu.getMenu().findItem(R.id.menu_groupinfo_startsign).setVisible(false);
+            }
+            // 监听事件
+            popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                @Override
+                public boolean onMenuItemClick(MenuItem item) {
+                    switch (item.getItemId()) {
+                        case R.id.menu_groupinfo_startsign:
+                            Toast.makeText(GroupInfoActivity.this, "点击发起签到！", Toast.LENGTH_SHORT).show();
+                            havesign=true;
+                            break;
+                        case R.id.menu_groupinfo_endsign:
+                            Toast.makeText(GroupInfoActivity.this, "点击结束签到！", Toast.LENGTH_SHORT).show();
+                            havesign=false;
+                            break;
+                        case R.id.menu_groupinfo_signlist:
+                            Toast.makeText(GroupInfoActivity.this,"点击签到列表！",Toast.LENGTH_SHORT).show();
+                        default:
+                            break;
+                    }
+                    return false;
+                }
+            });
+
             btn.setOnClickListener(this);
             btn.setText("解散群");
             btn.setTextColor(Color.RED);
@@ -140,7 +189,7 @@ public class GroupInfoActivity extends Activity implements View.OnClickListener{
                 finish();
                 break;
             case R.id.group_info_more:
-                Toast.makeText(GroupInfoActivity.this,"功能未实现",Toast.LENGTH_SHORT).show();
+                popupMenu.show();
                 break;
         }
     }

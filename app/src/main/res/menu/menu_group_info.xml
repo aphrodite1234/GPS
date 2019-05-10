@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/menu_groupinfo_startsign"
+        android:title="发起签到"/>
+
+    <item
+        android:id="@+id/menu_groupinfo_endsign"
+        android:title="结束签到"/>
+
+    <item
+        android:id="@+id/menu_groupinfo_signlist"
+        android:title="签到列表"/>
+</menu>
