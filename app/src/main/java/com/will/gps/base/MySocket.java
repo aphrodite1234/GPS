@@ -33,24 +33,19 @@ public class MySocket extends Application{
     @Override
     public void onCreate() {
         super.onCreate();
-        connectServer();
+        sendHeart();
     }
 
     public void connectServer(){
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                //与服务器建立连接
-                try {
-                    socket = new Socket(SERVER_IP, PORT);
-                    writer = new PrintWriter(socket.getOutputStream(),true);
-                    reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-                } catch (Exception e) {
-                    msgToast("服务器连接失败！");
-                    e.printStackTrace();
-                }
-            }
-        }).start();
+        //与服务器建立连接
+        try {
+            socket = new Socket(SERVER_IP, PORT);
+            writer = new PrintWriter(socket.getOutputStream(),true);
+            reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+        } catch (Exception e) {
+            msgToast("服务器连接失败！");
+            e.printStackTrace();
+        }
     }
 
     public void sendHeart(){
@@ -62,7 +57,6 @@ public class MySocket extends Application{
                         rMessage.setType("心跳");
                         boolean isSuccess = sendHeart1(gson.toJson(rMessage));
                         if (!isSuccess) {
-                            msgToast("发送失败！");
                             release();
                         }
                     }
@@ -95,7 +89,6 @@ public class MySocket extends Application{
     private boolean sendHeart1(String msg){//发送心跳消息
         if(socket != null&&!socket.isClosed()&&!socket.isOutputShutdown()){
             writer.println(msg);
-            System.out.println(msg);
             sendTime=System.currentTimeMillis();
             return true;
         }else{

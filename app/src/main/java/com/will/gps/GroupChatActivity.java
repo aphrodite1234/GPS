@@ -2,6 +2,8 @@ package com.will.gps;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -20,6 +22,7 @@ import android.widget.TextView;
 import com.google.gson.Gson;
 import com.will.gps.adapter.ChatMessageAdapter;
 import com.will.gps.base.ApplicationData;
+import com.will.gps.base.DBOpenHelper;
 import com.will.gps.base.MySocket;
 import com.will.gps.base.RMessage;
 import com.will.gps.bean.ChatEntity;
@@ -67,9 +70,11 @@ public class GroupChatActivity extends Activity implements View.OnClickListener{
         groupowner=intent.getStringExtra("groupowner");
         membernum=intent.getIntExtra("membernum",0);
         ismember=intent.getStringExtra("ismember");
-        //initData();
+
         initViews();
         initEvents();
+        final DBOpenHelper dbOpenHelper=new DBOpenHelper(GroupChatActivity.this);
+        initData(dbOpenHelper);
         ((MySocket)getApplication()).setHandler(new Handler(){
             @Override
             public void handleMessage(Message msg) {
@@ -77,6 +82,7 @@ public class GroupChatActivity extends Activity implements View.OnClickListener{
                 rMessage=gson.fromJson(msg.obj.toString(),RMessage.class);
                 String type = rMessage.getType();
                 if(type.equals("群消息")){
+                    dbOpenHelper.savemsg(dbOpenHelper,rMessage);
                     ChatEntity chatMessage = new ChatEntity();
                     chatMessage.setContent(rMessage.getContent());
                     chatMessage.setSenderId(rMessage.getSenderphone());
@@ -90,12 +96,23 @@ public class GroupChatActivity extends Activity implements View.OnClickListener{
         });
     }
 
-    private void initData(){
-        ChatEntity chatEntity=new ChatEntity();
-        chatEntity.setContent("大家好");
-        chatEntity.setSenderId("1583781");
-        chatEntity.setSendTime("2019-04-28 17:12");
-        chatList.add(chatEntity);
+    private void initData(DBOpenHelper dbOpenHelper){
+        SQLiteDatabase db = dbOpenHelper.getReadableDatabase();
+        Cursor cursor = db.query("tsmessage", null, "groupid="+groupId, null, null, null, null);
+        while(cursor.moveToNext()){
+            ChatEntity chatMessage = new ChatEntity();
+            chatMessage.setContent(cursor.getString(cursor.getColumnIndex("content")));
+            chatMessage.setSenderId(cursor.getString(cursor.getColumnIndex("sender")));
+            chatMessage.setSendTime(cursor.getString(cursor.getColumnIndex("date")));
+            if(!cursor.getString(cursor.getColumnIndex("sender")).equals(MySocket.user.getPhonenum())){
+                chatMessage.setMessageType(ChatEntity.RECEIVE);
+            }else {
+                chatMessage.setMessageType(ChatEntity.SEND);
+            }
+            chatList.add(chatMessage);
+            chatMessageAdapter.notifyDataSetChanged();
+            chatMeessageListView.setSelection(chatList.size());
+        }
     }
 
     protected void initViews() {
@@ -155,6 +172,7 @@ public class GroupChatActivity extends Activity implements View.OnClickListener{
         chatMeessageListView.setAdapter(chatMessageAdapter);
         sendButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
+                DBOpenHelper dbOpenHelper=new DBOpenHelper(GroupChatActivity.this);
                 String content = inputEdit.getText().toString();
                 ChatEntity chatMessage = new ChatEntity();
                 chatMessage.setContent(content);
@@ -180,6 +198,7 @@ public class GroupChatActivity extends Activity implements View.OnClickListener{
                 rMessage.setDate(date);
                 rMessage.setType("群消息");
                 ((MySocket)getApplication()).send(gson.toJson(rMessage));
+                dbOpenHelper.savemsg(dbOpenHelper,rMessage);
                 inputEdit.setText("");
             }
         });
@@ -189,7 +208,7 @@ public class GroupChatActivity extends Activity implements View.OnClickListener{
     public void onClick(View v) {
         switch(v.getId()){
             case R.id.group_chat_back:
-            finish();
+                finish();
             break;
             case R.id.group_chat_more:
                 Intent i=new Intent(GroupChatActivity.this,GroupInfoActivity.class);

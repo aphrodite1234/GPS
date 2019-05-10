@@ -8,6 +8,8 @@ import android.annotation.SuppressLint;
 import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -20,7 +22,9 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 import com.will.gps.GroupChatActivity;
 import com.will.gps.GroupChatActivity;
+import com.will.gps.MainActivity;
 import com.will.gps.R;
+import com.will.gps.base.DBOpenHelper;
 import com.will.gps.bean.Group;
 import com.will.gps.base.RMessage;
 import com.will.gps.bean.RecentContactBean;
@@ -68,9 +72,8 @@ public class GroupMsgFragment extends Fragment {
     private RecentContactBean rcb3 = new RecentContactBean();
 
     @SuppressLint("ValidFragment")
-    public GroupMsgFragment(List<RecentContactBean> List, List<String> list) {
+    public GroupMsgFragment(List<RecentContactBean> List) {
         mContactList = List;
-        groupList = list;
     }
 
     @SuppressLint("SimpleDateFormat")
@@ -86,7 +89,9 @@ public class GroupMsgFragment extends Fragment {
         }
         mRecyclerView = view.findViewById(R.id.rcv_group_list);
         mDateFormat = new SimpleDateFormat("HH:mm");
-        initRecyclerView(groupList);
+
+        DBOpenHelper dbOpenHelper=new DBOpenHelper(getActivity());
+        initRecyclerView(dbOpenHelper.searchgroup(dbOpenHelper));
         //initListener();//更新最近联系人列表
         for (int i = 0; i < mContactList.size(); i++) {
             //RecentContactBean bean = mContactList.get(i);
@@ -103,18 +108,11 @@ public class GroupMsgFragment extends Fragment {
         mContactList = new ArrayList<>(3);
 
         if (!groups.isEmpty()) {
-            int i = 0;
-            System.out.println(groups);
             for (String group : groups) {
                 Group group4 = gson.fromJson(group, Group.class);
                 RecentContactBean recentContactBean = new RecentContactBean();
                 recentContactBean.setGroup(group4);
-                mContactList.add(i++, recentContactBean);
-                System.out.println(i + gson.toJson(mContactList.get(i - 1)));
-            }
-            System.out.println(gson.toJson(mContactList));
-            for (int j = 0; j < mContactList.size(); j++) {
-                System.out.println(j + gson.toJson(mContactList.get(j)));
+                mContactList.add(recentContactBean);
             }
         } else {
             group1.setGroupname("暂未加入任何群");

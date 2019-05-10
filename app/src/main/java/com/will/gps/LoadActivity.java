@@ -3,6 +3,7 @@ package com.will.gps;
 import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Intent;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.os.Handler;
@@ -34,8 +35,6 @@ public class LoadActivity extends Activity {
     private ImageView image=null;
     RMessage message = new RMessage();
     Gson gson = new Gson();
-    DBOpenHelper dbOpenHelper=new DBOpenHelper(LoadActivity.this);
-    SQLiteDatabase sqLiteDatabase = dbOpenHelper.getWritableDatabase();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,8 +49,9 @@ public class LoadActivity extends Activity {
         image=(ImageView)findViewById(R.id.load_image);
         image.setImageResource(R.drawable.ic_gps);
 
+        DBOpenHelper dbOpenHelper=new DBOpenHelper(LoadActivity.this);
+        final SQLiteDatabase db = dbOpenHelper.getWritableDatabase();
         ((MySocket)getApplication()).read();
-        ((MySocket)getApplication()).sendHeart();//发送心跳消息
         final Intent dl=new Intent(LoadActivity.this,MainActivity.class);
         ((MySocket) getApplication()).setHandler(new Handler()
         {
@@ -63,10 +63,12 @@ public class LoadActivity extends Activity {
                 message = gson.fromJson(msg.obj.toString(),RMessage.class);
                 Toast.makeText(LoadActivity.this,"登录123"+message,Toast.LENGTH_SHORT).show();
                 if(message.getContent().equals("true")){
+                    Cursor cursor = db.query("user", null, "phonenum="+MySocket.user.getPhonenum(), null, null, null, null);
                     ContentValues contentValues = new ContentValues();
-                    contentValues.put("phonenum",MySocket.user.getPhonenum());
-                    contentValues.put("username",MySocket.user.getUserName());
-                    sqLiteDatabase.insert("user",null,contentValues);
+                    if(cursor.getCount()==0){
+                        contentValues.put("phonenum",MySocket.user.getPhonenum());
+                        db.insert("user",null,contentValues);
+                    }
                     startActivity(dl);
                     finish();
                 }else {

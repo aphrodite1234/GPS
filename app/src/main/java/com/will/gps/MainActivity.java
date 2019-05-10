@@ -1,6 +1,9 @@
 package com.will.gps;
 
+import android.content.ContentValues;
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
@@ -13,6 +16,7 @@ import android.widget.TextView;
 import android.support.v4.app.FragmentManager;
 import android.app.FragmentTransaction;
 import com.google.gson.Gson;
+import com.will.gps.base.DBOpenHelper;
 import com.will.gps.base.MySocket;
 import com.will.gps.base.RMessage;
 import com.will.gps.bean.Group;
@@ -53,20 +57,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private List<MessageTabEntity> List2;//传到RecentMsgFragment
     private List<String> groupList = new ArrayList<>();
 
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         bindView();
         rMessage.setType("登录成功");
         rMessage.setSenderphone(MySocket.user.getPhonenum());
         ((MySocket)getApplication()).send(gson.toJson(rMessage));
+
         //initHandler();
 
         // 开启通知栏，有信息的时候通知通知
         //NIMClient.toggleNotification(true);
+        final DBOpenHelper dbOpenHelper=new DBOpenHelper(MainActivity.this);
 
         ((MySocket)getApplication()).setHandler(new Handler(){
             @Override
@@ -77,10 +82,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 switch (type){
                     case "更新信息":
                         MySocket.user=gson.fromJson(rMessage.getContent(),User.class);
-                        f3.showData();
+                        dbOpenHelper.updateuser(dbOpenHelper);
                         break;
                     case "我的群":
-                        f1.initRecyclerView(rMessage.getGroup());
+                        dbOpenHelper.savegroup(dbOpenHelper,rMessage.getGroup());
+                        tabQun.performClick();
+                        break;
+                    case "群消息":
+                        dbOpenHelper.savemsg(dbOpenHelper,rMessage);
                         break;
                 }
             }
@@ -110,19 +119,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         tabMessage.setOnClickListener(this);
         tabMore.setOnClickListener(this);
         tabUser.setOnClickListener(this);
-
-        f1 = new GroupMsgFragment(List,groupList);
-        transaction1.add(R.id.fragment_container,f1);
-        f2 = new RecentMsgFragment(List2);
-        transaction1.add(R.id.fragment_container,f2);
-        f3 = new UserFragment();
-        transaction1.add(R.id.fragment_container,f3);
-        f4 = new FirstFragment("第四个Fragment");
-        transaction1.add(R.id.fragment_container,f4);
-        hideAllFragment(transaction1);
-        transaction1.commit();
-
-        tabQun.performClick();
     }
 
     //重置所有文本的选中状态
@@ -163,10 +159,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 startActivity(intent);
                 break;
             case R.id.txt_qun:
-                rMessage.setContent(null);
-                rMessage.setType("我的群");
-                rMessage.setSenderphone(MySocket.user.getPhonenum());
-                ((MySocket)getApplication()).send(gson.toJson(rMessage));
                 selected();
                 tabQun.setSelected(true);
                 topBar.setText("我的群");
@@ -174,7 +166,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 ft.replace(R.id.fragment_container, groupMsgFragment,MainActivity.TAG);
                 ft.commit();*/
                 if(f1==null){
-                    f1 = new GroupMsgFragment(List,groupList);
+                    f1 = new GroupMsgFragment(List);
                     transaction.add(R.id.fragment_container,f1);
                 }else{
                     transaction.show(f1);
@@ -228,6 +220,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
         transaction.commit();
     }
+
 
     @Override
     protected void onRestart() {

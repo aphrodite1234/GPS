@@ -4,6 +4,8 @@ import android.app.Fragment;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
@@ -27,6 +29,7 @@ import com.will.gps.MainActivity;
 import com.will.gps.MainActivity.MyOnTouchListener;
 import com.will.gps.R;
 import com.netease.nimlib.sdk.uinfo.constant.GenderEnum;
+import com.will.gps.base.DBOpenHelper;
 import com.will.gps.base.MySocket;
 import com.will.gps.base.RMessage;
 import com.will.gps.bean.LocalAccountBean;
@@ -120,7 +123,8 @@ public class UserFragment extends Fragment implements View.OnClickListener{
             }
         };
         ((MainActivity)getActivity()).registerMyOnTouchListener(myOnTouchListener);
-        showData();
+        DBOpenHelper dbOpenHelper=new DBOpenHelper(getActivity());
+        showData(dbOpenHelper);
         init();
         return view;
     }
@@ -152,46 +156,19 @@ public class UserFragment extends Fragment implements View.OnClickListener{
 
 
     // 显示数据
-    public void showData() {
-        mIvHead.setImageResource(R.mipmap.zu);
-        mTvAccount.setText(MySocket.user.getPhonenum());
-        mEtNick.setText(MySocket.user.getUserName());
-        mTvSex.setText(MySocket.user.getSex());
-        mTvBirthDay.setText(MySocket.user.getBirthday());
-        mTvLocation.setText(MySocket.user.getLocate());
-        mEtSignature.setText(MySocket.user.getSignature());
-        mEtRealName.setText(MySocket.user.getRealName());
-
-        //mAccountBean = NimUserHandler.getInstance().getLocalAccount();
-//        if (mAccountBean != null) {
-//            /*ImageUtils.setImageByFile(this, mIvHead,
-//                    mAccountBean.getHeadImgUrl(), R.mipmap.bg_img_defalut);*/
-//            mIvHead.setImageResource(R.mipmap.zu);
-//            //mTvAccount.setText(mAccountBean.getAccount());
-//            mTvAccount.setText(MySocket.user.getPhonenum());
-//            //mEtNick.setText(mAccountBean.getNick());
-//            mEtNick.setText(MySocket.user.getUserName());
-//            if (mAccountBean.getGenderEnum() == GenderEnum.FEMALE) {
-//                mTvSex.setText("女");
-//            } else if (mAccountBean.getGenderEnum() == GenderEnum.MALE) {
-//                mTvSex.setText("男");
-//            } else {
-//                mTvSex.setText("保密");
-//            }
-//            mEtSignature.setText(mAccountBean.getSignature());
-//            String birthday = mAccountBean.getBirthDay();
-//            if (TextUtils.isEmpty(birthday)) {
-//                mTvBirthDay.setText("未设置");
-//            } else {
-//                mTvBirthDay.setText(birthday);
-//            }
-//            String location = mAccountBean.getLocation();
-//            if (TextUtils.isEmpty(location)) {
-//                mTvLocation.setText("未设置");
-//            } else {
-//                mTvLocation.setText(location);
-//            }
-//        }
+    public void showData(DBOpenHelper dbOpenHelper) {
+        SQLiteDatabase db = dbOpenHelper.getReadableDatabase();
+        Cursor cursor = db.query("user", null, null, null, null, null, null);
+        if(cursor.moveToNext()){
+            mIvHead.setImageResource(R.mipmap.zu);
+            mTvAccount.setText(cursor.getString(cursor.getColumnIndex("phonenum")));
+            mEtNick.setText(cursor.getString(cursor.getColumnIndex("username")));
+            mTvSex.setText(cursor.getString(cursor.getColumnIndex("sex")));
+            mTvBirthDay.setText(cursor.getString(cursor.getColumnIndex("birthday")));
+            mTvLocation.setText(cursor.getString(cursor.getColumnIndex("locate")));
+            mEtSignature.setText(cursor.getString(cursor.getColumnIndex("signature")));
+            mEtRealName.setText(cursor.getString(cursor.getColumnIndex("realname")));
+        }
     }
     private void init(){
         //mInputMethodManager = (InputMethodManager)getSystemService(context.INPUT_METHOD_SERVICE);
