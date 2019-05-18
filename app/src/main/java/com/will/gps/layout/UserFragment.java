@@ -28,14 +28,10 @@ import com.google.gson.Gson;
 import com.will.gps.MainActivity;
 import com.will.gps.MainActivity.MyOnTouchListener;
 import com.will.gps.R;
-import com.netease.nimlib.sdk.uinfo.constant.GenderEnum;
 import com.will.gps.base.DBOpenHelper;
 import com.will.gps.base.MySocket;
 import com.will.gps.base.RMessage;
-import com.will.gps.bean.LocalAccountBean;
 import com.will.gps.view.CircleImageView;
-
-import java.sql.Timestamp;
 import java.util.Date;
 
 /**
@@ -57,7 +53,6 @@ public class UserFragment extends Fragment implements View.OnClickListener{
     private TextView mTvLocation;
     private EditText mEtSignature;
     // 个人信息
-    private LocalAccountBean mAccountBean;
     // 头像本地路径
     /*private String mHeadImgPath = "";
     // 获取图像请求码

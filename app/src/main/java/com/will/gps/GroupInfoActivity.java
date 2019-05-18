@@ -136,6 +136,8 @@ public class GroupInfoActivity extends Activity implements View.OnClickListener{
                     switch (item.getItemId()) {
                         case R.id.menu_groupinfo_startsign:
                             Toast.makeText(GroupInfoActivity.this, "点击发起签到！", Toast.LENGTH_SHORT).show();
+                            Intent i=new Intent(GroupInfoActivity.this,CreateSignActivity.class);
+                            startActivity(i);
                             havesign=true;
                             break;
                         case R.id.menu_groupinfo_endsign:
