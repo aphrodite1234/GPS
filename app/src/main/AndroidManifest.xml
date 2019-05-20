@@ -51,6 +51,9 @@
         <activity android:name=".CreateSignActivity"/>
         <activity android:name=".map.AmapActivity"/>
         <activity android:name=".base.PermissionActivity"/>
+        <activity android:name=".SignTableListActivity"/>
+        <activity android:name=".ReceiverListAcitivty"/>
+        <activity android:name=".ReceiverMapActivity"/>
         <service android:name="com.amap.api.location.APSService"/>
     </application>
 

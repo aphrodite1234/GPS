@@ -35,7 +35,7 @@
                 android:textSize="18sp" />
 
             <ImageView
-                android:id="@+id/btn_add"
+                android:id="@+id/btn_map"
                 android:layout_width="26dp"
                 android:layout_height="26dp"
                 android:layout_gravity="center_vertical"
@@ -59,6 +59,14 @@
     <android.support.v7.widget.RecyclerView
         android:id="@+id/sign_list"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:id="@+id/sign_table_tip"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textSize="25sp"
+        android:textColor="@color/text_blue"/>
 
 </LinearLayout>

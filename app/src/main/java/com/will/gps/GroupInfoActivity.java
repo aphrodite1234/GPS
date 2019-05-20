@@ -99,7 +99,7 @@ public class GroupInfoActivity extends Activity implements View.OnClickListener{
         if(!myname.getText().toString().equals(MySocket.user.getPhonenum())){//判读不是群主
             popupMenu.getMenu().findItem(R.id.menu_groupinfo_startsign).setVisible(false);
             popupMenu.getMenu().findItem(R.id.menu_groupinfo_endsign).setVisible(false);
-            if(!havesign) popupMenu.getMenu().findItem(R.id.menu_groupinfo_signlist).setVisible(false);
+            //if(!havesign) popupMenu.getMenu().findItem(R.id.menu_groupinfo_signlist).setVisible(false);
             btn.setOnClickListener(this);
             if(isMember.equals("false")) {
                 btn.setText("加群");
@@ -125,7 +125,7 @@ public class GroupInfoActivity extends Activity implements View.OnClickListener{
         }else{
             if(!havesign){//判断有没有签到活动
                 popupMenu.getMenu().findItem(R.id.menu_groupinfo_endsign).setVisible(false);
-                popupMenu.getMenu().findItem(R.id.menu_groupinfo_signlist).setVisible(false);
+                //popupMenu.getMenu().findItem(R.id.menu_groupinfo_signlist).setVisible(false);
             }else{
                 popupMenu.getMenu().findItem(R.id.menu_groupinfo_startsign).setVisible(false);
             }
@@ -135,7 +135,7 @@ public class GroupInfoActivity extends Activity implements View.OnClickListener{
                 public boolean onMenuItemClick(MenuItem item) {
                     switch (item.getItemId()) {
                         case R.id.menu_groupinfo_startsign:
-                            Toast.makeText(GroupInfoActivity.this, "点击发起签到！", Toast.LENGTH_SHORT).show();
+                            //Toast.makeText(GroupInfoActivity.this, "点击发起签到！", Toast.LENGTH_SHORT).show();
                             Intent i=new Intent(GroupInfoActivity.this,CreateSignActivity.class);
                             startActivity(i);
                             havesign=true;
@@ -146,6 +146,8 @@ public class GroupInfoActivity extends Activity implements View.OnClickListener{
                             break;
                         case R.id.menu_groupinfo_signlist:
                             Toast.makeText(GroupInfoActivity.this,"点击签到列表！",Toast.LENGTH_SHORT).show();
+                            Intent intent=new Intent(GroupInfoActivity.this,SignTableListActivity.class);
+                            startActivity(intent);
                         default:
                             break;
                     }

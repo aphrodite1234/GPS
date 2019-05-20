@@ -20,55 +20,65 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_marginStart="5dp"
-            android:layout_weight="1"
+            android:layout_weight="1.8"
             android:gravity="center_vertical"
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/sign_table_id"
+                android:id="@+id/receiver_id"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:maxLines="1"
-                android:text="1234"
-                android:textSize="24sp"
                 android:textColor="@color/text_blue"/>
 
             <TextView
+                android:id="@+id/receiver_realname"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
         </LinearLayout>
 
         <LinearLayout
-            android:paddingStart="20dp"
+            android:paddingStart="10dp"
             android:paddingEnd="0dp"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_weight="1.4"
+            android:layout_weight="1"
             android:orientation="vertical">
             <TextView
-                android:id="@+id/sign_table_time"
+                android:id="@+id/receiver_done"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/text_blue"/>
             <TextView
-                android:id="@+id/sign_table_longitude"
+                android:id="@+id/receiver_longitude"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:maxLines="1"/>
             <TextView
-                android:id="@+id/sign_table_latitude"
+                android:id="@+id/receiver_latitude"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:maxLines="1"/>
         </LinearLayout>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
             <ImageView
-                android:id="@+id/sign_table_state"
+                android:id="@+id/receiver_result"
                 android:layout_marginStart="5dp"
                 android:layout_width="35dp"
                 android:layout_height="35dp"
                 android:layout_marginTop="5dp"
                 android:gravity="center"/>
+
+            <TextView
+                android:id="@+id/receiver_textresult"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="15sp"/>
+
+        </LinearLayout>
 
     </LinearLayout>
 

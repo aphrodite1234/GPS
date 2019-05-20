@@ -113,7 +113,7 @@ public class GroupMsgFragment extends Fragment {
 //        rcb1.setGroup(group1);
 //        mContactList.add(rcb1);
 
-        //测试用数据
+          //测试用数据
 //        group1.setGroupname("一群");
 //        group1.setGroupid(123);
 //        group2.setGroupname("二群");
