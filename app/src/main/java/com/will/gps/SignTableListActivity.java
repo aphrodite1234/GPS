@@ -66,15 +66,15 @@ public class SignTableListActivity extends Activity {
         SignTableBean signTableBean1=new SignTableBean();
         SignTableBean signTableBean2=new SignTableBean();
         signTableBean1.setId(123);
-        signTableBean1.setLongitude(120.456789);
-        signTableBean1.setLatitude(38.123456);
+        signTableBean1.setLongitude(114.314499);
+        signTableBean1.setLatitude(34.81386);
         signTableBean1.setOriginator("15837811860");
         signTableBean1.setTime(new Date());
         signTableBean1.setState(true);
 
         signTableBean2.setId(456);
-        signTableBean2.setLongitude(10.456789);
-        signTableBean2.setLatitude(8.123456);
+        signTableBean2.setLongitude(114.31192);
+        signTableBean2.setLatitude(34.814472);
         signTableBean2.setOriginator("15837811860");
         signTableBean2.setTime(new Date());
         signTableBean2.setState(false);
@@ -130,7 +130,7 @@ public class SignTableListActivity extends Activity {
             public void onItemClick(RViewHolder holder, int position) {
                 SignTableBean signTableBean=signTableBeanList.get(position);
                 Intent i=new Intent(SignTableListActivity.this,ReceiverListAcitivty.class);
-                i.putExtra("id",signTableBean.getId());
+                i.putExtra("signtable",signTableBean);
                 startActivity(i);
             }
         });

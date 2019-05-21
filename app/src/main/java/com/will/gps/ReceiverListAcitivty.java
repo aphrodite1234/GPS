@@ -13,6 +13,8 @@ import com.google.gson.Gson;
 import com.suntek.commonlibrary.adapter.RViewHolder;
 import com.suntek.commonlibrary.adapter.RecycleViewAdapter;
 import com.will.gps.bean.ReceiverBean;
+import com.will.gps.bean.SignTableBean;
+import com.will.gps.map.ReceiverMapActivity;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -30,7 +32,7 @@ public class ReceiverListAcitivty extends Activity{
     private List<String> receivers;//从数据库查询到的签到表列表
     private Gson gson=new Gson();
     private ImageView btn_back,btn_map;
-    private Intent i;
+    private SignTableBean signTableBean;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,9 +41,9 @@ public class ReceiverListAcitivty extends Activity{
 
         initData();//初始化receivers
 
-        i=getIntent();
+        signTableBean=(SignTableBean)getIntent().getSerializableExtra("signtable");
         title=(TextView)findViewById(R.id.sign_table_title);
-        title.setText(String.valueOf(i.getIntExtra("id",0))+"的签到情况");
+        title.setText(String.valueOf(signTableBean.getId())+"的签到情况");
         tip=(TextView)findViewById(R.id.sign_table_tip);
         mRecyclerView=findViewById(R.id.sign_list);
 
@@ -53,13 +55,14 @@ public class ReceiverListAcitivty extends Activity{
                 finish();
             }
         });
-        btn_map.setImageResource(R.mipmap.position);
+        btn_map.setImageResource(R.drawable.ic_location_on_white_24dp);
         btn_map.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i1=new Intent(ReceiverListAcitivty.this,ReceiverMapActivity.class);
-                i1.putExtra("receivers",(Serializable) receivers);
-                startActivity(i1);
+                Intent i=new Intent(ReceiverListAcitivty.this,ReceiverMapActivity.class);
+                i.putExtra("receivers",(Serializable) receivers);
+                i.putExtra("signtable",signTableBean);
+                startActivity(i);
             }
         });
 
@@ -73,14 +76,14 @@ public class ReceiverListAcitivty extends Activity{
         ReceiverBean receiver2=new ReceiverBean();
         receiver1.setId("15837811860");
         receiver1.setRealname("方元岭");
-        receiver1.setRlongitude(120.456789);
-        receiver1.setRlatitude(38.123456);
+        receiver1.setRlongitude(114.314895);
+        receiver1.setRlatitude(34.815956);
         receiver1.setDone(true);
         receiver1.setResult(true);
 
         receiver2.setId("12345678910");
-        receiver2.setRlongitude(10.456789);
-        receiver2.setRlatitude(8.123456);
+        receiver2.setRlongitude(114.312232);
+        receiver2.setRlatitude(34.81612);
         receiver2.setDone(false);
         receiver2.setResult(false);
 

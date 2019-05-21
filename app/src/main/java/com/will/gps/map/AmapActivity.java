@@ -181,9 +181,7 @@ public class AmapActivity extends AppCompatActivity implements LocationSource, A
     @Override
     public void activate(OnLocationChangedListener onLocationChangedListener) {
         mListener = onLocationChangedListener;
-
         locationUtil.startLocate(this,highaccuracy);
-
         tvChoseAddress.setText(String.format("纬度:%s   经度:%s", latitude, longitude));
     }
 

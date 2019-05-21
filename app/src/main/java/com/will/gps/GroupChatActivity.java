@@ -46,7 +46,7 @@ public class GroupChatActivity extends Activity implements View.OnClickListener{
     private TextView signtime,signlocation;
     private Button signbutton;
     private RelativeLayout sign_title;//签到提示框
-    boolean sign=false;//判断是否有签到活动,决定是否显示签到提示框
+    boolean sign=true;//判断是否有签到活动,决定是否显示签到提示框
     boolean signed=false;//判断是否已经签到
     String ismember;
     RMessage rMessage = new RMessage();

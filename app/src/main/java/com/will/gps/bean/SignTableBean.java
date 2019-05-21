@@ -1,17 +1,18 @@
 package com.will.gps.bean;
 
+import java.io.Serializable;
 import java.util.Date;
 
 /**
  * Created by MaiBenBen on 2019/5/10.
  */
 
-public class SignTableBean {
+public class SignTableBean implements Serializable{
     private boolean state;//状态
     private int id;//id
     private String originator;//发起者
     private double longitude;//经度
-    private double latitude;//维度
+    private double latitude;//纬度
     private Date time;//发起时间
 
     public boolean isState() {

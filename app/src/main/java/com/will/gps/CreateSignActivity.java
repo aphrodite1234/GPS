@@ -29,7 +29,7 @@ import java.util.Locale;
 
 public class CreateSignActivity extends Activity implements View.OnClickListener{
     private ImageView btn_back;
-    private EditText sign_id;
+    private EditText sign_id,sign_range;
     private Button btn_create,btn_dingwei1,btn_dingwei2;
     private Button dateButton,timeButton;
     private int id;
@@ -50,6 +50,7 @@ public class CreateSignActivity extends Activity implements View.OnClickListener
     private void bindView(){
         btn_back=(ImageView)findViewById(R.id.sign_create_back);
         sign_id=(EditText)findViewById(R.id.sign_create_id);
+        sign_range=(EditText)findViewById(R.id.sign_create_range);
         latitude=(EditText)findViewById(R.id.sign_create_latitude);
         longitude=(EditText)findViewById(R.id.sign_create_longitude);
         btn_create=(Button)findViewById(R.id.sign_create_btn);
@@ -109,6 +110,15 @@ public class CreateSignActivity extends Activity implements View.OnClickListener
                     return;
                 }else{
                     id = Integer.valueOf(sign_id.getText().toString().trim());
+                }
+                if (TextUtils.isEmpty(sign_range.getText().toString().trim())) {
+                    Toast.makeText(CreateSignActivity.this, "请输入签到范围", Toast.LENGTH_SHORT).show();
+                    return;
+                }else if(Integer.valueOf(sign_range.getText().toString().trim())>200){
+                    Toast.makeText(CreateSignActivity.this, "签到范围小于200m", Toast.LENGTH_SHORT).show();
+                    return;
+                }else {
+                    id = Integer.valueOf(sign_range.getText().toString().trim());
                 }
                 Toast.makeText(CreateSignActivity.this,"创建签到活动成功！",Toast.LENGTH_SHORT).show();
                 finish();
