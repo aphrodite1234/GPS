@@ -73,6 +73,7 @@
                 android:id="@+id/chat_message_left_layout"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:background="@drawable/bg_msgbox_receive_press"
                 android:orientation="horizontal" >
 
                 <TextView

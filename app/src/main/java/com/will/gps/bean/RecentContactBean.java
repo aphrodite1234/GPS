@@ -1,32 +1,19 @@
 package com.will.gps.bean;
 
-import com.netease.nimlib.sdk.msg.model.RecentContact;
-import com.netease.nimlib.sdk.uinfo.model.UserInfo;
-
 /**
  * Created by wudeng on 2017/9/11.
  */
 
 public class RecentContactBean {
-    private RecentContact mRecentContact;
-    private UserInfo mUserInfo;
+    private Msg msg;
     private User mUser;
     private Group mGroup;
 
-    public RecentContact getRecentContact() {
-        return mRecentContact;
+    public Msg getMsg() {
+        return msg;
     }
-
-    public void setRecentContact(RecentContact recentContact) {
-        mRecentContact = recentContact;
-    }
-
-    public UserInfo getUserInfo() {
-        return mUserInfo;
-    }
-
-    public void setUserInfo(UserInfo userInfo) {
-        mUserInfo = userInfo;
+    public void setMsg(Msg msg) {
+        this.msg = msg;
     }
 
     public User getUser(){return mUser;}

@@ -21,21 +21,13 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.will.gps.GroupChatActivity;
-import com.will.gps.GroupChatActivity;
-import com.will.gps.MainActivity;
+/*import com.will.gps.GroupChatActivity;
+import com.will.gps.MainActivity;*/
 import com.will.gps.R;
 import com.will.gps.base.DBOpenHelper;
 import com.will.gps.bean.Group;
 import com.will.gps.base.RMessage;
 import com.will.gps.bean.RecentContactBean;
-import com.netease.nimlib.sdk.NIMClient;
-import com.netease.nimlib.sdk.Observer;
-import com.netease.nimlib.sdk.RequestCallback;
-import com.netease.nimlib.sdk.RequestCallbackWrapper;
-import com.netease.nimlib.sdk.msg.MsgService;
-import com.netease.nimlib.sdk.msg.model.RecentContact;
-import com.netease.nimlib.sdk.uinfo.UserService;
-import com.netease.nimlib.sdk.uinfo.model.NimUserInfo;
 import com.suntek.commonlibrary.adapter.OnItemClickListener;
 import com.suntek.commonlibrary.adapter.RViewHolder;
 import com.suntek.commonlibrary.adapter.RecycleViewAdapter;
@@ -55,12 +47,9 @@ public class GroupMsgFragment extends Fragment {
     private static final String TAG = GroupMsgFragment.class.getSimpleName();
     private RecyclerView mRecyclerView;
     private List<RecentContactBean> mContactList;
-    private List<String> groupList = new ArrayList<>();
     private RecycleViewAdapter<RecentContactBean> mViewAdapter;
-    private Observer<List<RecentContact>> mObserver;
     private SimpleDateFormat mDateFormat;
     private Context context;
-    private RMessage rmessage;
     private View view;
     private Gson gson = new Gson();
 
@@ -105,7 +94,7 @@ public class GroupMsgFragment extends Fragment {
 
     public void initRecyclerView(List<String> groups) {//初始化RecyclerView组件
         LinearLayoutManager layoutManager = new LinearLayoutManager(context);
-        mContactList = new ArrayList<>(3);
+        mContactList = new ArrayList<>();
 
         if (!groups.isEmpty()) {
             for (String group : groups) {
@@ -124,7 +113,7 @@ public class GroupMsgFragment extends Fragment {
 //        rcb1.setGroup(group1);
 //        mContactList.add(rcb1);
 
-        //测试用数据
+          //测试用数据
 //        group1.setGroupname("一群");
 //        group1.setGroupid(123);
 //        group2.setGroupname("二群");

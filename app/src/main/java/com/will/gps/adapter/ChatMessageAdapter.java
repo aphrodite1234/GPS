@@ -1,7 +1,6 @@
 package com.will.gps.adapter;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -61,8 +60,8 @@ public class ChatMessageAdapter extends BaseAdapter{
             rightLayout.setVisibility(View.VISIBLE);
             leftLayout.setVisibility(View.GONE);
 
-            rightPhotoView.setImageBitmap(ApplicationData.getInstance()
-                    .getUserPhoto());
+            /*rightPhotoView.setImageBitmap(ApplicationData.getInstance()
+                    .getUserPhoto());*/
             rightMessageView.setText(chatEntity.getContent());
         } else if (chatEntity.getMessageType() == ChatEntity.RECEIVE) {// 本身作为接收方
             leftLayout.setVisibility(View.VISIBLE);

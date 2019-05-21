@@ -1,1 +1,1 @@
-include ':app', ':timeselectview', ':commonlibrary'
+include ':app'

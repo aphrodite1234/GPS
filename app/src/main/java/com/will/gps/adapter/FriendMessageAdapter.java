@@ -4,7 +4,6 @@ package com.will.gps.adapter;
  * Created by MaiBenBen on 2019/4/26.
  */
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;

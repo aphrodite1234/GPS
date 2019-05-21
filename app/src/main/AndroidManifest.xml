@@ -10,7 +10,13 @@
     <uses-permission android:name="android.permission.RECEIVE_SMS"/>
     <uses-permission android:name="android.permission.READ_SMS"/>
     <uses-permission android:name="android.permission.GET_TASKS"/>
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_CONFIGURATION" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.WRITE_SETTINGS" />
 
     <application
         android:name=".base.MySocket"
@@ -20,6 +26,9 @@
         android:roundIcon="@mipmap/ic_launcher_foreground_new"
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.Light.NoActionBar">
+        <meta-data
+            android:name="com.amap.api.v2.apikey"
+            android:value="b5331c866fb611640ebdc51cbc382c7a" />
         <activity android:name=".MainActivity">
         </activity>
         <activity android:name=".LoadActivity">
@@ -39,6 +48,13 @@
         <activity android:name=".GroupInfoActivity"/>
         <activity android:name=".GroupChatActivity"/>
         <activity android:name=".SearchActivity"/>
+        <activity android:name=".CreateSignActivity"/>
+        <activity android:name=".map.AmapActivity"/>
+        <activity android:name=".base.PermissionActivity"/>
+        <activity android:name=".SignTableListActivity"/>
+        <activity android:name=".ReceiverListAcitivty"/>
+        <activity android:name=".ReceiverMapActivity"/>
+        <service android:name="com.amap.api.location.APSService"/>
     </application>
 
 </manifest>
