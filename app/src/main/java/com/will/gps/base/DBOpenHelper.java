@@ -23,14 +23,24 @@ public class DBOpenHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        String create_user = "CREATE TABLE user(phonenum VARCHAR(11),username VARCHAR(20),password VARCHAR(50),realname VARCHAR(20),birthday VARCHAR(20),sex VARCHAR(2),locate VARCHAR(50),signature VARCHAR(200),photo BLOB)";
-        String create_mgroup = "CREATE TABLE mgroup(groupid INTEGER(11),groupname VARCHAR(20),groupowner VARCHAR(11),ownername VARCHAR(20),membernum INTEGER(11))";
-        String create_tsmessage = "CREATE TABLE tsmessage(groupid INTEGER(11),type VARCHAR(20),sender VARCHAR(20),sendername VARCHAR(20),receiver VARCHAR(20),receivername VARCHAR(20),content TEXT,date VARCHAR(20),state INTEGER(1))";
-        String create_groupmember="CREATE TABLE groupmember(groupid INTEGER(11),groupname VARCHAR(20),userphone VARCHAR(11),username VARCHAR(20))";
+        String create_user = "CREATE TABLE user(phonenum VARCHAR(11),username VARCHAR(20),password VARCHAR(50)," +
+                "realname VARCHAR(20),birthday VARCHAR(20),sex VARCHAR(2),locate VARCHAR(50)," +
+                "signature VARCHAR(200),photo BLOB)";
+        String create_mgroup = "CREATE TABLE mgroup(groupid INTEGER(11),groupname VARCHAR(20)," +
+                "groupowner VARCHAR(11),ownername VARCHAR(20),membernum INTEGER(11))";
+        String create_tsmessage = "CREATE TABLE tsmessage(groupid INTEGER(11),type VARCHAR(20)," +
+                "sender VARCHAR(20),sendername VARCHAR(20),receiver VARCHAR(20),receivername VARCHAR(20)," +
+                "content TEXT,date VARCHAR(20),state INTEGER(1))";
+        String create_groupmember="CREATE TABLE groupmember(groupid INTEGER(11),groupname VARCHAR(20)," +
+                "userphone VARCHAR(11),username VARCHAR(20))";
+        String create_signin="CREATE TABLE signin(groupid INTEGER(11),originator VARCHAR(11),time VARCHAR(20)," +
+                "longitude VARCHAR(20),latitude VARCHAR(20),region VARCHAR(20),receiver VARCHAR(11)," +
+                "rlongitude VARCHAR(20),rlatitude VARCHAR(20),state VARCHAR(20),done VARCHAR(20),result VARCHAR(20))";
         db.execSQL(create_user);
         db.execSQL(create_mgroup);
         db.execSQL(create_tsmessage);
         db.execSQL(create_groupmember);
+        db.execSQL(create_signin);
     }
 
     @Override
