@@ -9,7 +9,9 @@ public class ChatEntity implements Serializable{
     public static final int  RECEIVE = 0;
     public static final int SEND = 1;
     private String senderId;
+    private String sendername;
     private String receiverId;
+    private String receivername;
     private String sendDate;
     private int messageType;
     private String content;
@@ -43,5 +45,21 @@ public class ChatEntity implements Serializable{
     }
     public void setContent(String content) {
         this.content = content;
+    }
+
+    public String getSendername() {
+        return sendername;
+    }
+
+    public void setSendername(String sendername) {
+        this.sendername = sendername;
+    }
+
+    public String getReceivername() {
+        return receivername;
+    }
+
+    public void setReceivername(String receivername) {
+        this.receivername = receivername;
     }
 }

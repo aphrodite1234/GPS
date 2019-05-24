@@ -153,7 +153,7 @@ public class UserFragment extends Fragment implements View.OnClickListener{
     // 显示数据
     public void showData(DBOpenHelper dbOpenHelper) {
         SQLiteDatabase db = dbOpenHelper.getReadableDatabase();
-        Cursor cursor = db.query("user", null, null, null, null, null, null);
+        Cursor cursor = db.query("user", null, "phonenum="+MySocket.user.getPhonenum(), null, null, null, null);
         if(cursor.moveToNext()){
             mIvHead.setImageResource(R.mipmap.zu);
             mTvAccount.setText(cursor.getString(cursor.getColumnIndex("phonenum")));

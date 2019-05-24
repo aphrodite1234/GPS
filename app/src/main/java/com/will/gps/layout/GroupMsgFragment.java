@@ -17,6 +17,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
@@ -54,11 +55,7 @@ public class GroupMsgFragment extends Fragment {
     private Gson gson = new Gson();
 
     private Group group1 = new Group();
-    private Group group2 = new Group();
-    private Group group3 = new Group();//测试用
     private RecentContactBean rcb1 = new RecentContactBean();
-    private RecentContactBean rcb2 = new RecentContactBean();
-    private RecentContactBean rcb3 = new RecentContactBean();
 
     @SuppressLint("ValidFragment")
     public GroupMsgFragment(List<RecentContactBean> List) {
@@ -103,27 +100,10 @@ public class GroupMsgFragment extends Fragment {
                 recentContactBean.setGroup(group4);
                 mContactList.add(recentContactBean);
             }
-        } else {
-            group1.setGroupname("暂未加入任何群");
-            rcb1.setGroup(group1);
-            mContactList.add(rcb1);
+        }else {
+            TextView textView = view.findViewById(R.id.txt_empty);
+            textView.setText("暂未加入签到群");
         }
-
-//        group1.setGroupname("暂未加入任何群");
-//        rcb1.setGroup(group1);
-//        mContactList.add(rcb1);
-
-          //测试用数据
-//        group1.setGroupname("一群");
-//        group1.setGroupid(123);
-//        group2.setGroupname("二群");
-//        group3.setGroupname("三群");
-//        rcb1.setGroup(group1);
-//        rcb2.setGroup(group2);
-//        rcb3.setGroup(group3);
-//        mContactList.add(0,rcb1);
-//        mContactList.add(1,rcb2);
-//        mContactList.add(2,rcb3);
 
         mRecyclerView.setLayoutManager(layoutManager);
         mViewAdapter = new RecycleViewAdapter<RecentContactBean>(context, mContactList) {
@@ -143,6 +123,7 @@ public class GroupMsgFragment extends Fragment {
                     holder.setImageByUrl(context, R.id.iv_head_picture,
                             contactBean.getGroup().getGroupimg(), R.mipmap.group_chat);
                     holder.setText(R.id.tv_recent_name, contactBean.getGroup().getGroupname());
+                    holder.setText(R.id.tv_recent_content, contactBean.getGroup().getMembernum()+"人");
                 } else {
                     holder.setImageResource(R.id.iv_head_picture, R.mipmap.app_logo_main);
                     holder.setText(R.id.tv_recent_name, Integer.toString(contactBean.getGroup().getGroupid()));

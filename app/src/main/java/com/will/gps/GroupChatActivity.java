@@ -94,8 +94,11 @@ public class GroupChatActivity extends Activity implements View.OnClickListener{
         while(cursor.moveToNext()){
             ChatEntity chatMessage = new ChatEntity();
             chatMessage.setContent(cursor.getString(cursor.getColumnIndex("content")));
-            chatMessage.setSenderId(cursor.getString(cursor.getColumnIndex("sender")));
             chatMessage.setSendTime(cursor.getString(cursor.getColumnIndex("date")));
+            chatMessage.setReceiverId(cursor.getString(cursor.getColumnIndex("receiver")));
+            chatMessage.setReceivername(cursor.getString(cursor.getColumnIndex("receivername")));
+            chatMessage.setSenderId(cursor.getString(cursor.getColumnIndex("sender")));
+            chatMessage.setSendername(cursor.getString(cursor.getColumnIndex("sendername")));
             if(!cursor.getString(cursor.getColumnIndex("sender")).equals(MySocket.user.getPhonenum())){
                 chatMessage.setMessageType(ChatEntity.RECEIVE);
             }else {
@@ -153,13 +156,13 @@ public class GroupChatActivity extends Activity implements View.OnClickListener{
 //                }
 //            }
 //        };
-        /*ApplicationData.getInstance().setChatHandler(handler);
-        chatList = ApplicationData.getInstance().getChatMessagesMap()
-                .get(groupId);
-        if(chatList == null){
-            //chatList = ImDB.getInstance(GroupChatActivity.this).getChatMessage(friendId);
-            ApplicationData.getInstance().getChatMessagesMap().put(groupId, chatList);
-        }*/
+//        ApplicationData.getInstance().setChatHandler(handler);
+//        chatList = ApplicationData.getInstance().getChatMessagesMap()
+//                .get(groupId);
+//        if(chatList == null){
+//            //chatList = ImDB.getInstance(GroupChatActivity.this).getChatMessage(friendId);
+//            ApplicationData.getInstance().getChatMessagesMap().put(groupId, chatList);
+//        }
         chatMessageAdapter = new ChatMessageAdapter(GroupChatActivity.this,chatList);
         chatMeessageListView.setAdapter(chatMessageAdapter);
         sendButton.setOnClickListener(new View.OnClickListener() {
@@ -169,6 +172,7 @@ public class GroupChatActivity extends Activity implements View.OnClickListener{
                 ChatEntity chatMessage = new ChatEntity();
                 chatMessage.setContent(content);
                 chatMessage.setSenderId(MySocket.user.getPhonenum());
+                chatMessage.setSendername(MySocket.user.getUserName());
                 chatMessage.setReceiverId(String.valueOf(groupId));
                 chatMessage.setMessageType(ChatEntity.SEND);
                 Date date = new Date();

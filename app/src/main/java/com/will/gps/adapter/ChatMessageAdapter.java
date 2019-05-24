@@ -37,7 +37,7 @@ public class ChatMessageAdapter extends BaseAdapter{
         LinearLayout rightLayout;
         TextView leftMessageView;
         TextView rightMessageView;
-        TextView timeView;
+        TextView timeView,friend_name,my_name;
         ImageView leftPhotoView;
         ImageView rightPhotoView;
         view = mInflater.inflate(R.layout.chat_message_item, null);
@@ -53,6 +53,8 @@ public class ChatMessageAdapter extends BaseAdapter{
                 .findViewById(R.id.message_user_userphoto);
         leftMessageView = (TextView) view.findViewById(R.id.friend_message);
         rightMessageView = (TextView) view.findViewById(R.id.user_message);
+        friend_name=(TextView)view.findViewById(R.id.friend_name);
+        my_name=(TextView)view.findViewById(R.id.my_name);
 
         User user = ApplicationData.getInstance().getUserInfo();
         timeView.setText(chatEntity.getSendTime());
@@ -63,6 +65,7 @@ public class ChatMessageAdapter extends BaseAdapter{
             /*rightPhotoView.setImageBitmap(ApplicationData.getInstance()
                     .getUserPhoto());*/
             rightMessageView.setText(chatEntity.getContent());
+            my_name.setText(chatEntity.getSendername());
         } else if (chatEntity.getMessageType() == ChatEntity.RECEIVE) {// 本身作为接收方
             leftLayout.setVisibility(View.VISIBLE);
             rightLayout.setVisibility(View.GONE);
@@ -71,7 +74,7 @@ public class ChatMessageAdapter extends BaseAdapter{
             /*if (photo != null)
                 leftPhotoView.setImageBitmap(photo);*/
             leftMessageView.setText(chatEntity.getContent());
-
+            friend_name.setText(chatEntity.getSendername());
         }
         return view;
     }

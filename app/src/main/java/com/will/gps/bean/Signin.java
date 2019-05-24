@@ -17,7 +17,6 @@ public class Signin {
 	private String rlatitude;//签到人纬度
 	private int state;//签到是否结束
 	private int done;//签到人是否签到
-	private int status;//签到消息是否推送
 	private String result;//签到结果
 	public int getId() {
 		return id;
@@ -98,13 +97,5 @@ public class Signin {
 	}
 	public void setResult(String result) {
 		this.result = result;
-	}
-
-	public int getStatus() {
-		return status;
-	}
-
-	public void setStatus(int status) {
-		this.status = status;
 	}
 }
