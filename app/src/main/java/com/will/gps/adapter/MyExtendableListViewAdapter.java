@@ -20,10 +20,18 @@ public class MyExtendableListViewAdapter extends BaseExpandableListAdapter {
     private List<String> mGroupList;
     private List<List<Group>> mChildList;
 
+    public MyExtendableListViewAdapter(Context context,List<String> groups,List<List<Group>> childs){
+        mcontext=context;
+        this.mGroupList=groups;
+        this.mChildList=childs;
+    }
     @Override
     // 获取分组的个数
     public int getGroupCount() {
-        return mGroupList.size();
+        if(mGroupList==null)
+            return 0;
+        else
+            return mGroupList.size();
     }
 
     //获取指定分组中的子选项的个数

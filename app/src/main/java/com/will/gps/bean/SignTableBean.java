@@ -13,6 +13,7 @@ public class SignTableBean implements Serializable{
     private String originator;//发起者
     private double longitude;//经度
     private double latitude;//纬度
+    private int region;
     private Date time;//发起时间
 
     public boolean isState() {
@@ -44,6 +45,12 @@ public class SignTableBean implements Serializable{
     }
     public void setLatitude(double latitude) {
         this.latitude = latitude;
+    }
+    public int getRegion() {
+        return region;
+    }
+    public void setRegion(int region) {
+        this.region = region;
     }
     public Date getTime() {
         return time;

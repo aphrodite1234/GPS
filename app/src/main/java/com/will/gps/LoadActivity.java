@@ -58,10 +58,8 @@ public class LoadActivity extends Activity {
             @Override
             public void handleMessage(Message msg)
             {
-                Toast.makeText(LoadActivity.this,"登录123",Toast.LENGTH_SHORT).show();
                 super.handleMessage(msg);
                 message = gson.fromJson(msg.obj.toString(),RMessage.class);
-                Toast.makeText(LoadActivity.this,"登录123"+message,Toast.LENGTH_SHORT).show();
                 if(message.getContent().equals("true")){
                     Cursor cursor = db.query("user", null, "phonenum="+MySocket.user.getPhonenum(), null, null, null, null);
                     ContentValues contentValues = new ContentValues();

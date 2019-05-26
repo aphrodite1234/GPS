@@ -1,9 +1,6 @@
 package com.will.gps;
 
-import android.content.ContentValues;
 import android.content.Intent;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
@@ -13,22 +10,20 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.support.v4.app.FragmentManager;
 import android.app.FragmentTransaction;
 import com.google.gson.Gson;
 import com.will.gps.base.DBOpenHelper;
 import com.will.gps.base.MySocket;
 import com.will.gps.base.RMessage;
-import com.will.gps.bean.Group;
 import com.will.gps.bean.MessageTabEntity;
 import com.will.gps.bean.RecentContactBean;
 import com.will.gps.bean.User;
 import com.will.gps.layout.FirstFragment;
+import com.will.gps.layout.GroupFragment;
 import com.will.gps.layout.GroupMsgFragment;
 import com.will.gps.layout.RecentMsgFragment;
 import com.will.gps.layout.UserFragment;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,6 +39,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private FirstFragment f4;
     private GroupMsgFragment f1;
+    private GroupFragment f;
     private RecentMsgFragment f2;
     private UserFragment f3;
     private ImageView imageView1,imageView2;
@@ -131,6 +127,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     //隐藏所有Fragment
     public void hideAllFragment(FragmentTransaction transaction){
+        if(f!=null) transaction.hide(f);
         if(f1!=null){
             transaction.hide(f1);
         }
@@ -165,11 +162,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 /*GroupMsgFragment groupMsgFragment=new GroupMsgFragment();
                 ft.replace(R.id.fragment_container, groupMsgFragment,MainActivity.TAG);
                 ft.commit();*/
-                if(f1==null){
+                /*if(f1==null){
                     f1 = new GroupMsgFragment(List);
                     transaction.add(R.id.fragment_container,f1);
                 }else{
                     transaction.show(f1);
+                }*/
+                if(f==null){
+                    f=new GroupFragment();
+                    transaction.add(R.id.fragment_container,f);
+                }else{
+                    transaction.show(f);
                 }
                 break;
 

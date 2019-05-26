@@ -133,7 +133,7 @@
                 android:text="范围："/>
 
             <EditText
-                android:id="@+id/sign_create_range"
+                android:id="@+id/sign_create_region"
                 android:layout_width="50dp"
                 android:layout_height="wrap_content" />
 
