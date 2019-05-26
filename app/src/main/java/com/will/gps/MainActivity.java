@@ -1,6 +1,9 @@
 package com.will.gps;
 
+import android.content.ContentValues;
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
@@ -10,24 +13,29 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.support.v4.app.FragmentManager;
 import android.app.FragmentTransaction;
+
 import com.google.gson.Gson;
 import com.will.gps.base.DBOpenHelper;
 import com.will.gps.base.MySocket;
 import com.will.gps.base.RMessage;
+import com.will.gps.bean.Group;
+import com.will.gps.bean.GroupMember;
 import com.will.gps.bean.MessageTabEntity;
 import com.will.gps.bean.RecentContactBean;
+import com.will.gps.bean.Signin;
 import com.will.gps.bean.User;
 import com.will.gps.layout.FirstFragment;
-import com.will.gps.layout.GroupFragment;
 import com.will.gps.layout.GroupMsgFragment;
 import com.will.gps.layout.RecentMsgFragment;
 import com.will.gps.layout.UserFragment;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener{
+public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     protected static final String TAG = "MainActivity";
     private TextView topBar;
@@ -39,10 +47,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private FirstFragment f4;
     private GroupMsgFragment f1;
-    private GroupFragment f;
     private RecentMsgFragment f2;
     private UserFragment f3;
-    private ImageView imageView1,imageView2;
+    private ImageView imageView1, imageView2;
     private Intent intent;
     //private FragmentManager fragmentManager;
     private RMessage rMessage = new RMessage();
@@ -61,47 +68,57 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         bindView();
         rMessage.setType("登录成功");
         rMessage.setSenderphone(MySocket.user.getPhonenum());
-        ((MySocket)getApplication()).send(gson.toJson(rMessage));
+        ((MySocket) getApplication()).send(gson.toJson(rMessage));
 
         //initHandler();
 
         // 开启通知栏，有信息的时候通知通知
         //NIMClient.toggleNotification(true);
-        final DBOpenHelper dbOpenHelper=new DBOpenHelper(MainActivity.this);
+        final DBOpenHelper dbOpenHelper = new DBOpenHelper(MainActivity.this);
 
-        ((MySocket)getApplication()).setHandler(new Handler(){
+        ((MySocket) getApplication()).setHandler(new Handler() {
             @Override
             public void handleMessage(Message msg) {
                 super.handleMessage(msg);
-                rMessage=gson.fromJson(msg.obj.toString(),RMessage.class);
+                rMessage = gson.fromJson(msg.obj.toString(), RMessage.class);
                 String type = rMessage.getType();
-                switch (type){
+                switch (type) {
                     case "更新信息":
-                        MySocket.user=gson.fromJson(rMessage.getContent(),User.class);
+                        MySocket.user = gson.fromJson(rMessage.getContent(), User.class);
                         dbOpenHelper.updateuser(dbOpenHelper);
                         break;
                     case "我的群":
-                        dbOpenHelper.savegroup(dbOpenHelper,rMessage.getGroup());
+                        dbOpenHelper.savegroup(dbOpenHelper, rMessage.getGroup());
                         tabQun.performClick();
                         break;
                     case "群消息":
-                        dbOpenHelper.savemsg(dbOpenHelper,rMessage);
+                        dbOpenHelper.savemsg(dbOpenHelper, rMessage);
+                        break;
+                    case "签到消息":
+                        Signin signin = gson.fromJson(rMessage.getContent(),Signin.class);
+                        dbOpenHelper.savesign(dbOpenHelper,signin);
+                        break;
+                    case "群成员":
+                        dbOpenHelper.savemember(dbOpenHelper,rMessage.getGroup());
+                        break;
+                    default:
                         break;
                 }
             }
         });
     }
+
     //UI组件初始化与事件绑定
     private void bindView() {
         FragmentTransaction transaction1 = getFragmentManager().beginTransaction();
 
-        topBar = (TextView)this.findViewById(R.id.txt_top);
-        imageView1=(ImageView)findViewById(R.id.btn_search);
-        imageView2=(ImageView)findViewById(R.id.btn_add);
-        tabQun = (TextView)this.findViewById(R.id.txt_qun);
-        tabMessage = (TextView)this.findViewById(R.id.txt_message);
-        tabUser = (TextView)this.findViewById(R.id.txt_user);
-        tabMore = (TextView)this.findViewById(R.id.txt_more);
+        topBar = (TextView) this.findViewById(R.id.txt_top);
+        imageView1 = (ImageView) findViewById(R.id.btn_search);
+        imageView2 = (ImageView) findViewById(R.id.btn_add);
+        tabQun = (TextView) this.findViewById(R.id.txt_qun);
+        tabMessage = (TextView) this.findViewById(R.id.txt_message);
+        tabUser = (TextView) this.findViewById(R.id.txt_user);
+        tabMore = (TextView) this.findViewById(R.id.txt_more);
         ly_content = (FrameLayout) findViewById(R.id.fragment_container);
         /*Drawable drawable = getResources().getDrawable(R.drawable.menu_qun);
         // 设置图片的大小
@@ -118,7 +135,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     //重置所有文本的选中状态
-    public void selected(){
+    public void selected() {
         tabQun.setSelected(false);
         tabMessage.setSelected(false);
         tabUser.setSelected(false);
@@ -126,18 +143,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     //隐藏所有Fragment
-    public void hideAllFragment(FragmentTransaction transaction){
-        if(f!=null) transaction.hide(f);
-        if(f1!=null){
+    public void hideAllFragment(FragmentTransaction transaction) {
+        if (f1 != null) {
             transaction.hide(f1);
         }
-        if(f2!=null){
+        if (f2 != null) {
             transaction.hide(f2);
         }
-        if(f3!=null){
+        if (f3 != null) {
             transaction.hide(f3);
         }
-        if(f4!=null){
+        if (f4 != null) {
             transaction.hide(f4);
         }
     }
@@ -146,33 +162,27 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View v) {
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
         hideAllFragment(transaction);
-        switch(v.getId()){
+        switch (v.getId()) {
             case R.id.btn_search:
-                intent=new Intent(MainActivity.this,SearchActivity.class);
+                intent = new Intent(MainActivity.this, SearchActivity.class);
                 startActivity(intent);
                 break;
             case R.id.btn_add:
-                intent=new Intent(MainActivity.this,CreateGroupActivity.class);
+                intent = new Intent(MainActivity.this, CreateGroupActivity.class);
                 startActivity(intent);
                 break;
             case R.id.txt_qun:
                 selected();
                 tabQun.setSelected(true);
-                topBar.setText("我的群");
+                topBar.setText("群");
                 /*GroupMsgFragment groupMsgFragment=new GroupMsgFragment();
                 ft.replace(R.id.fragment_container, groupMsgFragment,MainActivity.TAG);
                 ft.commit();*/
-                /*if(f1==null){
+                if (f1 == null) {
                     f1 = new GroupMsgFragment(List);
-                    transaction.add(R.id.fragment_container,f1);
-                }else{
+                    transaction.add(R.id.fragment_container, f1);
+                } else {
                     transaction.show(f1);
-                }*/
-                if(f==null){
-                    f=new GroupFragment();
-                    transaction.add(R.id.fragment_container,f);
-                }else{
-                    transaction.show(f);
                 }
                 break;
 
@@ -183,10 +193,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 /*RecentMsgFragment recentMsgFragment=new RecentMsgFragment();
                 ft.replace(R.id.fragment_container, recentMsgFragment,MainActivity.TAG);
                 ft.commit();*/
-                if(f2==null){
+                if (f2 == null) {
                     f2 = new RecentMsgFragment(List2);
-                    transaction.add(R.id.fragment_container,f2);
-                }else{
+                    transaction.add(R.id.fragment_container, f2);
+                } else {
                     transaction.show(f2);
                 }
                 break;
@@ -198,10 +208,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 /*UserFragment userFragment=new UserFragment();
                 ft.replace(R.id.fragment_container, userFragment,MainActivity.TAG);
                 ft.commit();*/
-                if(f3==null){
+                if (f3 == null) {
                     f3 = new UserFragment();
-                    transaction.add(R.id.fragment_container,f3);
-                }else{
+                    transaction.add(R.id.fragment_container, f3);
+                } else {
                     transaction.show(f3);
                 }
                 break;
@@ -213,10 +223,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 /*FirstFragment firstFragment=new FirstFragment("界面待实现");
                 ft.replace(R.id.fragment_container, firstFragment,MainActivity.TAG);
                 ft.commit();*/
-                if(f4==null){
+                if (f4 == null) {
                     f4 = new FirstFragment("第四个Fragment");
-                    transaction.add(R.id.fragment_container,f4);
-                }else{
+                    transaction.add(R.id.fragment_container, f4);
+                } else {
                     transaction.show(f4);
                 }
                 break;
@@ -235,10 +245,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     //过程：定义接口，接口列表，activity的分发事件绑定给fragment，注册和注销
     //1.触摸事件接口
     public interface MyOnTouchListener {
-        public boolean onTouch(View v,MotionEvent ev);
+        public boolean onTouch(View v, MotionEvent ev);
     }
+
     //2. 保存MyOnTouchListener接口的列表
     private ArrayList<MyOnTouchListener> onTouchListeners = new ArrayList<MyOnTouchListener>();
+
     //3.分发触摸事件给所有注册了MyOnTouchListener的接口
     /*@Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
@@ -253,6 +265,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void registerMyOnTouchListener(MyOnTouchListener myOnTouchListener) {
         onTouchListeners.add(myOnTouchListener);
     }
+
     //5.提供给Fragment通过getActivity()方法来注销自己的触摸事件的方法
     public void unregisterMyOnTouchListener(MyOnTouchListener myOnTouchListener) {
         onTouchListeners.remove(myOnTouchListener);
