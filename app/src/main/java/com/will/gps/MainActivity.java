@@ -27,6 +27,7 @@ import com.will.gps.bean.RecentContactBean;
 import com.will.gps.bean.Signin;
 import com.will.gps.bean.User;
 import com.will.gps.layout.FirstFragment;
+import com.will.gps.layout.GroupFragment;
 import com.will.gps.layout.GroupMsgFragment;
 import com.will.gps.layout.RecentMsgFragment;
 import com.will.gps.layout.UserFragment;
@@ -46,7 +47,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private FrameLayout ly_content;
 
     private FirstFragment f4;
-    private GroupMsgFragment f1;
+    private GroupFragment f1;
     private RecentMsgFragment f2;
     private UserFragment f3;
     private ImageView imageView1, imageView2;
@@ -179,7 +180,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 ft.replace(R.id.fragment_container, groupMsgFragment,MainActivity.TAG);
                 ft.commit();*/
                 if (f1 == null) {
-                    f1 = new GroupMsgFragment(List);
+                    f1 = new GroupFragment();
                     transaction.add(R.id.fragment_container, f1);
                 } else {
                     transaction.show(f1);

@@ -18,14 +18,8 @@ import com.will.gps.adapter.MyExtendableListViewAdapter;
 import com.will.gps.base.DBOpenHelper;
 import com.will.gps.base.MySocket;
 import com.will.gps.bean.Group;
-import com.will.gps.bean.RecentContactBean;
-
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
-import com.will.gps.base.Encoding;
-
-
 
 /**
  * Created by MaiBenBen on 2019/5/20.
@@ -71,7 +65,6 @@ public class GroupFragment extends Fragment {
         /*child2.add("child2-1");
         child2.add("dhild2-2");
         child2.add("child2-3");*/
-        String phone="15837811860";
         if (!groups1.isEmpty()) {
             for (String group : groups1) {
                 Group group4 = gson.fromJson(group, Group.class);
