@@ -15,8 +15,8 @@ public class Signin {
 	private String receiver;//签到人手机号
 	private String rlongitude;//签到人经度
 	private String rlatitude;//签到人纬度
-	private int state;//签到是否结束
-	private int done;//签到人是否签到
+	private int state = 0;//签到是否结束
+	private int done = 0;//签到人是否签到
 	private String result;//签到结果
 	public int getId() {
 		return id;
@@ -39,9 +39,7 @@ public class Signin {
 	public String getTime() {
 		return time;
 	}
-	public void setTime(Timestamp time) {
-		SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        String sd = sdf.format(time);
+	public void setTime(String sd) {
 		this.time = sd;
 	}
 	public String getLongitude() {

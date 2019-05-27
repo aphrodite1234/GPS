@@ -110,7 +110,9 @@ public class AmapActivity extends AppCompatActivity implements LocationSource, A
                 Intent i=new Intent(AmapActivity.this, CreateSignActivity.class);
                 i.putExtra("lat",latitude);
                 i.putExtra("lgt",longitude);
-                startActivity(i);
+                //startActivity(i);
+                AmapActivity.this.setResult(RESULT_OK,i);
+                finish();
             }
         });
     }

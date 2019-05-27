@@ -30,7 +30,7 @@ public class DBOpenHelper extends SQLiteOpenHelper {
                 "signature VARCHAR(200),photo BLOB)";
         String create_mgroup = "CREATE TABLE mgroup(groupid INTEGER(11),groupname VARCHAR(20)," +
                 "groupowner VARCHAR(11),ownername VARCHAR(20),membernum INTEGER(11))";
-        String create_tsmessage = "CREATE TABLE tsmessage(groupid INTEGER(11),type VARCHAR(20)," +
+        String create_tsmessage = "CREATE TABLE tsmessage(user VARCHAR(11),groupid INTEGER(11),type VARCHAR(20)," +
                 "sender VARCHAR(20),sendername VARCHAR(20),receiver VARCHAR(20),receivername VARCHAR(20)," +
                 "content TEXT,date VARCHAR(20),state INTEGER(1))";
         String create_groupmember="CREATE TABLE groupmember(gmid INTEGER(11),groupid INTEGER(11),groupname VARCHAR(20)," +
@@ -103,6 +103,7 @@ public class DBOpenHelper extends SQLiteOpenHelper {
     public void savemsg(DBOpenHelper dbOpenHelper,RMessage rMessage){
         SQLiteDatabase db = dbOpenHelper.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
+        contentValues.put("user",MySocket.user.getPhonenum());
         contentValues.put("groupid",rMessage.getGroupid());
         contentValues.put("type",rMessage.getType());
         contentValues.put("sender",rMessage.getSenderphone());

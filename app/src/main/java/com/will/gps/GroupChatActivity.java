@@ -90,7 +90,7 @@ public class GroupChatActivity extends Activity implements View.OnClickListener{
 
     private void initData(DBOpenHelper dbOpenHelper){
         SQLiteDatabase db = dbOpenHelper.getReadableDatabase();
-        Cursor cursor = db.query("tsmessage", null, "groupid="+groupId, null, null, null, null);
+        Cursor cursor = db.query("tsmessage", null, "groupid="+groupId+" AND user='"+MySocket.user.getPhonenum()+"'", null, null, null, null);
         while(cursor.moveToNext()){
             ChatEntity chatMessage = new ChatEntity();
             chatMessage.setContent(cursor.getString(cursor.getColumnIndex("content")));

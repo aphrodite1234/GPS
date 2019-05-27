@@ -6,15 +6,21 @@ import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+import com.will.gps.base.MySocket;
+import com.will.gps.base.RMessage;
+import com.will.gps.bean.Signin;
 import com.will.gps.map.AmapActivity;
 
 import java.text.DateFormat;
@@ -29,7 +35,8 @@ import java.util.Locale;
 
 public class CreateSignActivity extends Activity implements View.OnClickListener{
     private ImageView btn_back;
-    private EditText sign_id,sign_region;
+    private EditText sign_region;
+    private TextView sign_id;
     private Button btn_create,btn_dingwei1,btn_dingwei2;
     private Button dateButton,timeButton;
     private int id;
@@ -49,7 +56,7 @@ public class CreateSignActivity extends Activity implements View.OnClickListener
     @SuppressLint("SimpleDateFormat")
     private void bindView(){
         btn_back=(ImageView)findViewById(R.id.sign_create_back);
-        sign_id=(EditText)findViewById(R.id.sign_create_id);
+        sign_id=(TextView)findViewById(R.id.sign_create_id);
         sign_region=(EditText)findViewById(R.id.sign_create_region);
         latitude=(EditText)findViewById(R.id.sign_create_latitude);
         longitude=(EditText)findViewById(R.id.sign_create_longitude);
@@ -69,11 +76,11 @@ public class CreateSignActivity extends Activity implements View.OnClickListener
         timeButton.setOnClickListener(this);
 
         QCalendar = getCalendarAfter30Mins();
-        DateFormat df = new SimpleDateFormat("yyyy/MM/dd");
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
         String dateString = df.format(QCalendar.getTime());
         dateButton.setText(dateString);
 
-        df = new SimpleDateFormat("HH:mm");
+        df = new SimpleDateFormat("HH:mm:ss");
         String timeString = df.format(QCalendar.getTime());
         timeButton.setText(timeString);
 
@@ -82,6 +89,7 @@ public class CreateSignActivity extends Activity implements View.OnClickListener
 
         i=getIntent();
         try{
+            id=Integer.valueOf(i.getStringExtra("groupid"));
             lat=i.getDoubleExtra("lat",0.000000);
             lgt=i.getDoubleExtra("lgt",0.000000);
             latitude.setText(String.valueOf(lat));
@@ -89,6 +97,8 @@ public class CreateSignActivity extends Activity implements View.OnClickListener
         }catch(Exception e){
             Toast.makeText(this,"intent为空",Toast.LENGTH_SHORT).show();
         }
+
+        sign_id.setText(id+"");
     }
 
     @Override@SuppressLint("SimpleDateFormat")
@@ -97,12 +107,12 @@ public class CreateSignActivity extends Activity implements View.OnClickListener
             case R.id.sign_create_dingwei1:
                 Intent i=new Intent(CreateSignActivity.this, AmapActivity.class);
                 i.putExtra("jingdu","high");
-                startActivity(i);
+                startActivityForResult(i,0);
                 break;
             case R.id.sign_create_dingwei2:
                 Intent i2=new Intent(CreateSignActivity.this, AmapActivity.class);
                 i2.putExtra("jingdu","low");
-                startActivity(i2);
+                startActivityForResult(i2,0);
             case R.id.sign_create_btn:
 
                 if (TextUtils.isEmpty(sign_id.getText().toString().trim())) {
@@ -117,11 +127,27 @@ public class CreateSignActivity extends Activity implements View.OnClickListener
                 }else if(Integer.valueOf(sign_region.getText().toString().trim())>200){
                     Toast.makeText(CreateSignActivity.this, "签到范围小于200m", Toast.LENGTH_SHORT).show();
                     return;
-                }else {
-                    id = Integer.valueOf(sign_region.getText().toString().trim());
                 }
+                Gson gson = new Gson();
+                RMessage rMessage = new RMessage();
+                Signin signin = new Signin();
+                signin.setGroupid(id);
+                signin.setOriginator(MySocket.user.getPhonenum());
+                signin.setLongitude(longitude.getText().toString());
+                signin.setLatitude(latitude.getText().toString());
+                signin.setRegion(sign_region.getText().toString());
+                signin.setTime(dateButton.getText().toString()+" "+timeButton.getText().toString());
+                signin.setRlongitude(signin.getLongitude());
+                signin.setRlatitude(signin.getLatitude());
+                rMessage.setGroupid(id);
+                rMessage.setType("签到消息");
+                rMessage.setSenderphone(MySocket.user.getPhonenum());
+                rMessage.setSendername(MySocket.user.getUserName());
+                rMessage.setContent(gson.toJson(signin));
+                ((MySocket)getApplication()).send(gson.toJson(rMessage));
+
                 Toast.makeText(CreateSignActivity.this,"创建签到活动成功！",Toast.LENGTH_SHORT).show();
-                finish();
+//                finish();
                 break;
             case R.id.sign_create_back:
                 //finish();
@@ -169,5 +195,14 @@ public class CreateSignActivity extends Activity implements View.OnClickListener
         calendar.set(Calendar.MILLISECOND, 0);
 
         return calendar;
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(resultCode==RESULT_OK){
+            longitude.setText(data.getDoubleExtra("lgt",0.0)+"");
+            latitude.setText(data.getDoubleExtra("lat",0.0)+"");
+        }
     }
 }
