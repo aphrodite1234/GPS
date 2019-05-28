@@ -114,12 +114,7 @@ public class DBOpenHelper extends SQLiteOpenHelper {
         contentValues.put("date",rMessage.getDate());
         contentValues.put("state",1);
         db.insert("tsmessage",null,contentValues);
-        Cursor cursor=db.query("tsmessage", new String[]{"state"},"userphone="+MySocket.user.getPhonenum()+" AND state = 0",null,null,null,null);
-		if(cursor.getCount>0){
-			MySocket.state=true;
-		}else{
-			MySocket.state=false;
-		}
+
     }
 
     //保存签到信息
