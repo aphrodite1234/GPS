@@ -58,18 +58,18 @@ public class ReceiverMapActivity extends Activity implements LocationSource{
         intent=getIntent();
         locationUtil=new LocationUtil();
         signTableBean=(SignTableBean)intent.getSerializableExtra("signtable");
-        aMap.addMarker(locationUtil.getMarkerOption(signTableBean.getId()+"签到地点",signTableBean.getLatitude(),signTableBean.getLongitude()));
+        aMap.addMarker(locationUtil.getMarkerOption(signTableBean.getId()+"签到地点",Double.valueOf(signTableBean.getLatitude()),Double.valueOf(signTableBean.getLongitude())));
 
         receivers= (List<String>) intent.getSerializableExtra("receivers");
         if (!receivers.isEmpty()) {
             for (String receiver : receivers) {
                 ReceiverBean receiver1 = gson.fromJson(receiver, ReceiverBean.class);
-                MarkerOptions markerOptions=locationUtil.getMarkerOption(receiver1.getId()+"("+receiver1.getRealname()+")",receiver1.getRlatitude(),receiver1.getRlongitude());
+                MarkerOptions markerOptions=locationUtil.getMarkerOption(receiver1.getId()+"("+receiver1.getRealname()+")",Double.valueOf(receiver1.getRlatitude()),Double.valueOf(receiver1.getRlongitude()));
                 markerOptions.icon(BitmapDescriptorFactory.fromResource(R.mipmap.position2));
                 aMap.addMarker(markerOptions);
             }
         }
-        LatLng latLng=new LatLng(signTableBean.getLatitude(),signTableBean.getLongitude());
+        LatLng latLng=new LatLng(Double.valueOf(signTableBean.getLatitude()),Double.valueOf(signTableBean.getLongitude()));
         aMap.moveCamera(CameraUpdateFactory.changeLatLng(latLng));
 
         btn_back=(ImageView) findViewById(R.id.map_back);

@@ -8,18 +8,19 @@ import java.util.Date;
  */
 
 public class SignTableBean implements Serializable{
-    private boolean state;//状态
+    private int state;//状态
     private int id;//id
     private String originator;//发起者
-    private double longitude;//经度
-    private double latitude;//纬度
+    private String longitude;//经度
+    private String latitude;//纬度
     private int region;
-    private Date time;//发起时间
+    private String time;//发起时间
+    private String contetn;
 
-    public boolean isState() {
+    public int getState() {
         return state;
     }
-    public void setState(boolean state) {
+    public void setState(int state) {
         this.state = state;
     }
     public int getId() {
@@ -34,16 +35,16 @@ public class SignTableBean implements Serializable{
     public void setOriginator(String originator) {
         this.originator = originator;
     }
-    public double getLongitude() {
+    public String getLongitude() {
         return longitude;
     }
-    public void setLongitude(double longitude) {
+    public void setLongitude(String longitude) {
         this.longitude = longitude;
     }
-    public double getLatitude() {
+    public String getLatitude() {
         return latitude;
     }
-    public void setLatitude(double latitude) {
+    public void setLatitude(String latitude) {
         this.latitude = latitude;
     }
     public int getRegion() {
@@ -52,10 +53,18 @@ public class SignTableBean implements Serializable{
     public void setRegion(int region) {
         this.region = region;
     }
-    public Date getTime() {
+    public String getTime() {
         return time;
     }
-    public void setTime(Date time) {
+    public void setTime(String time) {
         this.time = time;
+    }
+
+    public String getContetn() {
+        return contetn;
+    }
+
+    public void setContetn(String contetn) {
+        this.contetn = contetn;
     }
 }

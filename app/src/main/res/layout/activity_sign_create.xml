@@ -59,7 +59,7 @@
             android:layout_height="wrap_content">
             <TextView
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:textSize="20sp"
                 android:text="签到群id："/>
 
@@ -67,6 +67,23 @@
                 android:id="@+id/sign_create_id"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:textSize="20sp"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="签到名称："
+                android:textSize="20sp"/>
+            <EditText
+                android:id="@+id/create_sign_content"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:hint="10个字以内"
                 android:textSize="20sp"/>
         </LinearLayout>
 

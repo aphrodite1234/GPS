@@ -2,17 +2,22 @@ package com.will.gps;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.suntek.commonlibrary.adapter.OnItemClickListener;
 import com.suntek.commonlibrary.adapter.RViewHolder;
 import com.suntek.commonlibrary.adapter.RecycleViewAdapter;
+import com.will.gps.base.DBOpenHelper;
+import com.will.gps.base.MySocket;
 import com.will.gps.bean.SignTableBean;
 
 import java.text.DateFormat;
@@ -36,6 +41,8 @@ public class SignTableListActivity extends Activity {
     private List<String> signtables;//从数据库查询到的签到表列表
     private Gson gson=new Gson();
     private ImageView btn_back;
+    private int groupId;
+    private String groupowner;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,32 +62,39 @@ public class SignTableListActivity extends Activity {
                 finish();
             }
         });
-        initData();
+
+        Intent intent = getIntent();
+        groupId=Integer.valueOf(intent.getStringExtra("groupid"));
+        groupowner=intent.getStringExtra("groupowner");
+        final DBOpenHelper dbOpenHelper=new DBOpenHelper(SignTableListActivity.this);
+        initData(dbOpenHelper);
 
         initRecyclerView(signtables);
         for(int i=0;i<signTableBeanList.size();i++)
             signtableAdapter.notifyItemChanged(i);
     }
-    private void initData(){
+    private void initData(DBOpenHelper dbOpenHelper){
         signtables=new ArrayList<>();
-        SignTableBean signTableBean1=new SignTableBean();
-        SignTableBean signTableBean2=new SignTableBean();
-        signTableBean1.setId(123);
-        signTableBean1.setLongitude(114.314499);
-        signTableBean1.setLatitude(34.81386);
-        signTableBean1.setOriginator("15837811860");
-        signTableBean1.setTime(new Date());
-        signTableBean1.setState(true);
-
-        signTableBean2.setId(456);
-        signTableBean2.setLongitude(114.31192);
-        signTableBean2.setLatitude(34.814472);
-        signTableBean2.setOriginator("15837811860");
-        signTableBean2.setTime(new Date());
-        signTableBean2.setState(false);
-
-        signtables.add(gson.toJson(signTableBean1));
-        signtables.add(gson.toJson(signTableBean2));
+        SQLiteDatabase db = dbOpenHelper.getReadableDatabase();
+        SQLiteDatabase db1 = dbOpenHelper.getReadableDatabase();
+        Cursor cursor = db.query("signin", null, "groupid="+groupId, null, null, null, null);
+        //Toast.makeText(SignTableListActivity.this,groupId+"",Toast.LENGTH_LONG).show();
+        while(cursor.moveToNext()){
+            Cursor cursor1 = db1.query("mgroup", null, "groupid="+groupId, null, null, null, null);
+            String originator = cursor.getString(cursor.getColumnIndex("originator"));
+            String receiver = cursor.getString(cursor.getColumnIndex("receiver"));
+            if(originator.equals(receiver)){
+                cursor1.moveToNext();
+                SignTableBean signTableBean1=new SignTableBean();
+                signTableBean1.setContetn(cursor.getString(cursor.getColumnIndex("result")));
+                signTableBean1.setLongitude(cursor.getString(cursor.getColumnIndex("rlongitude")));
+                signTableBean1.setLatitude(cursor.getString(cursor.getColumnIndex("rlatitude")));
+                signTableBean1.setOriginator(cursor1.getString(cursor1.getColumnIndex("ownername")));
+                signTableBean1.setTime(cursor.getString(cursor.getColumnIndex("time")));
+                signTableBean1.setState(cursor.getInt(cursor.getColumnIndex("state")));
+                signtables.add(gson.toJson(signTableBean1));
+            }
+        }
     }
 
     private void initRecyclerView(List<String> signtables){
@@ -113,12 +127,13 @@ public class SignTableListActivity extends Activity {
             public void bindView(RViewHolder holder, int position) {
                 SignTableBean signTableBean=signTableBeanList.get(position);
                 if(signTableBean!=null){
-                    holder.setText(R.id.sign_table_id,String.valueOf(signTableBean.getId()));
-                    //holder.setText(R.id.sign_table_originator,signTableBean.getOriginator());
-                    holder.setText(R.id.sign_table_time,"时间:"+dateFormat.format(signTableBean.getTime()));
-                    holder.setText(R.id.sign_table_longitude,"纬度:"+String.valueOf(signTableBean.getLongitude()));
-                    holder.setText(R.id.sign_table_latitude,"纬度:"+String.valueOf(signTableBean.getLatitude()));
-                    if(signTableBean.isState())
+                    //holder.setText(R.id.sign_table_id,String.valueOf(signTableBean.getContetn()));
+                    holder.setText(R.id.sign_table_originator,signTableBean.getOriginator());
+                    holder.setText(R.id.sign_table_time,"时间:"+signTableBean.getTime());
+//                    holder.setText(R.id.sign_table_longitude,"经度:"+String.valueOf(signTableBean.getLongitude()));
+//                    holder.setText(R.id.sign_table_latitude,"纬度:"+String.valueOf(signTableBean.getLatitude()));
+                    holder.setText(R.id.sign_table_content,signTableBean.getContetn());
+                    if(signTableBean.getState()==0)
                         holder.setImageResource(R.id.sign_table_state,R.mipmap.jinhangzhong);
                     else
                         holder.setImageResource(R.id.sign_table_state,R.mipmap.end);
@@ -131,6 +146,7 @@ public class SignTableListActivity extends Activity {
                 SignTableBean signTableBean=signTableBeanList.get(position);
                 Intent i=new Intent(SignTableListActivity.this,ReceiverListAcitivty.class);
                 i.putExtra("signtable",signTableBean);
+                i.putExtra("groupid",groupId);
                 startActivity(i);
             }
         });

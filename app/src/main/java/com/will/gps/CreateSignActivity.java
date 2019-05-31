@@ -35,7 +35,7 @@ import java.util.Locale;
 
 public class CreateSignActivity extends Activity implements View.OnClickListener{
     private ImageView btn_back;
-    private EditText sign_region;
+    private EditText sign_region,sign_content;
     private TextView sign_id;
     private Button btn_create,btn_dingwei1,btn_dingwei2;
     private Button dateButton,timeButton;
@@ -58,6 +58,7 @@ public class CreateSignActivity extends Activity implements View.OnClickListener
         btn_back=(ImageView)findViewById(R.id.sign_create_back);
         sign_id=(TextView)findViewById(R.id.sign_create_id);
         sign_region=(EditText)findViewById(R.id.sign_create_region);
+        sign_content=(EditText)findViewById(R.id.create_sign_content);
         latitude=(EditText)findViewById(R.id.sign_create_latitude);
         longitude=(EditText)findViewById(R.id.sign_create_longitude);
         btn_create=(Button)findViewById(R.id.sign_create_btn);
@@ -116,7 +117,7 @@ public class CreateSignActivity extends Activity implements View.OnClickListener
             case R.id.sign_create_btn:
 
                 if (TextUtils.isEmpty(sign_id.getText().toString().trim())) {
-                    Toast.makeText(CreateSignActivity.this, "请输入签到名称", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(CreateSignActivity.this, "请输入签到id", Toast.LENGTH_SHORT).show();
                     return;
                 }else{
                     id = Integer.valueOf(sign_id.getText().toString().trim());
@@ -127,11 +128,15 @@ public class CreateSignActivity extends Activity implements View.OnClickListener
                 }else if(Integer.valueOf(sign_region.getText().toString().trim())>200){
                     Toast.makeText(CreateSignActivity.this, "签到范围小于200m", Toast.LENGTH_SHORT).show();
                     return;
+                }else if(TextUtils.isEmpty(sign_content.getText().toString().trim())) {
+                    Toast.makeText(CreateSignActivity.this, "请输入签到名称", Toast.LENGTH_SHORT).show();
+                    return;
                 }
                 Gson gson = new Gson();
                 RMessage rMessage = new RMessage();
                 Signin signin = new Signin();
                 signin.setGroupid(id);
+                signin.setResult(sign_content.getText().toString());
                 signin.setOriginator(MySocket.user.getPhonenum());
                 signin.setLongitude(longitude.getText().toString());
                 signin.setLatitude(latitude.getText().toString());

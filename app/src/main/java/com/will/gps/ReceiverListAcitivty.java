@@ -2,6 +2,8 @@ package com.will.gps;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -12,6 +14,7 @@ import android.widget.TextView;
 import com.google.gson.Gson;
 import com.suntek.commonlibrary.adapter.RViewHolder;
 import com.suntek.commonlibrary.adapter.RecycleViewAdapter;
+import com.will.gps.base.DBOpenHelper;
 import com.will.gps.bean.ReceiverBean;
 import com.will.gps.bean.SignTableBean;
 import com.will.gps.map.ReceiverMapActivity;
@@ -33,13 +36,17 @@ public class ReceiverListAcitivty extends Activity{
     private Gson gson=new Gson();
     private ImageView btn_back,btn_map;
     private SignTableBean signTableBean;
+    private int groupId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_list);
 
-        initData();//初始化receivers
+        Intent intent = getIntent();
+        groupId=intent.getIntExtra("groupid",0);
+        final DBOpenHelper dbOpenHelper=new DBOpenHelper(ReceiverListAcitivty.this);
+        initData(dbOpenHelper);
 
         signTableBean=(SignTableBean)getIntent().getSerializableExtra("signtable");
         title=(TextView)findViewById(R.id.sign_table_title);
@@ -70,25 +77,23 @@ public class ReceiverListAcitivty extends Activity{
         for(int i=0;i<receiverBeanList.size();i++)
             receiverAdapter.notifyItemChanged(i);
     }
-    private void initData(){
+    private void initData(DBOpenHelper dbOpenHelper){
         receivers=new ArrayList<>();
-        ReceiverBean receiver1=new ReceiverBean();
-        ReceiverBean receiver2=new ReceiverBean();
-        receiver1.setId("15837811860");
-        receiver1.setRealname("方元岭");
-        receiver1.setRlongitude(114.314895);
-        receiver1.setRlatitude(34.815956);
-        receiver1.setDone(true);
-        receiver1.setResult(true);
-
-        receiver2.setId("12345678910");
-        receiver2.setRlongitude(114.312232);
-        receiver2.setRlatitude(34.81612);
-        receiver2.setDone(false);
-        receiver2.setResult(false);
-
-        receivers.add(gson.toJson(receiver1));
-        receivers.add(gson.toJson(receiver2));
+        SQLiteDatabase db = dbOpenHelper.getReadableDatabase();
+        SQLiteDatabase db1=dbOpenHelper.getReadableDatabase();
+        Cursor cursor = db.query("signin", null, "groupid="+groupId, null, null, null, null);
+        while (cursor.moveToNext()){
+            String userphone=cursor.getString(cursor.getColumnIndex("receiver"));
+            Cursor cursor1 = db1.query("groupmember", null, "userphone='"+userphone+"'", null, null, null, null);
+            cursor1.moveToNext();
+            ReceiverBean receiver1=new ReceiverBean();
+            receiver1.setId(userphone);
+            receiver1.setRealname(cursor1.getString(cursor1.getColumnIndex("username")));
+            receiver1.setRlongitude(cursor.getString(cursor.getColumnIndex("rlongitude")));
+            receiver1.setRlatitude(cursor.getString(cursor.getColumnIndex("rlatitude")));
+            receiver1.setDone(cursor.getInt(cursor.getColumnIndex("done")));
+            receivers.add(gson.toJson(receiver1));
+        }
     }
 
     private void initRecyclerView(List<String> receivers){
@@ -116,13 +121,13 @@ public class ReceiverListAcitivty extends Activity{
                 if(receiverBean!=null){
                     holder.setText(R.id.receiver_id,String.valueOf(receiverBean.getId()));
                     holder.setText(R.id.receiver_realname,receiverBean.getRealname());
-                    if(receiverBean.isDone())
-                        holder.setText(R.id.receiver_done,"已签到");
-                    else
-                        holder.setText(R.id.receiver_done,"未签到");
+//                    if(receiverBean.getDone()==1)
+//                        holder.setText(R.id.receiver_done,"已签到");
+//                    else
+//                        holder.setText(R.id.receiver_done,"未签到");
                     holder.setText(R.id.receiver_longitude,"纬度:"+String.valueOf(receiverBean.getRlongitude()));
                     holder.setText(R.id.receiver_latitude,"纬度:"+String.valueOf(receiverBean.getRlatitude()));
-                    if(receiverBean.isResult()){
+                    if(receiverBean.getDone()==1){
                         holder.setImageResource(R.id.receiver_result,R.mipmap.result_cg);
                         holder.setText(R.id.receiver_textresult,"签到成功");
                     }

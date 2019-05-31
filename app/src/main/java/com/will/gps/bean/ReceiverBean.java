@@ -7,10 +7,9 @@ package com.will.gps.bean;
 public class ReceiverBean {
     private String id;
     private String realname;
-    private double rlongitude;
-    private double rlatitude;
-    private boolean done;
-    private boolean result;
+    private String rlongitude;
+    private String rlatitude;
+    private int done;
 
     public String getId() {
         return id;
@@ -28,35 +27,28 @@ public class ReceiverBean {
         this.realname = realname;
     }
 
-    public double getRlongitude() {
+    public String getRlongitude() {
         return rlongitude;
     }
 
-    public void setRlongitude(double rlongitude) {
+    public void setRlongitude(String rlongitude) {
         this.rlongitude = rlongitude;
     }
 
-    public double getRlatitude() {
+    public String getRlatitude() {
         return rlatitude;
     }
 
-    public void setRlatitude(double rlatitude) {
+    public void setRlatitude(String rlatitude) {
         this.rlatitude = rlatitude;
     }
 
-    public boolean isDone() {
+    public int getDone() {
         return done;
     }
 
-    public void setDone(boolean done) {
+    public void setDone(int done) {
         this.done = done;
     }
 
-    public boolean isResult() {
-        return result;
-    }
-
-    public void setResult(boolean result) {
-        this.result = result;
-    }
 }
