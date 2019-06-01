@@ -86,7 +86,6 @@ public class SignTableListActivity extends Activity {
             if(originator.equals(receiver)){
                 cursor1.moveToNext();
                 SignTableBean signTableBean1=new SignTableBean();
-                signTableBean1.setContetn(cursor.getString(cursor.getColumnIndex("result")));
                 signTableBean1.setLongitude(cursor.getString(cursor.getColumnIndex("rlongitude")));
                 signTableBean1.setLatitude(cursor.getString(cursor.getColumnIndex("rlatitude")));
                 signTableBean1.setOriginator(cursor1.getString(cursor1.getColumnIndex("ownername")));
@@ -132,7 +131,6 @@ public class SignTableListActivity extends Activity {
                     holder.setText(R.id.sign_table_time,"时间:"+signTableBean.getTime());
 //                    holder.setText(R.id.sign_table_longitude,"经度:"+String.valueOf(signTableBean.getLongitude()));
 //                    holder.setText(R.id.sign_table_latitude,"纬度:"+String.valueOf(signTableBean.getLatitude()));
-                    holder.setText(R.id.sign_table_content,signTableBean.getContetn());
                     if(signTableBean.getState()==0)
                         holder.setImageResource(R.id.sign_table_state,R.mipmap.jinhangzhong);
                     else

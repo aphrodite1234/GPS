@@ -1,5 +1,7 @@
 package com.will.gps.base;
 
+import com.will.gps.bean.Group;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -14,6 +16,7 @@ public class RMessage {
 	private String content = null;
 	private String date = null;
 	private String type = null;
+	private int state=0;
 	private List<String> group = new ArrayList<>();
 
 	public String getContent() {
@@ -89,4 +92,13 @@ public class RMessage {
 	public void setGroupid(int groupid) {
 		this.groupid = groupid;
 	}
+
+	public int getState() {
+		return state;
+	}
+
+	public void setState(int state) {
+		this.state = state;
+	}
+
 }

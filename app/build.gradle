@@ -59,4 +59,5 @@ dependencies {
     compile 'com.amap.api:map2d:latest.integration'
     //搜索
     compile 'com.amap.api:search:latest.integration'
+    compileOnly 'androidx.annotation:annotation:1.0.1'
 }

@@ -87,6 +87,7 @@ public class MyExtendableListViewAdapter extends BaseExpandableListAdapter {
             groupViewHolder = new GroupViewHolder();
             groupViewHolder.groupIndicator=(ImageView)convertView.findViewById(R.id.expandable_list_group_indicator);
             groupViewHolder.groupName=(TextView)convertView.findViewById(R.id.expandable_list_group_name);
+            groupViewHolder.newtip=(TextView)convertView.findViewById(R.id.group_unread_message_count);
             convertView.setTag(groupViewHolder);
         } else {
             groupViewHolder = (GroupViewHolder) convertView.getTag();
@@ -97,6 +98,7 @@ public class MyExtendableListViewAdapter extends BaseExpandableListAdapter {
             groupViewHolder.groupIndicator.setImageResource(R.drawable.ic_keyboard_arrow_right_24dp);
         }
         groupViewHolder.groupName.setText(mGroupList.get(groupPosition));
+        groupViewHolder.newtip.setVisibility(View.GONE);
         return convertView;
     }
 
@@ -139,6 +141,7 @@ public class MyExtendableListViewAdapter extends BaseExpandableListAdapter {
     static class GroupViewHolder {
         private ImageView groupIndicator;
         private TextView groupName;
+        private TextView newtip;
     }
 
     static class ChildViewHolder {

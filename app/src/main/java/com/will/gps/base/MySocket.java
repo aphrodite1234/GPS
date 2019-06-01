@@ -26,6 +26,7 @@ public class MySocket extends Application{
     public static User user = new User();
     private RMessage rMessage=new RMessage();
     private Gson gson = new Gson();
+    public static boolean unread=false;
 
     public void setHandler(Handler handler) {
         this.handler = handler;
