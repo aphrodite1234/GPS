@@ -42,7 +42,7 @@ public class FriendMessageAdapter extends BaseAdapter{
         String sendTime = message.getSendTime();
         int unReadCount = message.getUnReadCount();
         String content = message.getContent();
-        convertView = mInflater.inflate(R.layout.fragment_message_item, null);
+        convertView = mInflater.inflate(R.layout.item_fragment_message, null);
         avatarView = (ImageView) convertView.findViewById(R.id.user_photo);
         nameView = (TextView) convertView.findViewById(R.id.user_name);
         contentView = (TextView) convertView.findViewById(R.id.user_message);

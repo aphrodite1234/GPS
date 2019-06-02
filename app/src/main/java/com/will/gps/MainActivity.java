@@ -29,6 +29,7 @@ import com.will.gps.bean.User;
 import com.will.gps.layout.FirstFragment;
 import com.will.gps.layout.GroupFragment;
 import com.will.gps.layout.GroupMsgFragment;
+import com.will.gps.layout.MessageFragment;
 import com.will.gps.layout.RecentMsgFragment;
 import com.will.gps.layout.UserFragment;
 
@@ -42,13 +43,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private TextView topBar;
     private TextView tabQun;
     private TextView tabMessage;
+    private TextView unreadtip;
     private TextView tabMore;
     private TextView tabUser;
     private FrameLayout ly_content;
 
     private FirstFragment f4;
     private GroupFragment f1;
-    private RecentMsgFragment f2;
+    private MessageFragment f2;
     private UserFragment f3;
     private ImageView imageView1, imageView2;
     private Intent intent;
@@ -118,6 +120,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         imageView2 = (ImageView) findViewById(R.id.btn_add);
         tabQun = (TextView) this.findViewById(R.id.txt_qun);
         tabMessage = (TextView) this.findViewById(R.id.txt_message);
+        unreadtip=(TextView)this.findViewById(R.id.unread_tip);
         tabUser = (TextView) this.findViewById(R.id.txt_user);
         tabMore = (TextView) this.findViewById(R.id.txt_more);
         ly_content = (FrameLayout) findViewById(R.id.fragment_container);
@@ -127,6 +130,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         // 设置图片的位置，左、上、右、下
         tabQun.setCompoundDrawables(null, null, drawable, null);*/
 
+        if(MySocket.unread=false)
+            unreadtip.setVisibility(View.GONE);
         imageView1.setOnClickListener(this);
         imageView2.setOnClickListener(this);
         tabQun.setOnClickListener(this);
@@ -195,7 +200,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 ft.replace(R.id.fragment_container, recentMsgFragment,MainActivity.TAG);
                 ft.commit();*/
                 if (f2 == null) {
-                    f2 = new RecentMsgFragment(List2);
+                    f2 = new MessageFragment();
                     transaction.add(R.id.fragment_container, f2);
                 } else {
                     transaction.show(f2);

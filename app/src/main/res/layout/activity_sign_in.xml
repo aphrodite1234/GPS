@@ -58,7 +58,8 @@
         <TextView
             android:id="@+id/sign_in_owner"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:textSize="18sp"/>
         <TextView
             android:id="@+id/sign_in_deadline"
             android:layout_width="wrap_content"
@@ -74,12 +75,13 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="18sp"
-                android:text="查看签到地址"/>
+                android:text="查看签到地址："/>
 
             <ImageView
                 android:id="@+id/sign_in_map"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_marginStart="100dp"/>
         </LinearLayout>
 
         <TextView
@@ -87,9 +89,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            android:textSize="18sp"/>
+            android:textSize="18sp" />
 
         <Button
+            android:id="@+id/sign_in_sign"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="100dp"

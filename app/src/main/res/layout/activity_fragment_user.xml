@@ -39,7 +39,6 @@
                 android:layout_marginTop="5dp"
                 android:layout_marginBottom="5dp"
                 android:layout_width="70dp"
-                android:scaleType="fitXY"
                 android:src="@mipmap/zu"
                 android:layout_height="70dp"/>
         </RelativeLayout>
