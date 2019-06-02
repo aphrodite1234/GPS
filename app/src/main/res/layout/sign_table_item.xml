@@ -55,6 +55,10 @@
                 android:textSize="16sp"/>
             <TextView
                 android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/gray"/>
+            <TextView
+                android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="2"
                 android:id="@+id/sign_table_content"
@@ -85,7 +89,10 @@
                 android:gravity="center"/>
 
     </LinearLayout>
-
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/gray"/>
     <!--<View-->
         <!--android:layout_width="match_parent"-->
         <!--android:layout_height="0.8dp"-->

@@ -53,7 +53,7 @@ public class SignTableListActivity extends Activity {
         title.setText("签到表");
         tip=(TextView)findViewById(R.id.sign_table_tip);
         mRecyclerView=findViewById(R.id.sign_list);
-        dateFormat=new SimpleDateFormat("M月d日 H时m分", Locale.CHINA);
+        dateFormat=new SimpleDateFormat("M-d日 H:m", Locale.CHINA);
 
         btn_back=(ImageView)findViewById(R.id.sign_table_back);
         btn_back.setOnClickListener(new View.OnClickListener() {
@@ -147,6 +147,7 @@ public class SignTableListActivity extends Activity {
                 Intent i=new Intent(SignTableListActivity.this,ReceiverListAcitivty.class);
                 i.putExtra("signtable",signTableBean);
                 i.putExtra("groupid",groupId);
+                i.putExtra("time",signTableBean.getTime());
                 startActivity(i);
             }
         });

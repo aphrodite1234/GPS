@@ -37,6 +37,7 @@ public class ReceiverListAcitivty extends Activity{
     private ImageView btn_back,btn_map;
     private SignTableBean signTableBean;
     private int groupId;
+    private String time;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +46,7 @@ public class ReceiverListAcitivty extends Activity{
 
         Intent intent = getIntent();
         groupId=intent.getIntExtra("groupid",0);
+        time=intent.getStringExtra("time");
         final DBOpenHelper dbOpenHelper=new DBOpenHelper(ReceiverListAcitivty.this);
         initData(dbOpenHelper);
 
@@ -81,7 +83,7 @@ public class ReceiverListAcitivty extends Activity{
         receivers=new ArrayList<>();
         SQLiteDatabase db = dbOpenHelper.getReadableDatabase();
         SQLiteDatabase db1=dbOpenHelper.getReadableDatabase();
-        Cursor cursor = db.query("signin", null, "groupid="+groupId, null, null, null, null);
+        Cursor cursor = db.query("signin", null, "groupid="+groupId+" AND time='"+time+"'", null, null, null, null);
         while (cursor.moveToNext()){
             String userphone=cursor.getString(cursor.getColumnIndex("receiver"));
             Cursor cursor1 = db1.query("groupmember", null, "userphone='"+userphone+"'", null, null, null, null);
