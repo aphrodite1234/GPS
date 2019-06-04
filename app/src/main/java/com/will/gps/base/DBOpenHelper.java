@@ -81,6 +81,7 @@ public class DBOpenHelper extends SQLiteOpenHelper {
             }
         }
     }
+
     //查询群信息
     public List<String> searchgroup(DBOpenHelper dbOpenHelper){
         Group group = new Group();
@@ -180,29 +181,6 @@ public class DBOpenHelper extends SQLiteOpenHelper {
             contentValues.put("result",signin.getResult());
             db.update("signin",contentValues,"id="+signin.getId(),null);
         }
-    }
-
-    //查询个人本地群消息
-    public List<ChatEntity > searchmessage(DBOpenHelper dbOpenHelper,int groupId){
-        List<ChatEntity> chatList = new ArrayList<>();
-        SQLiteDatabase db = dbOpenHelper.getReadableDatabase();
-        Cursor cursor = db.query("tsmessage", null, "groupid="+groupId+" AND user='"+MySocket.user.getPhonenum()+"'", null, null, null, null);
-        while(cursor.moveToNext()){
-            ChatEntity chatMessage = new ChatEntity();
-            chatMessage.setContent(cursor.getString(cursor.getColumnIndex("content")));
-            chatMessage.setSendTime(cursor.getString(cursor.getColumnIndex("date")));
-            chatMessage.setReceiverId(cursor.getString(cursor.getColumnIndex("receiver")));
-            chatMessage.setReceivername(cursor.getString(cursor.getColumnIndex("receivername")));
-            chatMessage.setSenderId(cursor.getString(cursor.getColumnIndex("sender")));
-            chatMessage.setSendername(cursor.getString(cursor.getColumnIndex("sendername")));
-            if(!cursor.getString(cursor.getColumnIndex("sender")).equals(MySocket.user.getPhonenum())){
-                chatMessage.setMessageType(ChatEntity.RECEIVE);
-            }else {
-                chatMessage.setMessageType(ChatEntity.SEND);
-            }
-            chatList.add(chatMessage);
-        }
-        return chatList;
     }
 
     //查询个人未签到信息

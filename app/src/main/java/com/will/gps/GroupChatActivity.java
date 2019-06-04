@@ -76,15 +76,14 @@ public class GroupChatActivity extends Activity implements View.OnClickListener{
                 if(type.equals("群消息")){
                     rMessage.setState(1);
                     dbOpenHelper.savemsg(dbOpenHelper,rMessage);
-                    initData();
-//                    ChatEntity chatMessage = new ChatEntity();
-//                    chatMessage.setContent(rMessage.getContent());
-//                    chatMessage.setSenderId(rMessage.getSenderphone());
-//                    chatMessage.setSendTime(rMessage.getDate());
-//                    chatMessage.setMessageType(ChatEntity.RECEIVE);
-//                    chatList.add(chatMessage);
-//                    chatMessageAdapter.notifyDataSetChanged();
-//                    chatMeessageListView.setSelection(chatList.size());
+                    ChatEntity chatMessage = new ChatEntity();
+                    chatMessage.setContent(rMessage.getContent());
+                    chatMessage.setSenderId(rMessage.getSenderphone());
+                    chatMessage.setSendTime(rMessage.getDate());
+                    chatMessage.setMessageType(ChatEntity.RECEIVE);
+                    chatList.add(chatMessage);
+                    chatMessageAdapter.notifyDataSetChanged();
+                    chatMeessageListView.setSelection(chatList.size());
                 }
             }
         });
@@ -92,7 +91,23 @@ public class GroupChatActivity extends Activity implements View.OnClickListener{
 
     private void initData(){
         DBOpenHelper dbOpenHelper=new DBOpenHelper(GroupChatActivity.this);
-        chatList=dbOpenHelper.searchmessage(dbOpenHelper,groupId);
+        SQLiteDatabase db = dbOpenHelper.getReadableDatabase();
+        Cursor cursor = db.query("tsmessage", null, "groupid="+groupId+" AND user='"+MySocket.user.getPhonenum()+"'", null, null, null, null);
+        while(cursor.moveToNext()){
+            ChatEntity chatMessage = new ChatEntity();
+            chatMessage.setContent(cursor.getString(cursor.getColumnIndex("content")));
+            chatMessage.setSendTime(cursor.getString(cursor.getColumnIndex("date")));
+            chatMessage.setReceiverId(cursor.getString(cursor.getColumnIndex("receiver")));
+            chatMessage.setReceivername(cursor.getString(cursor.getColumnIndex("receivername")));
+            chatMessage.setSenderId(cursor.getString(cursor.getColumnIndex("sender")));
+            chatMessage.setSendername(cursor.getString(cursor.getColumnIndex("sendername")));
+            if(!cursor.getString(cursor.getColumnIndex("sender")).equals(MySocket.user.getPhonenum())){
+                chatMessage.setMessageType(ChatEntity.RECEIVE);
+            }else {
+                chatMessage.setMessageType(ChatEntity.SEND);
+            }
+            chatList.add(chatMessage);
+        }
         chatMessageAdapter.notifyDataSetChanged();
         chatMeessageListView.setSelection(chatList.size());
         dbOpenHelper.setMessage(dbOpenHelper,groupId);

@@ -115,7 +115,11 @@ public class GroupInfoActivity extends Activity implements View.OnClickListener{
                 public boolean onMenuItemClick(MenuItem item) {
                     switch (item.getItemId()) {
                         case R.id.menu_groupinfo_signlist:
-                            Toast.makeText(GroupInfoActivity.this,"点击签到列表！",Toast.LENGTH_SHORT).show();
+                            //Toast.makeText(GroupInfoActivity.this,"点击签到列表！",Toast.LENGTH_SHORT).show();
+                            Intent intent=new Intent(GroupInfoActivity.this,SignTableListActivity.class);
+                            intent.putExtra("groupid",textnum.getText().toString());
+                            intent.putExtra("groupowner",myname.getText().toString());
+                            startActivity(intent);
                         default:
                             break;
                     }
