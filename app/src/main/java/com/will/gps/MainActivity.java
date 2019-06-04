@@ -17,6 +17,7 @@ import android.support.v4.app.FragmentManager;
 import android.app.FragmentTransaction;
 
 import com.google.gson.Gson;
+import com.will.gps.adapter.MessageListAdapter;
 import com.will.gps.base.DBOpenHelper;
 import com.will.gps.base.MySocket;
 import com.will.gps.base.RMessage;
@@ -70,6 +71,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         bindView();
         rMessage.setType("登录成功");
+        rMessage.setContent(null);
         rMessage.setSenderphone(MySocket.user.getPhonenum());
         ((MySocket) getApplication()).send(gson.toJson(rMessage));
 
@@ -130,8 +132,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         // 设置图片的位置，左、上、右、下
         tabQun.setCompoundDrawables(null, null, drawable, null);*/
 
-        if(MySocket.unread=false)
-            unreadtip.setVisibility(View.GONE);
+        System.out.println(MySocket.unread);
+        if(!MySocket.unread)
+            unreadtip.setVisibility(View.INVISIBLE);
         imageView1.setOnClickListener(this);
         imageView2.setOnClickListener(this);
         tabQun.setOnClickListener(this);

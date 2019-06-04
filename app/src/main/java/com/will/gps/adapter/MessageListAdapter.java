@@ -18,6 +18,7 @@ import com.will.gps.GroupChatActivity;
 import com.will.gps.R;
 import com.will.gps.SignInActivity;
 import com.will.gps.base.DBOpenHelper;
+import com.will.gps.base.MySocket;
 import com.will.gps.base.RMessage;
 import com.will.gps.bean.Group;
 import com.will.gps.bean.MessageTabEntity;
@@ -45,6 +46,8 @@ public class MessageListAdapter extends BaseExpandableListAdapter {
     private int[] friendchatunread1=new int[100];//[0]存发送者个数，
     //public static Intent i;
     Group group=new Group();
+
+    MessageListAdapter.GroupViewHolder groupViewHolder;
 
     public MessageListAdapter(Context context,List<String> mChildList1){
         mcontext=context;
@@ -171,7 +174,6 @@ public class MessageListAdapter extends BaseExpandableListAdapter {
 // 获取显示指定分组的视图
     @Override
     public View getGroupView(int groupPosition, boolean isExpanded, View convertView, ViewGroup parent) {
-        MessageListAdapter.GroupViewHolder groupViewHolder;
         if (convertView == null) {
             convertView = LayoutInflater.from(parent.getContext()).inflate(R.layout.expandable_list_group, parent, false);
             groupViewHolder = new MessageListAdapter.GroupViewHolder();
@@ -250,7 +252,12 @@ public class MessageListAdapter extends BaseExpandableListAdapter {
                     i.setFlags( Intent.FLAG_ACTIVITY_NEW_TASK);
                     mcontext.startActivity(i);
                     childViewHolder.unread_message_count.setVisibility(View.INVISIBLE);
-
+                    groupunread[groupPosition]--;
+                    groupViewHolder.news.setText(String.valueOf(groupunread[groupPosition]));
+                    if(groupunread[groupPosition]==0)
+                        groupViewHolder.news.setVisibility(View.GONE);
+                    if(groupunread[0]+groupunread[1]+groupunread[2]==0)
+                        MySocket.unread=false;
                 }
             });
         }else if(groupPosition==1){
@@ -267,7 +274,12 @@ public class MessageListAdapter extends BaseExpandableListAdapter {
                     i.setFlags( Intent.FLAG_ACTIVITY_NEW_TASK);
                     mcontext.startActivity(i);
                     childViewHolder.unread_message_count.setVisibility(View.INVISIBLE);
-
+                    groupunread[groupPosition]--;
+                    groupViewHolder.news.setText(String.valueOf(groupunread[groupPosition]));
+                    if(groupunread[groupPosition]==0)
+                        groupViewHolder.news.setVisibility(View.GONE);
+                    if(groupunread[0]+groupunread[1]+groupunread[2]==0)
+                        MySocket.unread=false;
                 }
             });
         }else if(groupPosition==2){
