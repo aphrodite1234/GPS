@@ -32,6 +32,8 @@ import com.will.gps.base.DBOpenHelper;
 import com.will.gps.base.MySocket;
 import com.will.gps.base.RMessage;
 import com.will.gps.view.CircleImageView;
+
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
@@ -324,6 +326,8 @@ public class UserFragment extends Fragment implements View.OnClickListener{
     }
     /*接口回调*/
     public void getData(CallBack callBack){
+        SimpleDateFormat sdf = new SimpleDateFormat("yy-MM-dd hh:mm:ss");
+        String sendTime = sdf.format(new Date());
         MySocket.user.setUserName(mEtNick.getText().toString());
         MySocket.user.setSex(mTvSex.getText().toString());
         MySocket.user.setLocate(mTvLocation.getText().toString());
@@ -333,7 +337,7 @@ public class UserFragment extends Fragment implements View.OnClickListener{
         MySocket.user.setRealName(mEtRealName.getText().toString());
         rMessage.setSenderphone(MySocket.user.getPhonenum());
         rMessage.setType("更新");
-        rMessage.setDate(new Date());
+        rMessage.setDate(sendTime);
         rMessage.setContent(gson.toJson(MySocket.user));
         String msg = gson.toJson(rMessage);
         callBack.getResult(msg);

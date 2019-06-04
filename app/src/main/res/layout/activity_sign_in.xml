@@ -48,40 +48,46 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
         android:layout_marginStart="15dp"
-        android:layout_marginEnd="15dp">
+        android:layout_marginEnd="15dp"
+        android:orientation="vertical">
 
         <View
             android:layout_width="match_parent"
-            android:layout_height="20dp"/>
+            android:layout_height="20dp" />
+
         <TextView
             android:id="@+id/sign_in_owner"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="18sp"/>
+            android:textSize="18sp"
+            android:text="originator"/>
+
         <TextView
             android:id="@+id/sign_in_deadline"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            android:textSize="18sp"/>
+            android:textSize="18sp"
+            android:text="time"/>
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp">
+
             <TextView
                 android:id="@+id/sign_in_location"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="18sp"
-                android:text="查看签到地址："/>
+                android:text="查看签到地址："
+                android:textSize="18sp" />
 
             <ImageView
                 android:id="@+id/sign_in_map"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="100dp"/>
+                android:layout_marginStart="100dp" />
         </LinearLayout>
 
         <TextView
@@ -89,13 +95,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            android:textSize="18sp" />
+            android:textSize="18sp"
+            android:text="region"/>
 
         <Button
             android:id="@+id/sign_in_sign"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="100dp"
-            android:text="确认签到"/>
+            android:text="确认签到" />
     </LinearLayout>
 </LinearLayout>

@@ -127,7 +127,7 @@ public class ReceiverListAcitivty extends Activity{
 //                        holder.setText(R.id.receiver_done,"已签到");
 //                    else
 //                        holder.setText(R.id.receiver_done,"未签到");
-                    holder.setText(R.id.receiver_longitude,"纬度:"+String.valueOf(receiverBean.getRlongitude()));
+                    holder.setText(R.id.receiver_longitude,"经度:"+String.valueOf(receiverBean.getRlongitude()));
                     holder.setText(R.id.receiver_latitude,"纬度:"+String.valueOf(receiverBean.getRlatitude()));
                     if(receiverBean.getDone()==1){
                         holder.setImageResource(R.id.receiver_result,R.mipmap.result_cg);

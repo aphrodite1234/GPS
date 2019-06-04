@@ -92,7 +92,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         break;
                     case "我的群":
                         dbOpenHelper.savegroup(dbOpenHelper, rMessage.getGroup());
-                        tabQun.performClick();
+                        tabMessage.performClick();
                         break;
                     case "群消息":
                         dbOpenHelper.savemsg(dbOpenHelper, rMessage);
@@ -244,7 +244,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onRestart() {
         super.onRestart();
-        tabQun.performClick();
+        tabMessage.performClick();
+        rMessage.setType("登录成功");
+        rMessage.setSenderphone(MySocket.user.getPhonenum());
+        ((MySocket) getApplication()).send(gson.toJson(rMessage));
     }
 
     //为了在fragment中注册监听事件（fragment中没有提供OnTouchEvent）

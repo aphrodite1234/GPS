@@ -66,7 +66,7 @@ public class GroupChatActivity extends Activity implements View.OnClickListener{
         initViews();
         initEvents();
         final DBOpenHelper dbOpenHelper=new DBOpenHelper(GroupChatActivity.this);
-        initData(dbOpenHelper);
+        initData();
         ((MySocket)getApplication()).setHandler(new Handler(){
             @Override
             public void handleMessage(Message msg) {
@@ -74,40 +74,28 @@ public class GroupChatActivity extends Activity implements View.OnClickListener{
                 rMessage=gson.fromJson(msg.obj.toString(),RMessage.class);
                 String type = rMessage.getType();
                 if(type.equals("群消息")){
+                    rMessage.setState(1);
                     dbOpenHelper.savemsg(dbOpenHelper,rMessage);
-                    ChatEntity chatMessage = new ChatEntity();
-                    chatMessage.setContent(rMessage.getContent());
-                    chatMessage.setSenderId(rMessage.getSenderphone());
-                    chatMessage.setSendTime(rMessage.getDate());
-                    chatMessage.setMessageType(ChatEntity.RECEIVE);
-                    chatList.add(chatMessage);
-                    chatMessageAdapter.notifyDataSetChanged();
-                    chatMeessageListView.setSelection(chatList.size());
+                    initData();
+//                    ChatEntity chatMessage = new ChatEntity();
+//                    chatMessage.setContent(rMessage.getContent());
+//                    chatMessage.setSenderId(rMessage.getSenderphone());
+//                    chatMessage.setSendTime(rMessage.getDate());
+//                    chatMessage.setMessageType(ChatEntity.RECEIVE);
+//                    chatList.add(chatMessage);
+//                    chatMessageAdapter.notifyDataSetChanged();
+//                    chatMeessageListView.setSelection(chatList.size());
                 }
             }
         });
     }
 
-    private void initData(DBOpenHelper dbOpenHelper){
-        SQLiteDatabase db = dbOpenHelper.getReadableDatabase();
-        Cursor cursor = db.query("tsmessage", null, "groupid="+groupId+" AND user='"+MySocket.user.getPhonenum()+"'", null, null, null, null);
-        while(cursor.moveToNext()){
-            ChatEntity chatMessage = new ChatEntity();
-            chatMessage.setContent(cursor.getString(cursor.getColumnIndex("content")));
-            chatMessage.setSendTime(cursor.getString(cursor.getColumnIndex("date")));
-            chatMessage.setReceiverId(cursor.getString(cursor.getColumnIndex("receiver")));
-            chatMessage.setReceivername(cursor.getString(cursor.getColumnIndex("receivername")));
-            chatMessage.setSenderId(cursor.getString(cursor.getColumnIndex("sender")));
-            chatMessage.setSendername(cursor.getString(cursor.getColumnIndex("sendername")));
-            if(!cursor.getString(cursor.getColumnIndex("sender")).equals(MySocket.user.getPhonenum())){
-                chatMessage.setMessageType(ChatEntity.RECEIVE);
-            }else {
-                chatMessage.setMessageType(ChatEntity.SEND);
-            }
-            chatList.add(chatMessage);
-            chatMessageAdapter.notifyDataSetChanged();
-            chatMeessageListView.setSelection(chatList.size());
-        }
+    private void initData(){
+        DBOpenHelper dbOpenHelper=new DBOpenHelper(GroupChatActivity.this);
+        chatList=dbOpenHelper.searchmessage(dbOpenHelper,groupId);
+        chatMessageAdapter.notifyDataSetChanged();
+        chatMeessageListView.setSelection(chatList.size());
+        dbOpenHelper.setMessage(dbOpenHelper,groupId);
     }
 
     protected void initViews() {
@@ -141,6 +129,7 @@ public class GroupChatActivity extends Activity implements View.OnClickListener{
 
         btn_back.setOnClickListener(this);
         btn_more.setOnClickListener(this);
+
     }
 
     protected void initEvents() {
@@ -191,7 +180,7 @@ public class GroupChatActivity extends Activity implements View.OnClickListener{
                 rMessage.setSendername(MySocket.user.getUserName());
                 rMessage.setGroupid(groupId);
                 rMessage.setContent(inputEdit.getText().toString());
-                rMessage.setDate(date);
+                rMessage.setDate(sendTime);
                 rMessage.setType("群消息");
                 ((MySocket)getApplication()).send(gson.toJson(rMessage));
                 dbOpenHelper.savemsg(dbOpenHelper,rMessage);

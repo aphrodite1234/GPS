@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import com.google.gson.Gson;
+import com.will.gps.bean.ChatEntity;
 import com.will.gps.bean.Group;
 import com.will.gps.bean.GroupMember;
 import com.will.gps.bean.Signin;
@@ -80,6 +81,25 @@ public class DBOpenHelper extends SQLiteOpenHelper {
             }
         }
     }
+    //查询群信息
+    public List<String> searchgroup(DBOpenHelper dbOpenHelper){
+        Group group = new Group();
+        List<String> groupList = new ArrayList<>();
+        SQLiteDatabase db = dbOpenHelper.getReadableDatabase();
+        Cursor cursor1=db.query("groupmember", new String[]{"groupid"},"userphone="+MySocket.user.getPhonenum(),null,null,null,null);
+        while (cursor1.moveToNext()){
+            Cursor cursor = db.query("mgroup", null, "groupid="+cursor1.getInt(cursor1.getColumnIndex("groupid")), null, null, null, null);
+            while(cursor.moveToNext()){
+                group.setGroupid(cursor.getInt(cursor.getColumnIndex("groupid")));
+                group.setGroupname(cursor.getString(cursor.getColumnIndex("groupname")));
+                group.setGroupowner(cursor.getString(cursor.getColumnIndex("groupowner")));
+                group.setOwnername(cursor.getString(cursor.getColumnIndex("ownername")));
+                group.setMembernum(cursor.getInt(cursor.getColumnIndex("membernum")));
+                groupList.add(gson.toJson(group));
+            }
+        }
+        return groupList;
+    }
 
     //保存群成员
     public void savemember(DBOpenHelper dbOpenHelper, List<String> list){
@@ -112,9 +132,16 @@ public class DBOpenHelper extends SQLiteOpenHelper {
         contentValues.put("receivername",rMessage.getReceivername());
         contentValues.put("content",rMessage.getContent());
         contentValues.put("date",rMessage.getDate());
-        contentValues.put("state",1);
+        contentValues.put("state",0);
         db.insert("tsmessage",null,contentValues);
+    }
 
+    //群消息已读
+    public void setMessage(DBOpenHelper dbOpenHelper,int groupId){
+        SQLiteDatabase db = dbOpenHelper.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("state",1);
+        db.update("tsmessage",contentValues,"state = 0 AND groupid = "+groupId+" AND user='"+MySocket.user.getPhonenum()+"'",null);
     }
 
     //保存签到信息
@@ -155,23 +182,59 @@ public class DBOpenHelper extends SQLiteOpenHelper {
         }
     }
 
-    //查询群信息
-    public List<String> searchgroup(DBOpenHelper dbOpenHelper){
-        Group group = new Group();
-        List<String> groupList = new ArrayList<>();
+    //查询个人本地群消息
+    public List<ChatEntity > searchmessage(DBOpenHelper dbOpenHelper,int groupId){
+        List<ChatEntity> chatList = new ArrayList<>();
         SQLiteDatabase db = dbOpenHelper.getReadableDatabase();
-        Cursor cursor1=db.query("groupmember", new String[]{"groupid"},"userphone="+MySocket.user.getPhonenum(),null,null,null,null);
-        while (cursor1.moveToNext()){
-            Cursor cursor = db.query("mgroup", null, "groupid="+cursor1.getInt(cursor1.getColumnIndex("groupid")), null, null, null, null);
-            while(cursor.moveToNext()){
-                group.setGroupid(cursor.getInt(cursor.getColumnIndex("groupid")));
-                group.setGroupname(cursor.getString(cursor.getColumnIndex("groupname")));
-                group.setGroupowner(cursor.getString(cursor.getColumnIndex("groupowner")));
-                group.setOwnername(cursor.getString(cursor.getColumnIndex("ownername")));
-                group.setMembernum(cursor.getInt(cursor.getColumnIndex("membernum")));
-                groupList.add(gson.toJson(group));
+        Cursor cursor = db.query("tsmessage", null, "groupid="+groupId+" AND user='"+MySocket.user.getPhonenum()+"'", null, null, null, null);
+        while(cursor.moveToNext()){
+            ChatEntity chatMessage = new ChatEntity();
+            chatMessage.setContent(cursor.getString(cursor.getColumnIndex("content")));
+            chatMessage.setSendTime(cursor.getString(cursor.getColumnIndex("date")));
+            chatMessage.setReceiverId(cursor.getString(cursor.getColumnIndex("receiver")));
+            chatMessage.setReceivername(cursor.getString(cursor.getColumnIndex("receivername")));
+            chatMessage.setSenderId(cursor.getString(cursor.getColumnIndex("sender")));
+            chatMessage.setSendername(cursor.getString(cursor.getColumnIndex("sendername")));
+            if(!cursor.getString(cursor.getColumnIndex("sender")).equals(MySocket.user.getPhonenum())){
+                chatMessage.setMessageType(ChatEntity.RECEIVE);
+            }else {
+                chatMessage.setMessageType(ChatEntity.SEND);
             }
+            chatList.add(chatMessage);
         }
-        return groupList;
+        return chatList;
+    }
+
+    //查询个人未签到信息
+    public List<String> searchsignin(DBOpenHelper dbOpenHelper){
+        List<String> signList = new ArrayList<>();
+        SQLiteDatabase db = dbOpenHelper.getReadableDatabase();
+        Cursor cursor = db.query("signin", null, "receiver='"+MySocket.user.getPhonenum()+"' AND done=0 AND state=0", null, null, null, null);
+        while(cursor.moveToNext()){
+            Signin signin = new Signin();
+            signin.setGroupid(cursor.getInt(cursor.getColumnIndex("groupid")));
+            signin.setOriginator(cursor.getString(cursor.getColumnIndex("originator")));
+            signin.setTime(cursor.getString(cursor.getColumnIndex("time")));
+            signin.setResult(cursor.getString(cursor.getColumnIndex("result")));
+            signList.add(gson.toJson(signin));
+        }
+        return signList;
+    }
+
+    //查询个人未读消息
+    public List<String> searchstate(DBOpenHelper dbOpenHelper){
+        List<String> stateList = new ArrayList<>();
+        SQLiteDatabase db = dbOpenHelper.getReadableDatabase();
+        Cursor cursor = db.query("tsmessage", null, "user='"+MySocket.user.getPhonenum()+"' AND state=0", null, null, null, null);
+        while(cursor.moveToNext()){
+            RMessage rMessage = new RMessage();
+            rMessage.setType("群消息");
+            rMessage.setGroupid(cursor.getInt(cursor.getColumnIndex("groupid")));
+            rMessage.setContent(cursor.getString(cursor.getColumnIndex("content")));
+            rMessage.setDate(cursor.getString(cursor.getColumnIndex("date")));
+            rMessage.setSendername(cursor.getString(cursor.getColumnIndex("sendername")));
+            stateList.add(gson.toJson(rMessage));
+        }
+        return stateList;
     }
 }

@@ -212,7 +212,7 @@ public class MessageListAdapter extends BaseExpandableListAdapter {
     //取得显示给定分组给定子位置的数据用的视图
     @Override
     public View getChildView(final int groupPosition, final int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
-        MessageListAdapter.ChildViewHolder childViewHolder;
+        final MessageListAdapter.ChildViewHolder childViewHolder;
         if (convertView == null) {
             convertView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_fragment_message, parent, false);
             childViewHolder = new MessageListAdapter.ChildViewHolder();
@@ -239,7 +239,7 @@ public class MessageListAdapter extends BaseExpandableListAdapter {
         }
         childViewHolder.user_nmae.setText(group.getGroupname());
         childViewHolder.send_time.setText(mChildList.get(groupPosition).get(childPosition).getDate());
-        childViewHolder.user_message.setText(mChildList.get(groupPosition).get(childPosition).getContent());
+        childViewHolder.user_message.setText(mChildList.get(groupPosition).get(childPosition).getSendername()+":"+mChildList.get(groupPosition).get(childPosition).getContent());
         if(groupPosition==0){
             childViewHolder.unread_message_count.setText("1");
             childViewHolder.item.setOnClickListener(new View.OnClickListener() {
@@ -249,6 +249,8 @@ public class MessageListAdapter extends BaseExpandableListAdapter {
                     i.putExtra("groupid",mChildList.get(groupPosition).get(childPosition).getGroupid());
                     i.setFlags( Intent.FLAG_ACTIVITY_NEW_TASK);
                     mcontext.startActivity(i);
+                    childViewHolder.unread_message_count.setVisibility(View.INVISIBLE);
+
                 }
             });
         }else if(groupPosition==1){
@@ -264,6 +266,8 @@ public class MessageListAdapter extends BaseExpandableListAdapter {
                     i.putExtra("ismember","true");
                     i.setFlags( Intent.FLAG_ACTIVITY_NEW_TASK);
                     mcontext.startActivity(i);
+                    childViewHolder.unread_message_count.setVisibility(View.INVISIBLE);
+
                 }
             });
         }else if(groupPosition==2){

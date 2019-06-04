@@ -28,10 +28,8 @@ public class RMessage {
 	public String getDate() {
 		return date;
 	}
-	public void setDate(Date date) {
-		SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		String sd = sdf.format(date);
-		this.date = sd;
+	public void setDate(String date) {
+		this.date = date;
 	}
 
 	public String getType() {
