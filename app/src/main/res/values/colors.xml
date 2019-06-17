@@ -22,6 +22,7 @@
     <color name="text_color">#ff434343</color>
     <color name="blue">#499BF7</color>
     <color name="gray">#A8A8A8</color>
+    <color name="green">#23d249</color>
     <color name="default_line_color">#007de0</color>
     <color name="default_unSelect_text_color">#7c7979</color>
     <color name="default_selected_text_color">#007de0</color>

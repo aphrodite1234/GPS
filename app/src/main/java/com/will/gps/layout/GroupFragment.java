@@ -90,7 +90,7 @@ public class GroupFragment extends Fragment {
         expandableListView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
             @Override
             public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id) {
-                Toast.makeText(context,groups.get(groupPosition) , Toast.LENGTH_SHORT).show();
+                //Toast.makeText(context,groups.get(groupPosition) , Toast.LENGTH_SHORT).show();
                 return false;
             }
         });

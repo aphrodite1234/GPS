@@ -3,11 +3,14 @@ package com.will.gps.map;
 /**
  * Created by MaiBenBen on 2019/5/11.
  */
+
 import android.Manifest;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.location.LocationManager;
+import android.os.Handler;
+import android.os.Message;
 import android.provider.Settings;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -35,25 +38,34 @@ import com.amap.api.services.geocoder.GeocodeSearch;
 import com.amap.api.services.geocoder.RegeocodeAddress;
 import com.amap.api.services.geocoder.RegeocodeQuery;
 import com.amap.api.services.geocoder.RegeocodeResult;
+import com.google.gson.Gson;
 import com.will.gps.CreateSignActivity;
 import com.will.gps.R;
+import com.will.gps.SignInActivity;
+import com.will.gps.base.DBOpenHelper;
+import com.will.gps.base.MySocket;
 import com.will.gps.base.PermissionActivity;
+import com.will.gps.base.RMessage;
+import com.will.gps.bean.Signin;
 import com.will.gps.utils.LocationUtil;
+
+import java.text.DecimalFormat;
 
 public class AmapActivity extends AppCompatActivity implements LocationSource, AMapLocationListener, AMap.OnMapClickListener, GeocodeSearch.OnGeocodeSearchListener {
     private MapView mapView;
     private AMap aMap;
     private LocationSource.OnLocationChangedListener mListener = null;//定位监听器
     private LocationUtil locationUtil;
-    private double latitude,longitude;
+    private double latitude, longitude;
     private GeocodeSearch geocodeSearch;
     private String simpleAddress;
     private TextView tvChoseAddress;
     private Button btn_dingwei;
     private ImageView btn_back;
     private Intent intent;
-    private boolean highaccuracy=false;
+    private boolean highaccuracy = false;
     private final static int GPS_REQUEST_CODE = 10;
+    String activity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,22 +74,60 @@ public class AmapActivity extends AppCompatActivity implements LocationSource, A
 
         mapView = (MapView) findViewById(R.id.map_view);
         mapView.onCreate(savedInstanceState);
-        intent=getIntent();
-        if(intent.getStringExtra("jingdu").equals("high")) {
+        intent = getIntent();
+        activity = intent.getStringExtra("activity");
+
+        if (intent.getStringExtra("jingdu").equals("high")) {
             openGPSSettings();
-            highaccuracy=true;
+            highaccuracy = true;
             startActivityForResult(new Intent(this, PermissionActivity.class).putExtra(PermissionActivity.KEY_PERMISSIONS_ARRAY,
                     new String[]{Manifest.permission.ACCESS_FINE_LOCATION}), PermissionActivity.CALL_BACK_PERMISSION_REQUEST_CODE);
-        } else{
-            highaccuracy=false;
+        } else {
+            highaccuracy = false;
             startActivityForResult(new Intent(this, PermissionActivity.class).putExtra(PermissionActivity.KEY_PERMISSIONS_ARRAY,
                     new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}), PermissionActivity.CALL_BACK_PERMISSION_REQUEST_CODE);
         }
+
+
         init();
+        final DBOpenHelper dbOpenHelper = new DBOpenHelper(AmapActivity.this);
+        ((MySocket) getApplication()).setHandler(new Handler() {
+            @Override
+            public void handleMessage(Message msg) {
+                super.handleMessage(msg);
+                Gson gson = new Gson();
+                Signin signin = new Signin();
+                RMessage rMessage = gson.fromJson(msg.obj.toString(), RMessage.class);
+                String type = rMessage.getType();
+                switch (type) {
+                    case "群消息":
+                        dbOpenHelper.savemsg(dbOpenHelper, rMessage);
+                        break;
+                    case "签到消息":
+                        signin = gson.fromJson(rMessage.getContent(), Signin.class);
+                        dbOpenHelper.savesign(dbOpenHelper, signin);
+                        break;
+                    case "解散群":
+                        dbOpenHelper.deletegroup(dbOpenHelper, rMessage.getGroupid());
+                        break;
+                    case "用户签到":
+                        signin = gson.fromJson(rMessage.getContent(), Signin.class);
+                        if (signin.getDone() == 1) {
+                            dbOpenHelper.updatesignin(dbOpenHelper, signin.getId());
+                        }
+                        break;
+                    case "签到截止":
+                        dbOpenHelper.endsign(dbOpenHelper, gson.fromJson(rMessage.getContent(), Signin.class));
+                        break;
+                    default:
+                        break;
+                }
+            }
+        });
     }
 
     private void init() {
-        if(aMap == null){
+        if (aMap == null) {
             aMap = mapView.getMap();
         }
         //aMap.setOnMapLongClickListener(this);
@@ -94,9 +144,25 @@ public class AmapActivity extends AppCompatActivity implements LocationSource, A
         geocodeSearch.setOnGeocodeSearchListener(this);
         aMap.setOnMapClickListener(this);
 
-        tvChoseAddress=(TextView)findViewById(R.id.map_latLng);
-        btn_back=(ImageView) findViewById(R.id.map_back);
-        btn_dingwei=(Button)findViewById(R.id.map_btn);
+//        if(activity.equals("SignInActivity")){
+//            latitude=Double.valueOf(intent.getStringExtra("longitude"));
+//            longitude=Double.valueOf(intent.getStringExtra("latitude"));
+//            System.out.println(latitude+"++++++++++++++++++++++++++++++++"+longitude);
+//            LatLng latLng = new LatLng(latitude,longitude);
+//            MarkerOptions otMarkerOptions = new MarkerOptions();
+//            otMarkerOptions.icon(BitmapDescriptorFactory.fromResource(R.mipmap.position));
+//            otMarkerOptions.position(latLng);
+//            otMarkerOptions.title(simpleAddress);
+//            otMarkerOptions.snippet("纬度:" + latLng.latitude + "   经度:" + latLng.longitude);
+//            getAddressByLatlng(latLng);
+//            aMap.addMarker(otMarkerOptions);
+//            aMap.moveCamera(CameraUpdateFactory.changeLatLng(latLng));
+//            tvChoseAddress.setText(String.format("纬度:%s   经度:%s", latLng.latitude, latLng.longitude));
+//        }
+
+        tvChoseAddress = (TextView) findViewById(R.id.map_latLng);
+        btn_back = (ImageView) findViewById(R.id.map_back);
+        btn_dingwei = (Button) findViewById(R.id.map_btn);
 
         btn_back.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -107,14 +173,24 @@ public class AmapActivity extends AppCompatActivity implements LocationSource, A
         btn_dingwei.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i=new Intent(AmapActivity.this, CreateSignActivity.class);
-                i.putExtra("lat",latitude);
-                i.putExtra("lgt",longitude);
+                Intent i;
+                DecimalFormat formatter = new DecimalFormat("#.######");
+                if (activity.equals("CreateSignActivity")) {
+                    i = new Intent(AmapActivity.this, CreateSignActivity.class);
+                    i.putExtra("lat", formatter.format(latitude));
+                    i.putExtra("lgt", formatter.format(longitude));
+                    AmapActivity.this.setResult(RESULT_OK, i);
+                } else if (activity.equals("SignInActivity")) {
+                    i = new Intent(AmapActivity.this, SignInActivity.class);
+                    i.putExtra("lat", formatter.format(latitude));
+                    i.putExtra("lgt", formatter.format(longitude));
+                    AmapActivity.this.setResult(RESULT_OK, i);
+                }
                 //startActivity(i);
-                AmapActivity.this.setResult(RESULT_OK,i);
                 finish();
             }
         });
+
     }
 
     /**
@@ -122,13 +198,14 @@ public class AmapActivity extends AppCompatActivity implements LocationSource, A
      *
      * @return
      */
-    private boolean checkGPSIsOpen(){
+    private boolean checkGPSIsOpen() {
         boolean isOpen;
         LocationManager locationManager = (LocationManager) this
                 .getSystemService(Context.LOCATION_SERVICE);
         isOpen = locationManager.isProviderEnabled(android.location.LocationManager.GPS_PROVIDER);
         return isOpen;
     }
+
     /**
      * 跳转GPS设置
      */
@@ -160,21 +237,23 @@ public class AmapActivity extends AppCompatActivity implements LocationSource, A
                     .setCancelable(false)
                     .show();
         } /*else {
-            *//*initLocation(); //自己写的定位方法*//*
+         *//*initLocation(); //自己写的定位方法*//*
         }*/
     }
-    private void setLocationCallBack(){
+
+    private void setLocationCallBack() {
         locationUtil = new LocationUtil();
         locationUtil.setLocationCallBack(new LocationUtil.ILocationCallBack() {
             @Override
-            public void callBack(String str,double lat,double lgt,AMapLocation aMapLocation) {
+            public void callBack(String str, double lat, double lgt, AMapLocation aMapLocation) {
 
                 //根据获取的经纬度，将地图移动到定位位置
                 //aMap.moveCamera(CameraUpdateFactory.changeLatLng(new LatLng(lat,lgt)));
-                latitude=lat; longitude=lgt;
+                latitude = lat;
+                longitude = lgt;
                 mListener.onLocationChanged(aMapLocation);
                 //添加定位图标
-                aMap.addMarker(locationUtil.getMarkerOption(str,lat,lgt));
+                aMap.addMarker(locationUtil.getMarkerOption(str, lat, lgt));
             }
         });
     }
@@ -183,16 +262,18 @@ public class AmapActivity extends AppCompatActivity implements LocationSource, A
     @Override
     public void activate(OnLocationChangedListener onLocationChangedListener) {
         mListener = onLocationChangedListener;
-        locationUtil.startLocate(this,highaccuracy);
+        locationUtil.startLocate(this, highaccuracy);
         tvChoseAddress.setText(String.format("纬度:%s   经度:%s", latitude, longitude));
     }
 
-    /**     * map点击事件     * @param latLng 经纬度     */
+    /**
+     * map点击事件     * @param latLng 经纬度
+     */
     @Override
     public void onMapClick(LatLng latLng) {
         aMap.clear();
-        latitude=latLng.latitude;
-        longitude=latLng.longitude;
+        latitude = latLng.latitude;
+        longitude = latLng.longitude;
         MarkerOptions otMarkerOptions = new MarkerOptions();
         otMarkerOptions.icon(BitmapDescriptorFactory.fromResource(R.mipmap.position2));
         otMarkerOptions.position(latLng);
@@ -203,13 +284,17 @@ public class AmapActivity extends AppCompatActivity implements LocationSource, A
         aMap.moveCamera(CameraUpdateFactory.changeLatLng(latLng));
         tvChoseAddress.setText(String.format("纬度:%s   经度:%s", latLng.latitude, latLng.longitude));
     }
+
     private void getAddressByLatlng(LatLng latLng) {
         //逆地理编码查询条件：逆地理编码查询的地理坐标点、查询范围、坐标类型。
         LatLonPoint latLonPoint = new LatLonPoint(latLng.latitude, latLng.longitude);
         RegeocodeQuery query = new RegeocodeQuery(latLonPoint, 500f, GeocodeSearch.AMAP);        //异步查询
         geocodeSearch.getFromLocationAsyn(query);
     }
-    /**     *  得到逆地理编码异步查询结果     */
+
+    /**
+     * 得到逆地理编码异步查询结果
+     */
     @Override
     public void onRegeocodeSearched(RegeocodeResult regeocodeResult, int i) {
         RegeocodeAddress regeocodeAddress = regeocodeResult.getRegeocodeAddress();
@@ -260,22 +345,23 @@ public class AmapActivity extends AppCompatActivity implements LocationSource, A
     public void onLocationChanged(AMapLocation aMapLocation) {
 
     }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == PermissionActivity.CALL_BACK_PERMISSION_REQUEST_CODE){
-            switch (resultCode){
+        if (requestCode == PermissionActivity.CALL_BACK_PERMISSION_REQUEST_CODE) {
+            switch (resultCode) {
                 case PermissionActivity.CALL_BACK_RESULT_CODE_SUCCESS:
-                    Toast.makeText(this,"权限申请成功！",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "权限申请成功！", Toast.LENGTH_SHORT).show();
                     break;
                 case PermissionActivity.CALL_BACK_RESULE_CODE_FAILURE:
-                    Toast.makeText(this,"权限申请失败！",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "权限申请失败！", Toast.LENGTH_SHORT).show();
                     break;
                 case GPS_REQUEST_CODE:
-                    Toast.makeText(this,"GPS打开成功！",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "GPS打开成功！", Toast.LENGTH_SHORT).show();
                     break;
                 default:
-                    Toast.makeText(this,"GPS打开失败!",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "GPS打开失败!", Toast.LENGTH_SHORT).show();
                     break;
             }
         }

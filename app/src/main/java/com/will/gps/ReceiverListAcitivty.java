@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -15,8 +17,12 @@ import com.google.gson.Gson;
 import com.suntek.commonlibrary.adapter.RViewHolder;
 import com.suntek.commonlibrary.adapter.RecycleViewAdapter;
 import com.will.gps.base.DBOpenHelper;
+import com.will.gps.base.MySocket;
+import com.will.gps.base.RMessage;
 import com.will.gps.bean.ReceiverBean;
 import com.will.gps.bean.SignTableBean;
+import com.will.gps.bean.Signin;
+import com.will.gps.map.AmapActivity;
 import com.will.gps.map.ReceiverMapActivity;
 
 import java.io.Serializable;
@@ -52,7 +58,7 @@ public class ReceiverListAcitivty extends Activity{
 
         signTableBean=(SignTableBean)getIntent().getSerializableExtra("signtable");
         title=(TextView)findViewById(R.id.sign_table_title);
-        title.setText(String.valueOf(signTableBean.getId())+"的签到情况");
+        title.setText("签到情况");
         tip=(TextView)findViewById(R.id.sign_table_tip);
         mRecyclerView=findViewById(R.id.sign_list);
 
@@ -78,6 +84,40 @@ public class ReceiverListAcitivty extends Activity{
         initRecyclerView(receivers);
         for(int i=0;i<receiverBeanList.size();i++)
             receiverAdapter.notifyItemChanged(i);
+
+        ((MySocket)getApplication()).setHandler(new Handler(){
+            @Override
+            public void handleMessage(Message msg) {
+                super.handleMessage(msg);
+                Gson gson = new Gson();
+                Signin signin = new Signin();
+                RMessage rMessage = gson.fromJson(msg.obj.toString(), RMessage.class);
+                String type = rMessage.getType();
+                switch (type){
+                    case "群消息":
+                        dbOpenHelper.savemsg(dbOpenHelper, rMessage);
+                        break;
+                    case "签到消息":
+                        signin = gson.fromJson(rMessage.getContent(),Signin.class);
+                        dbOpenHelper.savesign(dbOpenHelper,signin);
+                        break;
+                    case "解散群":
+                        dbOpenHelper.deletegroup(dbOpenHelper,rMessage.getGroupid());
+                        break;
+                    case "用户签到":
+                        signin=gson.fromJson(rMessage.getContent(),Signin.class);
+                        if(signin.getDone()==1){
+                            dbOpenHelper.updatesignin(dbOpenHelper,signin.getId());
+                        }
+                        break;
+                    case "签到截止":
+                        dbOpenHelper.endsign(dbOpenHelper,gson.fromJson(rMessage.getContent(),Signin.class));
+                        break;
+                    default:
+                        break;
+                }
+            }
+        });
     }
     private void initData(DBOpenHelper dbOpenHelper){
         receivers=new ArrayList<>();

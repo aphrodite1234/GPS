@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -18,7 +20,10 @@ import com.suntek.commonlibrary.adapter.RViewHolder;
 import com.suntek.commonlibrary.adapter.RecycleViewAdapter;
 import com.will.gps.base.DBOpenHelper;
 import com.will.gps.base.MySocket;
+import com.will.gps.base.RMessage;
 import com.will.gps.bean.SignTableBean;
+import com.will.gps.bean.Signin;
+import com.will.gps.map.AmapActivity;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -72,6 +77,40 @@ public class SignTableListActivity extends Activity {
         initRecyclerView(signtables);
         for(int i=0;i<signTableBeanList.size();i++)
             signtableAdapter.notifyItemChanged(i);
+
+        ((MySocket)getApplication()).setHandler(new Handler(){
+            @Override
+            public void handleMessage(Message msg) {
+                super.handleMessage(msg);
+                Gson gson = new Gson();
+                Signin signin = new Signin();
+                RMessage rMessage = gson.fromJson(msg.obj.toString(), RMessage.class);
+                String type = rMessage.getType();
+                switch (type){
+                    case "群消息":
+                        dbOpenHelper.savemsg(dbOpenHelper, rMessage);
+                        break;
+                    case "签到消息":
+                        signin = gson.fromJson(rMessage.getContent(),Signin.class);
+                        dbOpenHelper.savesign(dbOpenHelper,signin);
+                        break;
+                    case "解散群":
+                        dbOpenHelper.deletegroup(dbOpenHelper,rMessage.getGroupid());
+                        break;
+                    case "用户签到":
+                        signin=gson.fromJson(rMessage.getContent(),Signin.class);
+                        if(signin.getDone()==1){
+                            dbOpenHelper.updatesignin(dbOpenHelper,signin.getId());
+                        }
+                        break;
+                    case "签到截止":
+                        dbOpenHelper.endsign(dbOpenHelper,gson.fromJson(rMessage.getContent(),Signin.class));
+                        break;
+                    default:
+                        break;
+                }
+            }
+        });
     }
     private void initData(DBOpenHelper dbOpenHelper){
         signtables=new ArrayList<>();
@@ -91,6 +130,7 @@ public class SignTableListActivity extends Activity {
                 signTableBean1.setOriginator(cursor1.getString(cursor1.getColumnIndex("ownername")));
                 signTableBean1.setTime(cursor.getString(cursor.getColumnIndex("time")));
                 signTableBean1.setState(cursor.getInt(cursor.getColumnIndex("state")));
+                signTableBean1.setContent(cursor.getString(cursor.getColumnIndex("result")));
                 signtables.add(gson.toJson(signTableBean1));
             }
         }
@@ -127,6 +167,7 @@ public class SignTableListActivity extends Activity {
                 SignTableBean signTableBean=signTableBeanList.get(position);
                 if(signTableBean!=null){
                     //holder.setText(R.id.sign_table_id,String.valueOf(signTableBean.getContetn()));
+                    holder.setText(R.id.sign_table_content,signTableBean.getContent());
                     holder.setText(R.id.sign_table_originator,signTableBean.getOriginator());
                     holder.setText(R.id.sign_table_time,"时间:"+signTableBean.getTime());
 //                    holder.setText(R.id.sign_table_longitude,"经度:"+String.valueOf(signTableBean.getLongitude()));

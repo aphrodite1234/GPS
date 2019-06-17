@@ -6,6 +6,8 @@ import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.view.View;
@@ -18,6 +20,7 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
+import com.will.gps.base.DBOpenHelper;
 import com.will.gps.base.MySocket;
 import com.will.gps.base.RMessage;
 import com.will.gps.bean.Signin;
@@ -26,6 +29,7 @@ import com.will.gps.map.AmapActivity;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Locale;
 
@@ -51,6 +55,41 @@ public class CreateSignActivity extends Activity implements View.OnClickListener
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_create);
         bindView();
+
+        final DBOpenHelper dbOpenHelper = new DBOpenHelper(CreateSignActivity.this);
+        ((MySocket)getApplication()).setHandler(new Handler(){
+            @Override
+            public void handleMessage(Message msg) {
+                super.handleMessage(msg);
+                Gson gson = new Gson();
+                Signin signin = new Signin();
+                RMessage rMessage = gson.fromJson(msg.obj.toString(), RMessage.class);
+                String type = rMessage.getType();
+                switch (type){
+                    case "群消息":
+                        dbOpenHelper.savemsg(dbOpenHelper, rMessage);
+                        break;
+                    case "签到消息":
+                        signin = gson.fromJson(rMessage.getContent(),Signin.class);
+                        dbOpenHelper.savesign(dbOpenHelper,signin);
+                        break;
+                    case "解散群":
+                        dbOpenHelper.deletegroup(dbOpenHelper,rMessage.getGroupid());
+                        break;
+                    case "用户签到":
+                        signin=gson.fromJson(rMessage.getContent(),Signin.class);
+                        if(signin.getDone()==1){
+                            dbOpenHelper.updatesignin(dbOpenHelper,signin.getId());
+                        }
+                        break;
+                    case "签到截止":
+                        dbOpenHelper.endsign(dbOpenHelper,gson.fromJson(rMessage.getContent(),Signin.class));
+                        break;
+                    default:
+                        break;
+                }
+            }
+        });
     }
 
     @SuppressLint("SimpleDateFormat")
@@ -65,25 +104,25 @@ public class CreateSignActivity extends Activity implements View.OnClickListener
         btn_dingwei1=(Button)findViewById(R.id.sign_create_dingwei1);
         btn_dingwei2=(Button)findViewById(R.id.sign_create_dingwei2);
 
-        dateButton = (Button)findViewById(R.id.dateButton);
-        timeButton = (Button)findViewById(R.id.timeButton);
+//        dateButton = (Button)findViewById(R.id.dateButton);
+//        timeButton = (Button)findViewById(R.id.timeButton);
 
         btn_dingwei1.setOnClickListener(this);
         btn_dingwei2.setOnClickListener(this);
         btn_create.setOnClickListener(this);
         btn_back.setOnClickListener(this);
 
-        dateButton.setOnClickListener(this);
-        timeButton.setOnClickListener(this);
+//        dateButton.setOnClickListener(this);
+//        timeButton.setOnClickListener(this);
 
         QCalendar = getCalendarAfter30Mins();
         DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
         String dateString = df.format(QCalendar.getTime());
-        dateButton.setText(dateString);
+        //dateButton.setText(dateString);
 
         df = new SimpleDateFormat("HH:mm:ss");
         String timeString = df.format(QCalendar.getTime());
-        timeButton.setText(timeString);
+//        timeButton.setText(timeString);
 
         dateFormat1=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CHINA);//不同的时间格式
         dateFormat2=new SimpleDateFormat("y年M月d日 H时m分s秒", Locale.CHINA);
@@ -107,11 +146,13 @@ public class CreateSignActivity extends Activity implements View.OnClickListener
         switch (v.getId()){
             case R.id.sign_create_dingwei1:
                 Intent i=new Intent(CreateSignActivity.this, AmapActivity.class);
+                i.putExtra("activity","CreateSignActivity");
                 i.putExtra("jingdu","high");
                 startActivityForResult(i,0);
                 break;
             case R.id.sign_create_dingwei2:
                 Intent i2=new Intent(CreateSignActivity.this, AmapActivity.class);
+                i2.putExtra("activity","CreateSignActivity");
                 i2.putExtra("jingdu","low");
                 startActivityForResult(i2,0);
             case R.id.sign_create_btn:
@@ -141,7 +182,8 @@ public class CreateSignActivity extends Activity implements View.OnClickListener
                 signin.setLongitude(longitude.getText().toString());
                 signin.setLatitude(latitude.getText().toString());
                 signin.setRegion(sign_region.getText().toString());
-                signin.setTime(dateButton.getText().toString()+" "+timeButton.getText().toString());
+                DateFormat df = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+                signin.setTime(df.format(new Date()));
                 signin.setRlongitude(signin.getLongitude());
                 signin.setRlatitude(signin.getLatitude());
                 rMessage.setGroupid(id);
@@ -151,10 +193,10 @@ public class CreateSignActivity extends Activity implements View.OnClickListener
                 rMessage.setContent(gson.toJson(signin));
                 ((MySocket)getApplication()).send(gson.toJson(rMessage));
 
-                rMessage.setType("登录成功");
-                rMessage.setContent(null);
-                rMessage.setSenderphone(MySocket.user.getPhonenum());
-                ((MySocket) getApplication()).send(gson.toJson(rMessage));
+//                rMessage.setType("登录成功");
+//                rMessage.setContent(null);
+//                rMessage.setSenderphone(MySocket.user.getPhonenum());
+                ((MySocket) getApplication()).update();
 
                 Toast.makeText(CreateSignActivity.this,"创建签到活动成功！",Toast.LENGTH_SHORT).show();
 //                finish();
@@ -164,33 +206,33 @@ public class CreateSignActivity extends Activity implements View.OnClickListener
                 System.out.println(dateFormat1.format(QCalendar.getTime()));
                 System.out.println(dateFormat2.format(QCalendar.getTime()));
                 break;
-            case R.id.dateButton:
-                new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {
-                    @Override
-                    public void onDateSet(DatePicker view, int year,
-                                          int monthOfYear, int dayOfMonth) {
-                        QCalendar.set(year, monthOfYear, dayOfMonth);
-                        DateFormat df = new SimpleDateFormat("yyyy/MM/dd");
-                        String dateString = df.format(QCalendar.getTime());
-                        dateButton.setText(dateString);
-                    }
-                }, QCalendar.get(Calendar.YEAR), QCalendar.get(Calendar.MONTH),
-                        QCalendar.get(Calendar.DAY_OF_MONTH)).show();
-                break;
-            case R.id.timeButton:
-                new TimePickerDialog(this, new TimePickerDialog.OnTimeSetListener() {
-
-                    @Override
-                    public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-                        QCalendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
-                        QCalendar.set(Calendar.MINUTE, minute);
-                        DateFormat df = new SimpleDateFormat("HH:mm");
-                        String timeString = df.format(QCalendar.getTime());
-                        timeButton.setText(timeString);
-                    }
-                }, QCalendar.get(Calendar.HOUR_OF_DAY), QCalendar
-                        .get(Calendar.MINUTE), true).show();
-                break;
+//            case R.id.dateButton:
+//                new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {
+//                    @Override
+//                    public void onDateSet(DatePicker view, int year,
+//                                          int monthOfYear, int dayOfMonth) {
+//                        QCalendar.set(year, monthOfYear, dayOfMonth);
+//                        DateFormat df = new SimpleDateFormat("yyyy/MM/dd");
+//                        String dateString = df.format(QCalendar.getTime());
+//                        dateButton.setText(dateString);
+//                    }
+//                }, QCalendar.get(Calendar.YEAR), QCalendar.get(Calendar.MONTH),
+//                        QCalendar.get(Calendar.DAY_OF_MONTH)).show();
+//                break;
+//            case R.id.timeButton:
+//                new TimePickerDialog(this, new TimePickerDialog.OnTimeSetListener() {
+//
+//                    @Override
+//                    public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+//                        QCalendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
+//                        QCalendar.set(Calendar.MINUTE, minute);
+//                        DateFormat df = new SimpleDateFormat("HH:mm");
+//                        String timeString = df.format(QCalendar.getTime());
+//                        timeButton.setText(timeString);
+//                    }
+//                }, QCalendar.get(Calendar.HOUR_OF_DAY), QCalendar
+//                        .get(Calendar.MINUTE), true).show();
+//                break;
         }
     }
     public GregorianCalendar getCalendarAfter30Mins() {
@@ -211,8 +253,8 @@ public class CreateSignActivity extends Activity implements View.OnClickListener
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if(resultCode==RESULT_OK){
-            longitude.setText(data.getDoubleExtra("lgt",0.0)+"");
-            latitude.setText(data.getDoubleExtra("lat",0.0)+"");
+            longitude.setText(data.getStringExtra("lgt"));
+            latitude.setText(data.getStringExtra("lat"));
         }
     }
 }

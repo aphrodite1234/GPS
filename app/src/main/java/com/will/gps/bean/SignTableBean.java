@@ -16,6 +16,7 @@ public class SignTableBean implements Serializable{
     private int region;
     private String time;//发起时间
     private int groupid;
+    private String content;
 
     public int getState() {
         return state;
@@ -64,5 +65,13 @@ public class SignTableBean implements Serializable{
     }
     public void setGroupid(int groupid) {
         this.groupid = groupid;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String conttent) {
+        this.content = conttent;
     }
 }

@@ -63,6 +63,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private List<RecentContactBean> List;//传到GroupMsgFragment
     private List<MessageTabEntity> List2;//传到RecentMsgFragment
     private List<String> groupList = new ArrayList<>();
+    Signin signin = new Signin();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,10 +71,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_main);
 
         bindView();
-        rMessage.setType("登录成功");
-        rMessage.setContent(null);
-        rMessage.setSenderphone(MySocket.user.getPhonenum());
-        ((MySocket) getApplication()).send(gson.toJson(rMessage));
+//        rMessage.setType("登录成功");
+//        rMessage.setContent(null);
+//        rMessage.setSenderphone(MySocket.user.getPhonenum());
+        ((MySocket) getApplication()).update();
 
         //initHandler();
 
@@ -94,17 +95,33 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         break;
                     case "我的群":
                         dbOpenHelper.savegroup(dbOpenHelper, rMessage.getGroup());
-                        tabMessage.performClick();
-                        break;
-                    case "群消息":
-                        dbOpenHelper.savemsg(dbOpenHelper, rMessage);
-                        break;
-                    case "签到消息":
-                        Signin signin = gson.fromJson(rMessage.getContent(),Signin.class);
-                        dbOpenHelper.savesign(dbOpenHelper,signin);
+                        tabQun.performClick();
                         break;
                     case "群成员":
                         dbOpenHelper.savemember(dbOpenHelper,rMessage.getGroup());
+                        break;
+                    case "群消息":
+                        dbOpenHelper.savemsg(dbOpenHelper, rMessage);
+                        tabMessage.performClick();
+                        break;
+                    case "签到消息":
+                        signin = gson.fromJson(rMessage.getContent(),Signin.class);
+                        dbOpenHelper.savesign(dbOpenHelper,signin);
+                        tabMessage.performClick();
+                        break;
+                    case "解散群":
+                        dbOpenHelper.deletegroup(dbOpenHelper,rMessage.getGroupid());
+                        tabQun.performClick();
+                        break;
+                    case "签到截止":
+                        dbOpenHelper.endsign(dbOpenHelper,gson.fromJson(rMessage.getContent(),Signin.class));
+                        tabMessage.performClick();
+                        break;
+                    case "用户签到":
+                        signin=gson.fromJson(rMessage.getContent(),Signin.class);
+                        if(signin.getDone()==1){
+                            dbOpenHelper.updatesignin(dbOpenHelper,signin.getId());
+                        }
                         break;
                     default:
                         break;
@@ -132,9 +149,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         // 设置图片的位置，左、上、右、下
         tabQun.setCompoundDrawables(null, null, drawable, null);*/
 
-        System.out.println(MySocket.unread);
-        if(!MySocket.unread)
+        if(MySocket.unread)
             unreadtip.setVisibility(View.INVISIBLE);
+
         imageView1.setOnClickListener(this);
         imageView2.setOnClickListener(this);
         tabQun.setOnClickListener(this);
@@ -247,10 +264,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onRestart() {
         super.onRestart();
-        tabMessage.performClick();
-        rMessage.setType("登录成功");
-        rMessage.setSenderphone(MySocket.user.getPhonenum());
-        ((MySocket) getApplication()).send(gson.toJson(rMessage));
+        ((MySocket) getApplication()).update();
     }
 
     //为了在fragment中注册监听事件（fragment中没有提供OnTouchEvent）

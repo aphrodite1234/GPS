@@ -12,9 +12,12 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
+import com.will.gps.base.DBOpenHelper;
 import com.will.gps.base.MySocket;
 import com.will.gps.base.RMessage;
 import com.will.gps.bean.Group;
+import com.will.gps.bean.Signin;
+import com.will.gps.map.AmapActivity;
 
 /**
  * Created by MaiBenBen on 2019/4/23.
@@ -33,20 +36,47 @@ public class CreateGroupActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_group_create);
         bindView();
+
+        final DBOpenHelper dbOpenHelper = new DBOpenHelper(CreateGroupActivity.this);
         ((MySocket)getApplication()).setHandler(new Handler(){
             @Override
             public void handleMessage(Message msg) {
                 super.handleMessage(msg);
-                rMessage=gson.fromJson(msg.obj.toString(),RMessage.class);
-                if(rMessage.getType().equals("创建群")){
-                    if(rMessage.getContent().equals("true")){
-                        idStr=String.valueOf(rMessage.getGroupid());
-                        Intent intent=new Intent(CreateGroupActivity.this,MainActivity.class);
-                        startActivity(intent);
-                        finish();
-                    }else {
-                        Toast.makeText(CreateGroupActivity.this,"创建失败",Toast.LENGTH_SHORT).show();
-                    }
+                Gson gson = new Gson();
+                Signin signin = new Signin();
+                RMessage rMessage = gson.fromJson(msg.obj.toString(), RMessage.class);
+                String type = rMessage.getType();
+                switch (type){
+                    case "创建群":
+                        if(rMessage.getContent().equals("true")){
+                            idStr=String.valueOf(rMessage.getGroupid());
+                            Intent intent=new Intent(CreateGroupActivity.this,MainActivity.class);
+                            startActivity(intent);
+                            finish();
+                        }else {
+                            Toast.makeText(CreateGroupActivity.this,"创建失败",Toast.LENGTH_SHORT).show();
+                        }
+                    case "群消息":
+                        dbOpenHelper.savemsg(dbOpenHelper, rMessage);
+                        break;
+                    case "签到消息":
+                        signin = gson.fromJson(rMessage.getContent(),Signin.class);
+                        dbOpenHelper.savesign(dbOpenHelper,signin);
+                        break;
+                    case "解散群":
+                        dbOpenHelper.deletegroup(dbOpenHelper,rMessage.getGroupid());
+                        break;
+                    case "用户签到":
+                        signin=gson.fromJson(rMessage.getContent(),Signin.class);
+                        if(signin.getDone()==1){
+                            dbOpenHelper.updatesignin(dbOpenHelper,signin.getId());
+                        }
+                        break;
+                    case "签到截止":
+                        dbOpenHelper.endsign(dbOpenHelper,gson.fromJson(rMessage.getContent(),Signin.class));
+                        break;
+                    default:
+                        break;
                 }
             }
         });

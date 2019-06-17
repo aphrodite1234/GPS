@@ -5,6 +5,8 @@ import android.os.Looper;
 import android.os.Message;
 import android.widget.Toast;
 import com.google.gson.Gson;
+import com.will.gps.MainActivity;
+import com.will.gps.bean.Signin;
 import com.will.gps.bean.User;
 
 import java.io.BufferedReader;
@@ -26,7 +28,7 @@ public class MySocket extends Application{
     public static User user = new User();
     private RMessage rMessage=new RMessage();
     private Gson gson = new Gson();
-    public static boolean unread=false;
+    public static boolean unread=true;
 
     public void setHandler(Handler handler) {
         this.handler = handler;
@@ -128,5 +130,13 @@ public class MySocket extends Application{
                 }
             }
         }).start();
+    }
+
+    public void update(){
+        RMessage rMessage = new RMessage();
+        rMessage.setType("登录成功");
+        rMessage.setContent(null);
+        rMessage.setSenderphone(MySocket.user.getPhonenum());
+        send(gson.toJson(rMessage));
     }
 }

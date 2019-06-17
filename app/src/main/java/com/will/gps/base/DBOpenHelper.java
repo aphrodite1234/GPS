@@ -148,7 +148,8 @@ public class DBOpenHelper extends SQLiteOpenHelper {
     //保存签到信息
     public void savesign(DBOpenHelper dbOpenHelper, Signin signin){
         SQLiteDatabase db=dbOpenHelper.getWritableDatabase();
-        Cursor cursor = db.query("signin",null,"id="+signin.getId(),null,null,null,null);
+        SQLiteDatabase db1=dbOpenHelper.getReadableDatabase();
+        Cursor cursor = db1.query("signin",null,"id="+signin.getId(),null,null,null,null);
         if(cursor.getCount()==0){
             ContentValues contentValues=new ContentValues();
             contentValues.put("id",signin.getId());
@@ -214,5 +215,30 @@ public class DBOpenHelper extends SQLiteOpenHelper {
             stateList.add(gson.toJson(rMessage));
         }
         return stateList;
+    }
+
+    //解散群
+    public void deletegroup(DBOpenHelper dbOpenHelper,int groupid){
+        SQLiteDatabase db = dbOpenHelper.getWritableDatabase();
+        db.delete("mgroup","groupid = "+groupid,null);
+        db.delete("groupmember","groupid = "+groupid,null);
+        db.delete("tsmessage","groupid = "+groupid,null);
+        db.delete("signin","groupid = "+groupid,null);
+    }
+
+    //更新签到状态
+    public void updatesignin(DBOpenHelper dbOpenHelper,int id){
+        SQLiteDatabase db = dbOpenHelper.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("done",1);
+        db.update("signin",contentValues,"id="+id,null);
+    }
+
+    //签到活动截止
+    public void endsign(DBOpenHelper dbOpenHelper,Signin signin){
+        SQLiteDatabase db = dbOpenHelper.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("state",1);
+        db.update("signin",contentValues,"groupid="+signin.getGroupid()+" AND time='"+signin.getTime()+"'",null);
     }
 }

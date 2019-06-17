@@ -59,7 +59,6 @@ public class MessageFragment extends Fragment {
             message1.setGroupid(signin1.getGroupid());
             message1.setContent(signin1.getResult());
             message1.setDate(signin1.getTime());
-            message1.setState(1);
             mChildList1.add(gson.toJson(message1));
         }
 

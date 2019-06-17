@@ -50,6 +50,7 @@ public class MessageListAdapter extends BaseExpandableListAdapter {
     MessageListAdapter.GroupViewHolder groupViewHolder;
 
     public MessageListAdapter(Context context,List<String> mChildList1){
+        View view;
         mcontext=context;
         mGroupList=new ArrayList<>();
         mGroupList.add("签到消息");
@@ -195,6 +196,10 @@ public class MessageListAdapter extends BaseExpandableListAdapter {
         }else{
             groupViewHolder.news.setVisibility(View.GONE);
         }
+
+        if(groupunread[0]+groupunread[1]+groupunread[2]==0)
+            MySocket.unread=false;
+
         return convertView;
     }
 
@@ -250,7 +255,7 @@ public class MessageListAdapter extends BaseExpandableListAdapter {
                     Intent i=new Intent(mcontext, SignInActivity.class);
                     i.putExtra("groupid",mChildList.get(groupPosition).get(childPosition).getGroupid());
                     i.setFlags( Intent.FLAG_ACTIVITY_NEW_TASK);
-                    mcontext.startActivity(i);
+
                     childViewHolder.unread_message_count.setVisibility(View.INVISIBLE);
                     groupunread[groupPosition]--;
                     groupViewHolder.news.setText(String.valueOf(groupunread[groupPosition]));
@@ -258,6 +263,7 @@ public class MessageListAdapter extends BaseExpandableListAdapter {
                         groupViewHolder.news.setVisibility(View.GONE);
                     if(groupunread[0]+groupunread[1]+groupunread[2]==0)
                         MySocket.unread=false;
+                    mcontext.startActivity(i);
                 }
             });
         }else if(groupPosition==1){
@@ -272,7 +278,6 @@ public class MessageListAdapter extends BaseExpandableListAdapter {
                     i.putExtra("membernum", group.getMembernum());
                     i.putExtra("ismember","true");
                     i.setFlags( Intent.FLAG_ACTIVITY_NEW_TASK);
-                    mcontext.startActivity(i);
                     childViewHolder.unread_message_count.setVisibility(View.INVISIBLE);
                     groupunread[groupPosition]--;
                     groupViewHolder.news.setText(String.valueOf(groupunread[groupPosition]));
@@ -280,6 +285,8 @@ public class MessageListAdapter extends BaseExpandableListAdapter {
                         groupViewHolder.news.setVisibility(View.GONE);
                     if(groupunread[0]+groupunread[1]+groupunread[2]==0)
                         MySocket.unread=false;
+
+                    mcontext.startActivity(i);
                 }
             });
         }else if(groupPosition==2){

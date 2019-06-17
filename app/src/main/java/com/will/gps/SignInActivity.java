@@ -1,18 +1,29 @@
 package com.will.gps;
 
 import android.app.Activity;
+import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.os.Handler;
+import android.os.Message;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.google.gson.Gson;
 import com.will.gps.base.DBOpenHelper;
+import com.will.gps.base.MySocket;
+import com.will.gps.base.RMessage;
 import com.will.gps.bean.SignTableBean;
+import com.will.gps.bean.Signin;
+import com.will.gps.map.AmapActivity;
 import com.will.gps.map.ReceiverMapActivity;
 
 import java.text.ParseException;
@@ -28,53 +39,92 @@ import java.util.zip.Inflater;
  */
 
 public class SignInActivity extends Activity {
-    private TextView mTvCountdowntimer,owner,region;
+    private TextView mTvCountdowntimer,owner,region,longitude,latitude,groupid;
     private ImageView btn_map;
-    private Button btn_sign;
+    private Button btn_sign,gao,di;
     private SignTableBean signTableBean;
     private SimpleDateFormat dateFormat;
     private Cursor cursor;
     private long timeStemp;
     private CountDownTimer timer;
-    private Intent i;
+    private EditText rlongitude,rlatitude;
+    private int groupId;
+    RMessage rMessage=new RMessage();
+    Gson gson=new Gson();
+    Signin signin=new Signin();
+    int done,state;
 
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_in);
 
+        groupId=getIntent().getIntExtra("groupid",0);
         initData();
         initView();
+        final DBOpenHelper dbOpenHelper = new DBOpenHelper(SignInActivity.this);
+        ((MySocket)getApplication()).setHandler(new Handler(){
+            @Override
+            public void handleMessage(Message msg) {
+                super.handleMessage(msg);
+                Gson gson = new Gson();
+                Signin signin = new Signin();
+                RMessage rMessage = gson.fromJson(msg.obj.toString(), RMessage.class);
+                String type = rMessage.getType();
+                switch (type){
+                    case "群消息":
+                        dbOpenHelper.savemsg(dbOpenHelper, rMessage);
+                        break;
+                    case "签到消息":
+                        signin = gson.fromJson(rMessage.getContent(),Signin.class);
+                        dbOpenHelper.savesign(dbOpenHelper,signin);
+                        break;
+                    case "解散群":
+                        dbOpenHelper.deletegroup(dbOpenHelper,rMessage.getGroupid());
+                        break;
+                    case "用户签到":
+                        signin=gson.fromJson(rMessage.getContent(),Signin.class);
+                        System.out.println(signin.getDone());
+                        System.out.println(signin.getState());
+                        if(signin.getState()==1){
+                            dbOpenHelper.endsign(dbOpenHelper,gson.fromJson(rMessage.getContent(),Signin.class));
+                            initData();
+                        }else {
+                            if(signin.getDone()==1){
+                                dbOpenHelper.updatesignin(dbOpenHelper,signin.getId());
+                                btn_sign.setText("签到成功");
+                                btn_sign.setBackgroundColor(Color.parseColor("#23d249"));
+                            }else {
+                                Toast.makeText(SignInActivity.this,"签到失败，请稍后重试",Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                        break;
+                    case "签到截止":
+                        dbOpenHelper.endsign(dbOpenHelper,gson.fromJson(rMessage.getContent(),Signin.class));
+                        initData();
+                        break;
+                    default:
+                        break;
+                }
+            }
+        });
     }
 
     private void initData(){
         signTableBean=new SignTableBean();
         DBOpenHelper dbOpenHelper=new DBOpenHelper(this);
         SQLiteDatabase db = dbOpenHelper.getReadableDatabase();
-        cursor=db.query("signin",null,"groupid="+getIntent().getIntExtra("groupid",0)+" AND state=1",null, null, null, null);
-        if(cursor.getCount()==0){
-            signTableBean.setOriginator("15837811860");
-            signTableBean.setTime("2019-6-1 20:05:00");
-            signTableBean.setRegion(0);
-            signTableBean.setLongitude("0.0");
-            signTableBean.setLatitude("0.0");
-            signTableBean.setId(0);
-            i=new Intent(SignInActivity.this,SignTableListActivity.class);
-            i.putExtra("groupid",String.valueOf(getIntent().getIntExtra("groupid",0)));
-            i.putExtra("groupowner",signTableBean.getOriginator());
-        }else{
-            while(cursor.moveToNext()){
-                signTableBean.setOriginator(cursor.getString(cursor.getColumnIndex("originator")));
-                signTableBean.setId(cursor.getInt(cursor.getColumnIndex("id")));
-                signTableBean.setLongitude(cursor.getString(cursor.getColumnIndex("longtitude")));
-                signTableBean.setLatitude(cursor.getString(cursor.getColumnIndex("latitude")));
-                signTableBean.setRegion(Integer.valueOf(cursor.getString(cursor.getColumnIndex("region"))));
-                signTableBean.setTime(cursor.getString(cursor.getColumnIndex("time")));
-            }
-            i=new Intent(SignInActivity.this,ReceiverListAcitivty.class);
-            i.putExtra("signid",String.valueOf(signTableBean.getId()));
-            i.putExtra("signtable",signTableBean);
+        cursor=db.query("signin",null,"receiver="+MySocket.user.getPhonenum()+" AND groupid="+groupId+" AND state=0",null, null, null, null);
+        while(cursor.moveToNext()){
+            state=cursor.getInt(cursor.getColumnIndex("state"));
+            done=cursor.getInt(cursor.getColumnIndex("done"));
+            signTableBean.setContent(cursor.getString(cursor.getColumnIndex("result")));
+            signTableBean.setOriginator(cursor.getString(cursor.getColumnIndex("originator")));
+            signTableBean.setId(cursor.getInt(cursor.getColumnIndex("id")));
+            signTableBean.setLongitude(cursor.getString(cursor.getColumnIndex("longitude")));
+            signTableBean.setLatitude(cursor.getString(cursor.getColumnIndex("latitude")));
+            signTableBean.setRegion(Integer.valueOf(cursor.getString(cursor.getColumnIndex("region"))));
+            signTableBean.setTime(cursor.getString(cursor.getColumnIndex("time")));
         }
-
     }
 
     private void initView(){
@@ -84,35 +134,89 @@ public class SignInActivity extends Activity {
         /*dateFormat=new SimpleDateFormat("yyyyMMddHHmmss", Locale.CHINA);
         String str=dateFormat.format(date);*/
 
-        mTvCountdowntimer=(TextView)findViewById(R.id.sign_in_deadline);
+//        mTvCountdowntimer=(TextView)findViewById(R.id.sign_in_deadline);
         owner = (TextView)findViewById(R.id.sign_in_owner);
         region=(TextView)findViewById(R.id.sign_in_region);
-        btn_map=(ImageView)findViewById(R.id.sign_in_map);
+        //btn_map=(ImageView)findViewById(R.id.sign_in_map);
         btn_sign=(Button)findViewById(R.id.sign_in_sign);
+        longitude=(TextView)findViewById(R.id.sign_inor_longitude);
+        rlongitude=(EditText)findViewById(R.id.sign_in_longitude);
+        latitude=(TextView)findViewById(R.id.sign_inor_latitude);
+        rlatitude=(EditText)findViewById(R.id.sign_in_latitude);
+        gao=(Button)findViewById(R.id.sign_in_dingwei1);
+        di=(Button)findViewById(R.id.sign_in_dingwei2);
+        groupid=(TextView)findViewById(R.id.sign_in_groupid);
 
-        if(cursor.getCount()==0){
-            mTvCountdowntimer.setText("签到剩余时间：00:00:00");
-        }else{
-            Date d=new Date();
-            timeStemp=StrToDate(signTableBean.getTime()).getTime() - d.getTime();
-            if(timeStemp<=0) timeStemp=0;
-            getCountDownTime();
-        }
+//        if(cursor.getCount()==0){
+//            mTvCountdowntimer.setText("签到剩余时间：00:00:00");
+//        }else{
+//            Date d=new Date();
+//            timeStemp=StrToDate(signTableBean.getTime()).getTime() - d.getTime();
+//            if(timeStemp<=0) timeStemp=0;
+//            getCountDownTime();
+//        }
+        groupid.setText("活动主题："+signTableBean.getContent());
         owner.setText("发起人："+signTableBean.getOriginator());
-        region.setText("签到范围："+signTableBean.getRegion());
-        btn_map.setImageResource(R.mipmap.position);
-        btn_map.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent i2=new Intent(SignInActivity.this, ReceiverMapActivity.class);
+        region.setText("签到范围："+signTableBean.getRegion()+"米");
+        longitude.setText(signTableBean.getLongitude());
+        latitude.setText(signTableBean.getLatitude());
+        mTvCountdowntimer.setText(signTableBean.getTime());
+//        btn_map.setImageResource(R.mipmap.position);
+//        btn_map.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Intent i2=new Intent(SignInActivity.this, ReceiverMapActivity.class);
+//
+//                startActivity(i2);
+//            }
+//        });
 
-                startActivity(i2);
+        if(state==1){
+            btn_sign.setText("签到结束");
+        }else {
+            if (done==1){
+                btn_sign.setText("签到成功");
+                btn_sign.setBackgroundColor(Color.parseColor("#23d249"));
+            }else {
+                btn_sign.setText("签到");
             }
-        });
+        }
+
         btn_sign.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
-                startActivity(i);
+                if(btn_sign.getText().equals("签到")){
+                    signin.setGroupid(groupId);
+                    signin.setId(signTableBean.getId());
+                    signin.setRlongitude(rlongitude.getText().toString());
+                    signin.setRlatitude(rlatitude.getText().toString());
+                    signin.setRegion(String.valueOf(signTableBean.getRegion()));
+                    rMessage.setType("用户签到");
+                    rMessage.setContent(gson.toJson(signin));
+                    ((MySocket)getApplication()).send(gson.toJson(rMessage));
+                }
+            }
+        });
+        gao.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i=new Intent(SignInActivity.this, AmapActivity.class);
+                i.putExtra("activity","SignInActivity");
+                i.putExtra("jingdu","high");
+                i.putExtra("longitude",signTableBean.getLongitude());
+                i.putExtra("latitude",signTableBean.getLatitude());
+                startActivityForResult(i,0);
+            }
+        });
+        di.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i=new Intent(SignInActivity.this, AmapActivity.class);
+                i.putExtra("activity","SignInActivity");
+                i.putExtra("jingdu","low");
+                i.putExtra("longitude",signTableBean.getLongitude());
+                i.putExtra("latitude",signTableBean.getLatitude());
+                startActivityForResult(i,0);
             }
         });
     }
@@ -124,12 +228,12 @@ public class SignInActivity extends Activity {
                 long hour = (l - day * (1000 * 24 * 60 * 60)) / (1000 * 60 * 60); //单位时
                 long minute = (l - day * (1000 * 24 * 60 * 60) - hour * (1000 * 60 * 60)) / (1000 * 60); //单位分
                 long second = (l - day * (1000 * 24 * 60 * 60) - hour * (1000 * 60 * 60) - minute * (1000 * 60)) / 1000;//单位秒
-                mTvCountdowntimer.setText("签到剩余时间："+hour + "小时" + minute + "分钟" + second + "秒");
+//                mTvCountdowntimer.setText("签到剩余时间："+hour + "小时" + minute + "分钟" + second + "秒");
             }
             @Override
             public void onFinish() {                 //倒计时为0时执行此方法
-                mTvCountdowntimer.setText("签到剩余时间：00:00:00");
-                btn_sign.setText("签到结束 查看此次签到情况");
+//                mTvCountdowntimer.setText("签到剩余时间：00:00:00");
+//                btn_sign.setText("签到结束 查看此次签到情况");
             }
         };
         timer.start();
@@ -207,5 +311,14 @@ public class SignInActivity extends Activity {
             e.printStackTrace();
         }
         return date;
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(resultCode==RESULT_OK){
+            rlongitude.setText(data.getStringExtra("lgt"));
+            rlatitude.setText(data.getStringExtra("lat"));
+        }
     }
 }

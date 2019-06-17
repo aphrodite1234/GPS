@@ -2,6 +2,8 @@ package com.will.gps;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
@@ -18,9 +20,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
+import com.will.gps.base.DBOpenHelper;
 import com.will.gps.base.MySocket;
 import com.will.gps.base.RMessage;
 import com.will.gps.bean.GroupMember;
+import com.will.gps.bean.Signin;
+import com.will.gps.map.AmapActivity;
 import com.will.gps.view.CircleImageView;
 
 /**
@@ -40,18 +45,42 @@ public class GroupInfoActivity extends Activity implements View.OnClickListener{
     RMessage rMessage = new RMessage();
     Gson gson = new Gson();
     GroupMember groupMember = new GroupMember();
-    private boolean havesign;//从服务器查找有没有未结束的签到活动，判断有没有签到活动
+    private boolean havesign = false;
+    int groupid;
+    int id;
+    String groupowner;
+    Signin signin = new Signin();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_group_info);
+
+        i=getIntent();
+        groupid=i.getIntExtra("groupid",0);
+        groupowner=i.getStringExtra("groupowner");
+        final DBOpenHelper dbOpenHelper = new DBOpenHelper(GroupInfoActivity.this);
+        SQLiteDatabase db=dbOpenHelper.getReadableDatabase();
+        Cursor cursor = db.query("signin", null, "groupid='"+groupid+"' AND state=0 AND originator="+groupowner, null, null, null, null);
+        if(cursor.getCount()!=0){
+            cursor.moveToNext();
+            signin.setId(cursor.getInt(cursor.getColumnIndex("id")));
+            signin.setGroupid(groupid);
+            signin.setTime(cursor.getString(cursor.getColumnIndex("time")));
+            havesign=true;
+            System.out.println(gson.toJson(signin));
+        }else {
+            havesign=false;
+        }
+
         bindView();
         ((MySocket)getApplication()).setHandler(new Handler(){
             @Override
             public void handleMessage(Message msg) {
                 super.handleMessage(msg);
-                rMessage=gson.fromJson(msg.obj.toString(),RMessage.class);
+                Gson gson = new Gson();
+                Signin signin = new Signin();
+                RMessage rMessage = gson.fromJson(msg.obj.toString(), RMessage.class);
                 String type = rMessage.getType();
                 if(type.equals("加入群")||type.equals("解散群")||type.equals("退出群")){
                     if (rMessage.getContent().equals("true")){
@@ -60,6 +89,29 @@ public class GroupInfoActivity extends Activity implements View.OnClickListener{
                     }else {
                         Toast.makeText(GroupInfoActivity.this, "操作失败", Toast.LENGTH_SHORT).show();
                     }
+                }
+                switch (type){
+                    case "群消息":
+                        dbOpenHelper.savemsg(dbOpenHelper, rMessage);
+                        break;
+                    case "签到消息":
+                        signin = gson.fromJson(rMessage.getContent(),Signin.class);
+                        dbOpenHelper.savesign(dbOpenHelper,signin);
+                        break;
+                    case "解散群":
+                        dbOpenHelper.deletegroup(dbOpenHelper,rMessage.getGroupid());
+                        break;
+                    case "用户签到":
+                        signin=gson.fromJson(rMessage.getContent(),Signin.class);
+                        if(signin.getDone()==1){
+                            dbOpenHelper.updatesignin(dbOpenHelper,signin.getId());
+                        }
+                        break;
+                    case "签到截止":
+                        dbOpenHelper.endsign(dbOpenHelper,gson.fromJson(rMessage.getContent(),Signin.class));
+                        break;
+                    default:
+                        break;
                 }
             }
         });
@@ -89,10 +141,9 @@ public class GroupInfoActivity extends Activity implements View.OnClickListener{
         img_back.setOnClickListener(this);
         img_more.setOnClickListener(this);
 
-        i=getIntent();
         textname.setText(i.getStringExtra("groupname"));
-        textnum.setText(i.getStringExtra("groupid"));
-        myname.setText(i.getStringExtra("groupowner"));
+        textnum.setText(groupid+"");
+        myname.setText(groupowner);
         member.setText(String.valueOf(i.getIntExtra("membernum",0))+"人");
         isMember=i.getStringExtra("ismember");
 
@@ -127,11 +178,10 @@ public class GroupInfoActivity extends Activity implements View.OnClickListener{
                 }
             });
         }else{
-            if(!havesign){//判断有没有签到活动
-                popupMenu.getMenu().findItem(R.id.menu_groupinfo_endsign).setVisible(false);
-                //popupMenu.getMenu().findItem(R.id.menu_groupinfo_signlist).setVisible(false);
-            }else{
+            if(havesign){//判断有没有签到活动
                 popupMenu.getMenu().findItem(R.id.menu_groupinfo_startsign).setVisible(false);
+            }else{
+                popupMenu.getMenu().findItem(R.id.menu_groupinfo_endsign).setVisible(false);
             }
             // 监听事件
             popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
@@ -143,11 +193,19 @@ public class GroupInfoActivity extends Activity implements View.OnClickListener{
                             Intent i=new Intent(GroupInfoActivity.this,CreateSignActivity.class);
                             i.putExtra("groupid",textnum.getText().toString());
                             startActivity(i);
-                            havesign=true;
+                            popupMenu.getMenu().findItem(R.id.menu_groupinfo_startsign).setVisible(false);
+                            popupMenu.getMenu().findItem(R.id.menu_groupinfo_endsign).setVisible(true);
                             break;
                         case R.id.menu_groupinfo_endsign:
-                            Toast.makeText(GroupInfoActivity.this, "点击结束签到！", Toast.LENGTH_SHORT).show();
-                            havesign=false;
+                            //Toast.makeText(GroupInfoActivity.this, "点击结束签到！", Toast.LENGTH_SHORT).show();
+                            RMessage message = new RMessage();
+                            message.setType("签到截止");
+                            message.setContent(gson.toJson(signin));
+                            ((MySocket)getApplication()).send(gson.toJson(message));
+                            popupMenu.getMenu().findItem(R.id.menu_groupinfo_startsign).setVisible(true);
+                            popupMenu.getMenu().findItem(R.id.menu_groupinfo_endsign).setVisible(false);
+                            DBOpenHelper dbOpenHelper = new DBOpenHelper(GroupInfoActivity.this);
+                            dbOpenHelper.endsign(dbOpenHelper,signin);
                             break;
                         case R.id.menu_groupinfo_signlist:
                             //Toast.makeText(GroupInfoActivity.this,"点击签到列表！",Toast.LENGTH_SHORT).show();

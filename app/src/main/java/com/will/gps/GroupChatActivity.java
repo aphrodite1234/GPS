@@ -21,6 +21,8 @@ import com.will.gps.base.DBOpenHelper;
 import com.will.gps.base.MySocket;
 import com.will.gps.base.RMessage;
 import com.will.gps.bean.ChatEntity;
+import com.will.gps.bean.Signin;
+import com.will.gps.map.AmapActivity;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -65,25 +67,47 @@ public class GroupChatActivity extends Activity implements View.OnClickListener{
 
         initViews();
         initEvents();
-        final DBOpenHelper dbOpenHelper=new DBOpenHelper(GroupChatActivity.this);
         initData();
+        final DBOpenHelper dbOpenHelper=new DBOpenHelper(GroupChatActivity.this);
         ((MySocket)getApplication()).setHandler(new Handler(){
             @Override
             public void handleMessage(Message msg) {
                 super.handleMessage(msg);
-                rMessage=gson.fromJson(msg.obj.toString(),RMessage.class);
+                Gson gson = new Gson();
+                Signin signin = new Signin();
+                RMessage rMessage = gson.fromJson(msg.obj.toString(), RMessage.class);
                 String type = rMessage.getType();
-                if(type.equals("群消息")){
-                    rMessage.setState(1);
-                    dbOpenHelper.savemsg(dbOpenHelper,rMessage);
-                    ChatEntity chatMessage = new ChatEntity();
-                    chatMessage.setContent(rMessage.getContent());
-                    chatMessage.setSenderId(rMessage.getSenderphone());
-                    chatMessage.setSendTime(rMessage.getDate());
-                    chatMessage.setMessageType(ChatEntity.RECEIVE);
-                    chatList.add(chatMessage);
-                    chatMessageAdapter.notifyDataSetChanged();
-                    chatMeessageListView.setSelection(chatList.size());
+                switch (type){
+                    case "群消息":
+                        dbOpenHelper.savemsg(dbOpenHelper,rMessage);
+                        dbOpenHelper.setMessage(dbOpenHelper,groupId);
+                        ChatEntity chatMessage = new ChatEntity();
+                        chatMessage.setContent(rMessage.getContent());
+                        chatMessage.setSenderId(rMessage.getSenderphone());
+                        chatMessage.setSendTime(rMessage.getDate());
+                        chatMessage.setMessageType(ChatEntity.RECEIVE);
+                        chatList.add(chatMessage);
+                        chatMessageAdapter.notifyDataSetChanged();
+                        chatMeessageListView.setSelection(chatList.size());
+                        break;
+                    case "签到消息":
+                        signin = gson.fromJson(rMessage.getContent(),Signin.class);
+                        dbOpenHelper.savesign(dbOpenHelper,signin);
+                        break;
+                    case "解散群":
+                        dbOpenHelper.deletegroup(dbOpenHelper,rMessage.getGroupid());
+                        break;
+                    case "用户签到":
+                        signin=gson.fromJson(rMessage.getContent(),Signin.class);
+                        if(signin.getDone()==1){
+                            dbOpenHelper.updatesignin(dbOpenHelper,signin.getId());
+                        }
+                        break;
+                    case "签到截止":
+                        dbOpenHelper.endsign(dbOpenHelper,gson.fromJson(rMessage.getContent(),Signin.class));
+                        break;
+                    default:
+                        break;
                 }
             }
         });
@@ -125,22 +149,22 @@ public class GroupChatActivity extends Activity implements View.OnClickListener{
         //emotionButton = (ImageButton) findViewById(R.id.chat_btn_emote);
         inputEdit = (EditText) findViewById(R.id.chat_edit_input);
 
-        if(sign){//有签到活动则显示
-            signtime=(TextView)findViewById(R.id.group_chat_signtime);//设置活动时间（可先不用）
-            signlocation=(TextView)findViewById(R.id.group_chat_signlocation);//设置活动地点（可先不用）
-            signbutton=(Button)findViewById(R.id.group_chat_signbutton);
-            if(!signed){//没有签到
-                signbutton.setOnClickListener(this);
-            }
-            else{
-                signbutton.setText("已签到");
-                signbutton.setClickable(false);
-            }
-        }
-        else{//没有则隐藏
-            sign_title=(RelativeLayout)findViewById(R.id.group_chat_signtitle);
-            sign_title.setVisibility(View.GONE);
-        }
+//        if(sign){//有签到活动则显示
+//            signtime=(TextView)findViewById(R.id.group_chat_signtime);//设置活动时间（可先不用）
+//            signlocation=(TextView)findViewById(R.id.group_chat_signlocation);//设置活动地点（可先不用）
+//            signbutton=(Button)findViewById(R.id.group_chat_signbutton);
+//            if(!signed){//没有签到
+//                signbutton.setOnClickListener(this);
+//            }
+//            else{
+//                signbutton.setText("已签到");
+//                signbutton.setClickable(false);
+//            }
+//        }
+//        else{//没有则隐藏
+//            sign_title=(RelativeLayout)findViewById(R.id.group_chat_signtitle);
+//            sign_title.setVisibility(View.GONE);
+//        }
 
         btn_back.setOnClickListener(this);
         btn_more.setOnClickListener(this);
@@ -199,6 +223,7 @@ public class GroupChatActivity extends Activity implements View.OnClickListener{
                 rMessage.setType("群消息");
                 ((MySocket)getApplication()).send(gson.toJson(rMessage));
                 dbOpenHelper.savemsg(dbOpenHelper,rMessage);
+                dbOpenHelper.setMessage(dbOpenHelper,groupId);
                 inputEdit.setText("");
             }
         });
@@ -213,15 +238,21 @@ public class GroupChatActivity extends Activity implements View.OnClickListener{
             case R.id.group_chat_more:
                 Intent i=new Intent(GroupChatActivity.this,GroupInfoActivity.class);
                 i.putExtra("groupname",groupName);
-                i.putExtra("groupid",String.valueOf(groupId));
+                i.putExtra("groupid",groupId);
                 i.putExtra("groupowner",groupowner);
                 i.putExtra("membernum",membernum);
                 i.putExtra("ismember",ismember);
                 startActivity(i);
                 break;
-            case R.id.group_chat_signbutton:
-                //签到操作
-                break;
+//            case R.id.group_chat_signbutton:
+//                //签到操作
+//                break;
         }
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        initData();
     }
 }
