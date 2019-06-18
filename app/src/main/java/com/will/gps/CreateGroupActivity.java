@@ -56,6 +56,7 @@ public class CreateGroupActivity extends Activity {
                         }else {
                             Toast.makeText(CreateGroupActivity.this,"创建失败",Toast.LENGTH_SHORT).show();
                         }
+                        break;
                     case "群消息":
                         dbOpenHelper.savemsg(dbOpenHelper, rMessage);
                         break;

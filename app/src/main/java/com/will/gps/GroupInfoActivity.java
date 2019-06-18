@@ -25,7 +25,6 @@ import com.will.gps.base.MySocket;
 import com.will.gps.base.RMessage;
 import com.will.gps.bean.GroupMember;
 import com.will.gps.bean.Signin;
-import com.will.gps.map.AmapActivity;
 import com.will.gps.view.CircleImageView;
 
 /**
@@ -140,6 +139,7 @@ public class GroupInfoActivity extends Activity implements View.OnClickListener{
 
         img_back.setOnClickListener(this);
         img_more.setOnClickListener(this);
+        member.setOnClickListener(this);
 
         textname.setText(i.getStringExtra("groupname"));
         textnum.setText(groupid+"");
@@ -230,6 +230,11 @@ public class GroupInfoActivity extends Activity implements View.OnClickListener{
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
+            case R.id.group_info_member1:
+                Intent ig=new Intent(GroupInfoActivity.this, GroupMemberActivity.class);
+                ig.putExtra("groupid",groupid);
+                startActivity(ig);
+                break;
             case R.id.group_info_btn:
                 String bu=btn.getText().toString();
                 if (bu.equals("加群"))//不是群成员
@@ -252,6 +257,9 @@ public class GroupInfoActivity extends Activity implements View.OnClickListener{
                     rMessage.setSenderphone(MySocket.user.getPhonenum());
                     rMessage.setType("解散群");
                     ((MySocket)getApplication()).send(gson.toJson(rMessage));
+                    Intent i = new Intent(GroupInfoActivity.this,MainActivity.class);
+                    startActivity(i);
+                    finish();
                 }
                 break;
             case R.id.group_info_back:

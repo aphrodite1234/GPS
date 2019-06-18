@@ -199,7 +199,7 @@ public class CreateSignActivity extends Activity implements View.OnClickListener
                 ((MySocket) getApplication()).update();
 
                 Toast.makeText(CreateSignActivity.this,"创建签到活动成功！",Toast.LENGTH_SHORT).show();
-//                finish();
+                finish();
                 break;
             case R.id.sign_create_back:
                 //finish();

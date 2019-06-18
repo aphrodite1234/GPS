@@ -50,7 +50,7 @@ public class SearchActivity extends Activity implements View.OnClickListener{
                             group=gson.fromJson(rMessage.getGroup().get(0),Group.class);
                             Intent intent=new Intent(SearchActivity.this,GroupInfoActivity.class);
                             intent.putExtra("groupname",group.getGroupname());
-                            intent.putExtra("groupid",String.valueOf(group.getGroupid()));
+                            intent.putExtra("groupid",group.getGroupid());
                             intent.putExtra("groupowner",group.getGroupowner());
                             intent.putExtra("membernum",group.getMembernum());
                             intent.putExtra("ismember",rMessage.getContent());

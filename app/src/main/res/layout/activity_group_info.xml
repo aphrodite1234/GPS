@@ -158,6 +158,7 @@
                 android:layout_toEndOf="@+id/group_info_member"
                 android:layout_marginStart="10dp"
                 android:textSize="16sp"
+                android:clickable="true"
                 android:textColor="@color/default_text_color"
                 android:id="@+id/group_info_member1"
                 android:gravity="center_vertical|right"

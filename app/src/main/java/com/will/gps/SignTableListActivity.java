@@ -47,7 +47,7 @@ import java.util.Locale;
 
 public class SignTableListActivity extends AppCompatActivity{
 
-    private TextView title,tip;
+    private TextView title,tip,content;
     private RecyclerView mRecyclerView;
     private List<SignTableBean> signTableBeanList;
     private List<Signin> signins;
@@ -69,6 +69,7 @@ public class SignTableListActivity extends AppCompatActivity{
         title=(TextView)findViewById(R.id.sign_table_title);
         title.setText("签到表");
         tip=(TextView)findViewById(R.id.sign_table_tip);
+        content=(TextView)findViewById(R.id.sign_table_content);
         mRecyclerView=findViewById(R.id.sign_list);
         dateFormat=new SimpleDateFormat("M-d日 H:m", Locale.CHINA);
 

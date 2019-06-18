@@ -115,7 +115,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         break;
                     case "签到截止":
                         dbOpenHelper.endsign(dbOpenHelper,gson.fromJson(rMessage.getContent(),Signin.class));
-                        tabMessage.performClick();
                         break;
                     case "用户签到":
                         signin=gson.fromJson(rMessage.getContent(),Signin.class);
@@ -149,8 +148,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         // 设置图片的位置，左、上、右、下
         tabQun.setCompoundDrawables(null, null, drawable, null);*/
 
-        if(MySocket.unread)
-            unreadtip.setVisibility(View.INVISIBLE);
+        unreadtip.setVisibility(View.INVISIBLE);
 
         imageView1.setOnClickListener(this);
         imageView2.setOnClickListener(this);
@@ -158,6 +156,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         tabMessage.setOnClickListener(this);
         tabMore.setOnClickListener(this);
         tabUser.setOnClickListener(this);
+
+        tabMessage.performLongClick();
     }
 
     //重置所有文本的选中状态
@@ -266,6 +266,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onRestart() {
         super.onRestart();
         ((MySocket) getApplication()).update();
+
+        if(MySocket.unread)
+            unreadtip.setVisibility(View.VISIBLE);
     }
 
     //为了在fragment中注册监听事件（fragment中没有提供OnTouchEvent）

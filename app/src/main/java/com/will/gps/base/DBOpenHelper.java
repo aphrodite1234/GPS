@@ -102,6 +102,20 @@ public class DBOpenHelper extends SQLiteOpenHelper {
         return groupList;
     }
 
+    //查询群成员信息
+    public List<String> searchgroupmember(DBOpenHelper dbOpenHelper,int groupid){
+        GroupMember groupMember = new GroupMember();
+        List<String> groupmember = new ArrayList<>();
+        SQLiteDatabase db = dbOpenHelper.getReadableDatabase();
+        Cursor cursor=db.query("groupmember",null,"groupid="+groupid,null,null,null,null);
+        while(cursor.moveToNext()){
+            groupMember.setUserphone(cursor.getString(cursor.getColumnIndex("userphone")));
+            groupMember.setUsername(cursor.getString(cursor.getColumnIndex("username")));
+            groupmember.add(gson.toJson(groupMember));
+        }
+        return groupmember;
+    }
+
     //保存群成员
     public void savemember(DBOpenHelper dbOpenHelper, List<String> list){
         if(!list.isEmpty()){
