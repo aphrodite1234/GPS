@@ -67,15 +67,17 @@ public class MessageListAdapter extends BaseExpandableListAdapter {
                RMessage message4 = gson.fromJson(Message, RMessage.class);
                if(message4.getType().equals("签到消息")){
                    child1.add(message4);
-                   if(message4.getState()==1)
+                   if(message4.getState()==0)
                        groupunread[0]++;
                }else if(message4.getType().equals("群消息")){
                    child2.add(message4);
                    groupunread[1]++;
-                   if(message4.getState()==1){
+                   if(message4.getState()==0){
+                       int counter=groupchatunread[0]+1;
                        if(groupchatunread[0]>0){
                            for(int i=1;i<=groupchatunread[0];i++){
                                if(message4.getGroupid()==groupchatunread[i]){
+                                   counter=i;
                                    groupchatunread1[i]++;//没加第一条，后面再进行处理
                                    groupchatunread[0]--;//重复群为使数量不变-1
                                    groupunread[1]--;//重复群的未读消息算一个（重复的消掉）
@@ -87,11 +89,11 @@ public class MessageListAdapter extends BaseExpandableListAdapter {
                            }
                        }
                        groupchatunread[0]++;
-                       groupchatunread[groupchatunread[0]]=message4.getGroupid();
+                       groupchatunread[counter]=message4.getGroupid();
                    }
                }else if(message4.getType().equals("个人消息")){
                    child3.add(message4);
-                   if(message4.getState()==1){
+                   if(message4.getState()==0){
                        groupunread[2]++;
                        if(friendchatunread1[0]>0){
                            for(int i=1;i<=friendchatunread1[0];i++){

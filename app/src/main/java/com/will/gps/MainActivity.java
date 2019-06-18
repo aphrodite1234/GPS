@@ -216,6 +216,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 selected();
                 tabMessage.setSelected(true);
                 topBar.setText("消息");
+                unreadtip.setVisibility(View.INVISIBLE);
                 /*RecentMsgFragment recentMsgFragment=new RecentMsgFragment();
                 ft.replace(R.id.fragment_container, recentMsgFragment,MainActivity.TAG);
                 ft.commit();*/

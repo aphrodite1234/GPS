@@ -160,7 +160,7 @@ public class SignInActivity extends Activity {
         region.setText("签到范围："+signTableBean.getRegion()+"米");
         longitude.setText(signTableBean.getLongitude());
         latitude.setText(signTableBean.getLatitude());
-        mTvCountdowntimer.setText(signTableBean.getTime());
+//        mTvCountdowntimer.setText(signTableBean.getTime());
 //        btn_map.setImageResource(R.mipmap.position);
 //        btn_map.setOnClickListener(new View.OnClickListener() {
 //            @Override

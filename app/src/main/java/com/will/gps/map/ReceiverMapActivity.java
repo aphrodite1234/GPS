@@ -57,6 +57,7 @@ public class ReceiverMapActivity extends Activity implements LocationSource{
 
         intent=getIntent();
         locationUtil=new LocationUtil();
+
         signTableBean=(SignTableBean)intent.getSerializableExtra("signtable");
         aMap.addMarker(locationUtil.getMarkerOption(signTableBean.getId()+"签到地点",Double.valueOf(signTableBean.getLatitude()),Double.valueOf(signTableBean.getLongitude())));
 
